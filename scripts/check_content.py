@@ -117,10 +117,27 @@ assert "verse-entry" in stylesheet and "feature-mode" in stylesheet
 assert '<script src="oustory-features.js"></script>' in html
 assert '<link rel="stylesheet" href="oustory-features.css">' in html
 reader=(ROOT/"oustory-reader.js").read_text(encoding="utf8")
+calendar=json.loads((ROOT/"calendar/archive.json").read_text(encoding="utf8"))
+assert calendar["schema_version"]==1 and calendar["extrapolation_allowed"] is False
+assert calendar["notification_system_connected"] is False
+assert [x["id"] for x in calendar["sources"]]==["xalendaria","lunar2025"]
+assert len(calendar["sources"][0]["entries"])==152
+assert len(calendar["sources"][1]["entries"])==11
+assert calendar["disagreements"]["requires_founder_choice_for_future_calculations"] is True
+assert calendar["disagreements"]["common_new_moons"]==["2025-03-29"]
+assert len(calendar["disagreements"]["common_sabbaths"])==4
+assert sum(1 for e in calendar["sources"][0]["entries"] if e["subject"]=="Weekly Sabbath")==44
+assert sum(1 for e in calendar["sources"][0]["entries"] if e["subject"]=="New Moon")==11
+assert all(e["start"]<=e["end"] for e in calendar["sources"][0]["entries"])
+assert '<script src="oustory-calendar.js"></script>' in html
+assert '<link rel="stylesheet" href="oustory-calendar.css">' in html
+assert 'window.OustoryCalendar?.render' in features
+assert "Feasts & lunar calendar" in features
+assert "OustoryCalendar" in (ROOT/"oustory-calendar.js").read_text(encoding="utf8")
 assert "Number.isInteger(v.number)" in reader
 assert "window.OustoryFeatures?.init" in reader and "window.OustoryFeatures?.annotateVerse" in reader
 assert "'speaker-' + color" in reader
-for source in ("cpt-index.js","oustory-reader.js","oustory-features.js","oustory-audio.js","oustory-branding.js"):
+for source in ("cpt-index.js","oustory-reader.js","oustory-features.js","oustory-calendar.js","oustory-audio.js","oustory-branding.js"):
     subprocess.run(["node","--check",str(ROOT/source)],check=True,capture_output=True)
 inline=re.findall(r"<script(?:\s[^>]*)?>(.*?)</script>",html,flags=re.S)
 with tempfile.TemporaryDirectory() as temp:
