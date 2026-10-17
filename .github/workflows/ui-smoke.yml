@@ -8,6 +8,8 @@ on:
       - 'oustory-features.js'
       - 'oustory-features.css'
       - 'oustory-branding.js'
+      - 'assets/covenant-bible-gold-source.webp'
+      - 'scripts/build_covenant_icons.py'
       - 'data/editorial-notes.json'
       - 'scripts/ui_smoke.mjs'
       - '.github/workflows/ui-smoke.yml'
@@ -23,6 +25,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Generate current brand assets for UI test
+        run: |
+          python -m pip install Pillow==11.3.0
+          python scripts/build_covenant_icons.py
       - name: Install headless Chromium
         run: |
           npm install --no-save playwright@1.56.1

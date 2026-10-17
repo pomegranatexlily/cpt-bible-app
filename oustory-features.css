@@ -59,3 +59,10 @@ body.feature-mode .reading-column{display:none}
 .chapter-audio[data-audio-state=playing] .audio-status{color:var(--covenant-gold)}
 .chapter-audio :focus-visible{outline:2px solid var(--covenant-gold);outline-offset:3px}
 @media(max-width:360px){.chapter-audio-controls{gap:6px}.chapter-audio{padding-inline:9px}.chapter-audio .audio-speed{gap:3px}}
+
+/* Current Covenant Bible cover mark: visible in Home as well as the app menu and About. */
+.oustory-home-identity{display:flex;align-items:center;gap:13px;margin:0 0 22px;min-width:0}
+.oustory-home-identity img{display:block;width:58px;height:58px;object-fit:contain;flex:none;filter:drop-shadow(0 2px 6px rgba(0,0,0,.19))}
+.oustory-home-identity strong,.oustory-home-identity span{display:block}
+.oustory-home-identity strong{font-family:Georgia,serif;font-size:18px;line-height:1.35;color:var(--text)}
+.oustory-home-identity span{margin-top:3px;font-size:11px;letter-spacing:.025em;color:var(--muted)}

@@ -109,6 +109,12 @@
   async function renderHome(){
     const seq=Math.floor(Date.now()/86400000);
     const group=THEMES[Math.floor(seq/7)%THEMES.length];
+    const brand = el("div",undefined,"oustory-home-identity");
+    const cover = el("img");cover.src = "assets/covenant-bible-gold-512.png";
+    cover.alt = "Covenant Bible cover";cover.width = 58;cover.height = 58;
+    cover.loading = "eager";cover.decoding = "async";
+    const brandText = el("div");brandText.append(el("strong","Covenant Bible"),el("span","Oustory · POM × LILY"));
+    brand.append(cover,brandText);root.append(brand);
     title("Oustory · covenant reading","The nation's record","Read → Study → Research → Practice → Teach → Archive");
     const verseCard=card(root,"Today's reading");
     verseCard.append(el("p","Theme: "+group[0],"feature-kicker"));

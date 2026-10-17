@@ -34,6 +34,10 @@ try{
   assert.equal(await page.locator("#nav-home").getAttribute("aria-current"),"page");
   await page.locator(".feature-title").getByText("The nation's record").waitFor();
   await page.locator(".feature-verse").waitFor();
+  const mark=page.locator(".oustory-home-identity img");
+  assert.match(await mark.getAttribute("src"),/covenant-bible-gold-512\.png/);
+  await mark.evaluate(img=>img.decode());
+  assert.equal(await mark.evaluate(img=>img.naturalWidth),512);
   await page.screenshot({path:"out/ui-smoke/home-mobile.png",fullPage:false});
   await page.locator("#read-button").click();
   await page.waitForFunction(()=>document.querySelectorAll(".verse-entry").length>=20,{timeout:20000});
@@ -81,6 +85,8 @@ try{
   await page.screenshot({path:"out/ui-smoke/discover-mobile.png",fullPage:false});
   await page.locator("#nav-more").click();
   await page.locator("#oustory-menu[open]").waitFor();
+  assert.match(await page.locator(".oustory-menu-brand img").getAttribute("src"),/covenant-bible-gold-512\.png/);
+  await page.locator(".oustory-menu-brand img").evaluate(img=>img.decode());
   await page.locator("#oustory-menu button[aria-label='Close menu']").click();
   await page.locator("#reference").click();
   await page.locator("#books-panel[open]").waitFor();

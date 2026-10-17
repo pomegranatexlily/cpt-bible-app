@@ -83,6 +83,13 @@ assert "S<span>Books" not in html and "><span>Books</span>" in html
 assert '<script src="cpt-index.js"></script>' in html
 assert '<script src="oustory-reader.js"></script>' in html
 assert '<script src="oustory-audio.js"></script>' in html
+assert 'href="assets/covenant-bible-gold-180.png"' in html
+assert 'href="assets/covenant-bible-gold-192.png"' in html
+pwa=json.loads((ROOT/"manifest.webmanifest").read_text(encoding="utf8"))
+assert {i["src"] for i in pwa["icons"]} == {"assets/covenant-bible-gold-192.png","assets/covenant-bible-gold-512.png"}
+assert hashlib.sha256((ROOT/"assets/covenant-bible-gold-source.webp").read_bytes()).hexdigest()=="8749b88c4612b8729f8b1ff9b67e1fcfd38191ffd7f1e183665f7c099fca006f"
+assert "assets/covenant-bible-gold-512.png" in (ROOT/"oustory-branding.js").read_text(encoding="utf8")
+assert "assets/covenant-bible-gold-512.png" in (ROOT/"oustory-features.js").read_text(encoding="utf8")
 audio=(ROOT/"oustory-audio.js").read_text(encoding="utf8")
 assert all(token in audio for token in ("SpeechSynthesisUtterance", "splitIntoChunks", "playPause", "setChapter", "Speech playback", "aria-label"))
 assert "#chapter-title" not in audio or "chapter-title" in audio

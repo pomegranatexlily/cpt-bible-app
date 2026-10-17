@@ -23,8 +23,8 @@
   const brand = document.createElement('div');
   brand.className = 'oustory-menu-brand';
   const icon = document.createElement('img');
-  icon.src = 'assets/covenant-bible.png';
-  icon.alt = 'Covenant Bible';
+  icon.src = 'assets/covenant-bible-gold-512.png';
+  icon.alt = 'Covenant Bible gold book icon with POM × LILY seal';
   icon.width = 76;
   icon.height = 76;
   const identity = document.createElement('div');
