@@ -37,12 +37,8 @@ jobs:
           node --check oustory-release4.js
           node --check oustory-calendar.js
           node --check scripts/release4_ui.mjs
-      - name: Stage the canonical Shabbat Calendar as offline fallback
-        shell: bash
-        run: |
-          git clone --quiet --depth 1 https://github.com/pomegranatexlily/shabbat-calendar.git /tmp/oustory-shabbat-calendar
-          (cd /tmp/oustory-shabbat-calendar && python3 -m unittest -q test_intercalation.py test_dual_tracks.py && python3 generate.py)
-          python3 scripts/stage_calendar_feed.py /tmp/oustory-shabbat-calendar/public/calendar.json calendar/published.json "$(git -C /tmp/oustory-shabbat-calendar rev-parse HEAD)"
+      - name: Verify source-controlled calendar and offline static publication
+        run: python3 scripts/test_published_calendar.py
       - name: Configure Pages
         uses: actions/configure-pages@v5
         with:
@@ -51,6 +47,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p _site
+          cp .nojekyll _site/.nojekyll
           cp index.html manifest.webmanifest oustory-branding.css oustory-branding.js oustory-features.css oustory-features.js oustory-calendar.css oustory-calendar.js oustory-calendar-study.js oustory-audio.js oustory-search.js oustory-research.js oustory-research.css cpt-index.js oustory-reader.js oustory-release4.js oustory-release4.css sw.js _site/
           cp -R assets _site/assets
           cp -R data _site/data
