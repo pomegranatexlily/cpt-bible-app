@@ -40,7 +40,7 @@ on:
       - 'calendar/archive.json'
       - 'oustory-features.css'
       - 'oustory-branding.js'
-      - 'assets/covenant-bible-gold-source.webp'
+      - 'assets/oustory-poster-source.webp'
       - 'scripts/build_covenant_icons.py'
       - 'data/editorial-notes.json'
       - 'scripts/ui_smoke.mjs'
