@@ -49,6 +49,20 @@ try{
   ];
   const sampleLive={
     schema_version:2,
+    verification:{
+      version:1,
+      status:"planning_arithmetic_checked_not_observation_verified",
+      checks:{lunar_months_checked:110,year_span_classifications_checked:16},
+      unresolved:{
+        local_crescent_visibility:"not_verified",
+        Abib_or_agricultural_evidence:"not_supplied",
+        annual_feast_rule_approval:"not_approved",
+        intercalation_policy:"provisional_seasonal_model",
+        Shavuot_counting:"not_selected",
+        local_sunset_boundaries:"not_established",
+        makeup_rules:"not_approved_no_automatic_second_shift"
+      }
+    },
     tracks:{
       earlier:{
         current_months:currentMonths,
