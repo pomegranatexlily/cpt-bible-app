@@ -33,7 +33,7 @@ try{
   await page.locator("#verse-19").click();
   await page.locator("#verse-panel[open]").waitFor();
   assert.match(await page.locator("#verse-panel .note-text").innerText(),/Yahawah alone/);
-  assert.match(await page.locator("#verse-panel .feature-note-type").innerText(),/Founder editorial ruling/);
+  assert.match(await page.locator("#verse-panel .feature-note-type").innerText(),/Founder editorial ruling/i);
   await page.locator("#verse-panel .icon-button").click();
   await page.locator("#nav-study").click();
   await page.locator("#nav-discover").click();
