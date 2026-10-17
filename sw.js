@@ -1,6 +1,6 @@
 /* Oustory Release 4: first-party offline reading. No Scripture transformations. */
 "use strict";
-const SHELL="oustory-shell-r4-calendar-fallback-20261017-v2";
+const SHELL="oustory-shell-r4-calendar-static-20261017-v3";
 const BOOKS="oustory-books-r4";
 const RUNTIME="oustory-runtime-r4";
 const APP=new URL(self.registration.scope);

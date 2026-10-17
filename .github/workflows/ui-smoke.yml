@@ -20,6 +20,9 @@ on:
       - 'scripts/build_search_index.py'
       - 'oustory-features.js'
       - 'oustory-calendar.js'
+      - 'calendar/published.json'
+      - '.nojekyll'
+      - 'scripts/test_published_calendar.py'
       - 'scripts/stage_calendar_feed.py'
       - 'scripts/calendar_fallback_ui.mjs'
       - 'oustory-calendar-study.js'
@@ -66,12 +69,8 @@ jobs:
         run: python3 scripts/test_release2.py
       - name: Validate study mapping against actual Oustory verses
         run: python3 scripts/test_release3.py
-      - name: Stage canonical calendar for offline and network-failure regressions
-        shell: bash
-        run: |
-          git clone --quiet --depth 1 https://github.com/pomegranatexlily/shabbat-calendar.git /tmp/oustory-shabbat-calendar
-          (cd /tmp/oustory-shabbat-calendar && python3 -m unittest -q test_intercalation.py test_dual_tracks.py && python3 generate.py)
-          python3 scripts/stage_calendar_feed.py /tmp/oustory-shabbat-calendar/public/calendar.json calendar/published.json "$(git -C /tmp/oustory-shabbat-calendar rev-parse HEAD)"
+      - name: Verify source-controlled calendar snapshot
+        run: python3 scripts/test_published_calendar.py
       - name: Check Release 4 syntax
         run: |
           node --check sw.js
