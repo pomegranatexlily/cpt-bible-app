@@ -32,10 +32,27 @@ try{
   // The production Shabbat engine is another Pages project. Intercept the
   // request with representative published-schema data so UI regressions
   // cannot depend on network timing or availability of another repository.
+  const currentMonths=[
+    {year:null,month:null,start:"2026-10-12",end:"2026-11-09",days:29,status:"supplied"},
+    {year:null,month:null,start:"2026-11-10",end:"2026-12-09",days:30,status:"supplied"},
+    {year:null,month:null,start:"2026-12-10",end:"2027-01-07",days:29,status:"supplied"},
+    {year:null,month:null,start:"2027-01-08",end:"2027-02-06",days:30,status:"supplied"},
+    {year:null,month:null,start:"2027-02-07",end:"2027-03-08",days:30,status:"supplied"}
+  ];
+  const currentEvents=[
+    {date:"2026-10-12",title:"New Moon",kind:"new_moon",lunar_day:1,status:"supplied",source:"user_supplied_month_start"},
+    {date:"2026-10-18",title:"Preparation for Shabbat",kind:"preparation",lunar_day:7,status:"supplied",source:"user_supplied_month_start"},
+    {date:"2026-10-19",title:"Shabbat",kind:"sabbath",lunar_day:8,status:"supplied",source:"user_supplied_month_start"},
+    {date:"2026-10-26",title:"Shabbat",kind:"sabbath",lunar_day:15,status:"supplied",source:"user_supplied_month_start"},
+    {date:"2026-11-02",title:"Shabbat",kind:"sabbath",lunar_day:22,status:"supplied",source:"user_supplied_month_start"},
+    {date:"2026-11-09",title:"Shabbat",kind:"sabbath",lunar_day:29,status:"supplied",source:"user_supplied_month_start"}
+  ];
   const sampleLive={
     schema_version:2,
     tracks:{
       earlier:{
+        current_months:currentMonths,
+        current_events:currentEvents,
         years:[{year:2027,start_date:"2027-03-09",next_start_date:"2028-02-25",month_count:12,has_13th_month:false}],
         months:[
           {year:2027,month:1,start:"2027-03-09",end:"2027-04-06",days:29,is_thirteenth:false},
@@ -49,6 +66,8 @@ try{
         ]
       },
       later:{
+        current_months:currentMonths,
+        current_events:currentEvents,
         years:[{year:2027,start_date:"2027-04-07",next_start_date:"2028-03-26",month_count:12,has_13th_month:false}],
         months:[{year:2027,month:1,start:"2027-04-07",end:"2027-05-06",days:30,is_thirteenth:false}],
         events:[
@@ -62,6 +81,7 @@ try{
   await page.route("https://pomegranatexlily.github.io/shabbat-calendar/calendar.json",route=>
     route.fulfill({status:200,contentType:"application/json",
       headers:{"Access-Control-Allow-Origin":"*"},body:JSON.stringify(sampleLive)}));
+  await page.clock.install({time:new Date("2026-10-17T16:00:00Z")});
   await page.goto("http://127.0.0.1:8765/",{waitUntil:"domcontentloaded"});
   await page.locator("#nav-home").waitFor({timeout:20000});
   assert.equal(await page.locator("#nav-home").getAttribute("aria-current"),"page");
@@ -75,44 +95,35 @@ try{
   await page.getByRole("button",{name:"Feasts & lunar calendar"}).click();
   await page.getByRole("heading",{name:"Covenant Calendar"}).waitFor();
   const grid=page.locator(".calendar-grid");
-  const dayCells=grid.locator("button.calendar-day");
   await page.locator('.calendar-source-tab[data-source="earlier"]').waitFor();
-  assert.equal(await page.locator('.calendar-source-tab[aria-pressed="true"]').textContent(),"Earlier · March start");
-  assert.equal(await page.locator(".calendar-month-heading").textContent(),"March 2027");
+  assert.equal(await page.locator(".calendar-month-heading").textContent(),"October 2026");
+  assert.equal(await page.locator(".calendar-source-tab[aria-pressed=true]").textContent(),"Early Start");
+  assert.equal(await page.locator(".calendar-source-tab").count(),2,"Only the two current cycle choices should be visible");
   assert.equal(await grid.locator(".calendar-weekday").count(),7);
-  assert.equal((await dayCells.count())%7,0);
-  await grid.locator('.calendar-day[data-date="2027-03-09"]').click();
-  await page.locator(".calendar-detail-heading").getByText("March 9, 2027").waitFor();
-  await page.locator(".calendar-lunar-context").filter({hasText:"Israelite year 2027 · Month 1 · Day 1"}).waitFor();
-  await grid.locator('.calendar-day[data-date="2027-03-16"]').click();
+  assert.ok((await grid.locator(".calendar-day").count())%7===0);
+  assert.match(await page.locator(".calendar-next").innerText(),/October 19, 2026/);
+  await page.locator(".calendar-next").click();
+  await page.locator(".calendar-detail-heading").getByText("October 19, 2026").waitFor();
   await page.locator(".calendar-detail-item").getByRole("heading",{name:"Shabbat"}).waitFor();
-  await grid.locator('.calendar-day[data-date="2027-03-22"]').click();
-  await page.locator(".calendar-detail-type").getByText("Draft feast · unapproved").waitFor();
+  assert.match(await page.locator(".calendar-lunar-context").innerText(),/Lunar Day 8/);
+  await page.getByRole("button",{name:"Today",exact:true}).click();
+  assert.equal(await page.locator(".calendar-month-heading").textContent(),"October 2026");
+  await page.locator(".calendar-detail-heading").getByText("October 17, 2026").waitFor();
   await page.locator('.calendar-source-tab[data-source="later"]').click();
+  assert.equal(await page.locator(".calendar-month-heading").textContent(),"October 2026");
+  await page.locator(".calendar-detail-heading").getByText("October 17, 2026").waitFor();
+  assert.match(await page.locator(".calendar-next").innerText(),/October 19, 2026/);
+  await page.getByRole("button",{name:"Next New Year"}).click();
   assert.equal(await page.locator(".calendar-month-heading").textContent(),"April 2027");
   await grid.locator('.calendar-day[data-date="2027-04-07"]').click();
-  await page.locator(".calendar-lunar-context").filter({hasText:"Israelite year 2027 · Month 1 · Day 1"}).waitFor();
-  await grid.locator('.calendar-day[data-date="2027-04-14"]').click();
-  await page.locator(".calendar-detail-item").getByRole("heading",{name:"Shabbat"}).waitFor();
+  assert.match(await page.locator(".calendar-lunar-context").innerText(),/Month 1 · Day 1/);
   await page.locator('.calendar-source-tab[data-source="earlier"]').click();
-  await page.getByRole("button",{name:"Next month"}).click();
+  assert.equal(await page.locator(".calendar-month-heading").textContent(),"April 2027","Track switch must preserve month");
   await grid.locator('.calendar-day[data-date="2027-04-07"]').click();
-  await page.locator(".calendar-lunar-context").filter({hasText:"Israelite year 2027 · Month 2 · Day 1"}).waitFor();
+  assert.match(await page.locator(".calendar-lunar-context").innerText(),/Month 2 · Day 1/);
   await page.screenshot({path:"out/ui-smoke/calendar-mobile.png",fullPage:false});
-  await page.locator('.calendar-source-tab[data-source="xalendaria"]').click();
-  assert.equal(await page.locator(".calendar-month-heading").textContent(),"February 2026");
-  for(let i=0;i<6;i++)await page.getByRole("button",{name:"Previous month"}).click();
-  assert.equal(await page.locator(".calendar-month-heading").textContent(),"August 2025");
-  await grid.locator('.calendar-day[data-date="2025-08-22"]').click();
-  await page.locator(".calendar-detail-item").getByRole("heading",{name:"Feast of Trumpets"}).waitFor();
-  await page.locator('.calendar-source-tab[data-source="lunar2025"]').click();
-  assert.equal(await page.locator(".calendar-month-heading").textContent(),"January 2026");
-  for(let i=0;i<4;i++)await page.getByRole("button",{name:"Previous month"}).click();
-  await grid.locator('.calendar-day[data-date="2025-09-22"]').click();
-  await page.locator(".calendar-detail-item").getByRole("heading",{name:"Trumpets"}).waitFor();
-  await page.getByRole("button",{name:"Today"}).click();
-  await page.getByText(/Outside this source's recorded dates/).waitFor();
-  await page.getByRole("button",{name:"Latest recorded"}).click();
+  await page.getByRole("button",{name:"Today",exact:true}).click();
+  assert.equal(await page.locator(".calendar-month-heading").textContent(),"October 2026");
   await page.getByRole("button",{name:"← Home"}).click();
   await page.getByText("The nation's record").waitFor();
   await page.locator("#read-button").click();
