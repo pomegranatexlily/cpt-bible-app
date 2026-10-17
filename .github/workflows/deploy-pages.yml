@@ -39,7 +39,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p _site
-          cp index.html manifest.webmanifest oustory-branding.css oustory-branding.js oustory-features.css oustory-features.js oustory-calendar.css oustory-calendar.js oustory-audio.js oustory-search.js oustory-research.js oustory-research.css cpt-index.js oustory-reader.js _site/
+          cp index.html manifest.webmanifest oustory-branding.css oustory-branding.js oustory-features.css oustory-features.js oustory-calendar.css oustory-calendar.js oustory-calendar-study.js oustory-audio.js oustory-search.js oustory-research.js oustory-research.css cpt-index.js oustory-reader.js _site/
           cp -R assets _site/assets
           cp -R data _site/data
           cp -R calendar _site/calendar
@@ -61,10 +61,12 @@ jobs:
           test -f _site/oustory-features.js
           test -f _site/oustory-features.css
           test -f _site/oustory-calendar.js
+          test -f _site/oustory-calendar-study.js
+          test -f _site/data/covenant-study.json
           test -f _site/oustory-calendar.css
           test -f _site/calendar/archive.json
           test -f _site/data/editorial-notes.json
-          test "$(find _site/data -maxdepth 1 -name '*.json' | wc -l)" -eq 84
+          test "$(find _site/data -maxdepth 1 -name '*.json' | wc -l)" -eq 85
       - name: Generate version-matched full-text index
         run: |
           python3 scripts/build_search_index.py --output _site/data/search-index.json
