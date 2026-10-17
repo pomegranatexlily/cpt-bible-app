@@ -142,7 +142,7 @@
     cont.append(el("p",savedBook?savedBook.title+" "+last.chapter:"Start with Genesis 1"));
     addAction(actions(cont),"Open chapter",()=>jump(savedBook?.id||"genesis",savedBook?.chapters.some(c=>c.number===last?.chapter)?last.chapter:1),true);
     const note=card(root,"Reading-first approach");
-    note.append(el("p","Your archived 2025 lunar and feast calendars are available for source-by-source review. Future observance dates remain unconfirmed.","feature-status"));
+    note.append(el("p","Browse both projected Israelite year tracks (March and April starts) or review the original historical feast calendars. Draft dates are labeled.","feature-status"));
     addAction(actions(note),"Feasts & lunar calendar",()=>show("calendar"),true);
     addAction(actions(note),"Explore covenant study",()=>show("study"));
   }
@@ -183,7 +183,7 @@
   function renderDiscover(){
     title("Discover · reading paths","Follow the covenant story","Four curated starting tracks, each linking to the actual chapter text.");
     const calendar=card(root,"Feasts, Sabbaths & new moons");
-    calendar.append(el("p","Browse your two supplied 2025 calendar archives. Where dates differ, the original records remain separate."));
+    calendar.append(el("p","Choose the earlier or later projected year calendar, or browse the separate 2025 archive sources."));
     addAction(actions(calendar),"Open covenant calendar",()=>show("calendar"));
     const progress=read("oustory.plan.progress",{});
     for(const p of PLANS){
