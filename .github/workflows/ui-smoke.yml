@@ -15,6 +15,7 @@ on:
       - 'oustory-research.css'
       - 'scripts/build_kjv_comparison.py'
       - 'scripts/test_release2.py'
+      - 'scripts/test_published_research.py'
       - 'data/terminology-review.json'
       - 'data/witness-questions.json'
       - 'scripts/build_search_index.py'
@@ -67,6 +68,8 @@ jobs:
         run: python3 scripts/build_kjv_comparison.py --out data/compare
       - name: Verify Release 2 indexes and alignment
         run: python3 scripts/test_release2.py
+      - name: Verify generated static comparison and search inventories
+        run: python3 scripts/test_published_research.py
       - name: Validate study mapping against actual Oustory verses
         run: python3 scripts/test_release3.py
       - name: Verify source-controlled calendar snapshot
