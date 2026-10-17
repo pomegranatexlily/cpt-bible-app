@@ -91,9 +91,12 @@
     try {
       const data = await loadBook(selectedId);
       if (token !== renderToken) return;
-      const verses = data.chapters.find(c => c.number === selectedChapter)?.verses;
+      const chapterData = data.chapters.find(c => c.number === selectedChapter);
+      const verses = chapterData?.verses;
       if (!verses) throw new Error('This chapter is unavailable in the verified source.');
       const container = $('#scripture');
+      const fragment = document.createDocumentFragment();
+      if (chapterData.intro) fragment.append(make('p', chapterData.intro, 'psalm-intro'));
       const paragraph = make('p');
       for (const v of verses) {
         const number = make('span', String(v.number), 'verse-number');
@@ -107,7 +110,8 @@
         }
         paragraph.append(document.createTextNode(' '));
       }
-      container.replaceChildren(paragraph);
+      fragment.append(paragraph);
+      container.replaceChildren(fragment);
       $('#save-place').disabled = false;
       $('#reader').scrollTop = 0;
       write('cpt.reader.position', {book:selectedId, chapter:selectedChapter});
