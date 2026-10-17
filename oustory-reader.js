@@ -305,6 +305,7 @@
       $('#font-status').textContent = fonts.length ? 'Schibsted Grotesk loaded.' : 'Using system font fallback.';
     } catch { $('#font-status').textContent = 'Using system font fallback.'; }
   })();
+  window.OustoryResearch?.init({books,loadBook});
   window.OustoryAudio?.init();
   window.OustoryReader={openSaved,saveVerse,getPosition:()=>read('cpt.reader.position',null)};
   window.OustoryFeatures?.init({go,loadBook,books});

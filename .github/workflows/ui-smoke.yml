@@ -7,6 +7,12 @@ on:
       - 'index.html'
       - 'oustory-reader.js'
       - 'oustory-search.js'
+      - 'oustory-research.js'
+      - 'oustory-research.css'
+      - 'scripts/build_kjv_comparison.py'
+      - 'scripts/test_release2.py'
+      - 'data/terminology-review.json'
+      - 'data/witness-questions.json'
       - 'scripts/build_search_index.py'
       - 'oustory-features.js'
       - 'oustory-calendar.js'
@@ -26,7 +32,7 @@ permissions:
 jobs:
   mobile:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -45,6 +51,10 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Generate verified Scripture search index
         run: python3 scripts/build_search_index.py --output data/search-index.json
+      - name: Generate historical English comparison source
+        run: python3 scripts/build_kjv_comparison.py --out data/compare
+      - name: Verify Release 2 indexes and alignment
+        run: python3 scripts/test_release2.py
       - name: Run isolated local site
         run: python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/oustory-site.log 2>&1 &
       - name: Check all mobile navigation and verse details

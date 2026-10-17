@@ -101,7 +101,7 @@ assert "window.OustoryAudio?.init" in (ROOT/"oustory-reader.js").read_text(encod
 
 notes=json.loads((DATA/"editorial-notes.json").read_text(encoding="utf8"))
 assert notes["verses_rewritten"] is False
-assert len(notes["notes"])>=17 and notes["watchlist_status"].startswith("25-rule")
+assert len(notes["notes"])>=18 and "nations" in notes["watchlist_status"].lower()
 assert {x["status"] for x in notes["notes"]}=={"author-ruling","open-question","provisional","draft-note"}
 valid_titles={b["title"] for b in books}
 linked=set()
@@ -117,6 +117,16 @@ stylesheet=(ROOT/"oustory-features.css").read_text(encoding="utf8")
 assert all(s in features for s in ("Why this rendering","Home","Study","Discover","annotateVerse","openVerse","THEMES","TOPICS","PLANS"))
 assert "verse-entry" in stylesheet and "feature-mode" in stylesheet
 assert '<script src="oustory-features.js"></script>' in html
+assert '<script src="oustory-research.js"></script>' in html
+assert '<link rel="stylesheet" href="oustory-research.css">' in html
+term=json.loads((DATA/"terminology-review.json").read_text(encoding="utf8"))
+assert term["actual_term_groups"]==len(term["terms"])==27 and term["auto_replace"] is False
+assert sum(t["status"]=="founder_contextual_correction" for t in term["terms"])==1
+assert not any(t["global_replace_allowed"] for t in term["terms"])
+questions=json.loads((DATA/"witness-questions.json").read_text(encoding="utf8"))
+assert questions["witnesses_independently_verified"] is False
+assert len(questions["questions"])==15
+assert all(not q["independent_witness_citations"] for q in questions["questions"])
 assert '<link rel="stylesheet" href="oustory-features.css">' in html
 reader=(ROOT/"oustory-reader.js").read_text(encoding="utf8")
 calendar=json.loads((ROOT/"calendar/archive.json").read_text(encoding="utf8"))
@@ -145,7 +155,7 @@ assert "window.OustoryFeatures?.init" in reader and "window.OustoryFeatures?.ann
 assert "window.OustorySearch?.init" in reader
 assert "window.OustoryReader={openSaved,saveVerse" in reader
 assert "'speaker-' + color" in reader
-for source in ("cpt-index.js","oustory-reader.js","oustory-search.js","oustory-features.js","oustory-calendar.js","oustory-audio.js","oustory-branding.js"):
+for source in ("cpt-index.js","oustory-reader.js","oustory-search.js","oustory-research.js","oustory-features.js","oustory-calendar.js","oustory-audio.js","oustory-branding.js"):
     subprocess.run(["node","--check",str(ROOT/source)],check=True,capture_output=True)
 inline=re.findall(r"<script(?:\s[^>]*)?>(.*?)</script>",html,flags=re.S)
 with tempfile.TemporaryDirectory() as temp:
