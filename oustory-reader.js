@@ -96,6 +96,7 @@
   async function render() {
     if (!chapter()) return;
     const token = ++renderToken, selectedId = book().id, selectedChapter = chapter().number;
+    window.OustoryAudio?.loading();
     updateControls();
     showMessage('Loading ' + book().title + ' ' + selectedChapter + '…');
     $('#save-place').disabled = true;
@@ -105,6 +106,7 @@
       const chapterData = data.chapters.find(c => c.number === selectedChapter);
       const verses = chapterData?.verses;
       if (!verses) throw new Error('This chapter is unavailable in the verified source.');
+      window.OustoryAudio?.setChapter({bookId:selectedId, book:book().title, chapter:selectedChapter, verses});
       const container = $('#scripture');
       const fragment = document.createDocumentFragment();
       if (chapterData.intro) fragment.append(make('p', chapterData.intro, 'psalm-intro'));
@@ -271,5 +273,6 @@
       $('#font-status').textContent = fonts.length ? 'Schibsted Grotesk loaded.' : 'Using system font fallback.';
     } catch { $('#font-status').textContent = 'Using system font fallback.'; }
   })();
+  window.OustoryAudio?.init();
   window.OustoryFeatures?.init({go,loadBook,books});
 })();
