@@ -16,3 +16,5 @@ jobs:
         run: python3 scripts/check_content.py
       - name: Check Release 1 search index and source alignment
         run: python3 scripts/test_release1.py
+      - name: Validate Research Bible draft statuses and source coordinates
+        run: python3 scripts/test_release2.py
