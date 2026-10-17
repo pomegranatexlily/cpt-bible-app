@@ -9,7 +9,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 books=json.loads((ROOT/"data/manifest.json").read_text())
 registry=(ROOT/"cpt-index.js").read_text(encoding="utf-8")
-match=re.search(r"window\\.CPT_BOOKS=(\\[.*?\\]);",registry,re.S)
+match=re.search(r"window\.CPT_BOOKS=(\[.*?\]);",registry,re.S)
 assert match,"CPT book inventory unavailable"
 ids=[b["id"] for b in json.loads(match.group(1))]
 assert len(ids)==len(set(ids))==80
