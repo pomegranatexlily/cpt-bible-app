@@ -6,8 +6,31 @@
 (() => {
   const MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
   const DAYS=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-  const SOURCE_LABELS={xalendaria:"Xalendaria",lunar2025:"2025 Lunar Calendar"};
-  let archivePromise=null;
+  const SOURCE_LABELS={earlier:"Earlier · March start",later:"Later · April start",xalendaria:"Xalendaria archive",lunar2025:"2025 Lunar archive"};
+  let archivePromise=null, livePromise=null;
+  // Both GitHub Pages projects are published on the same host. For other
+  // hostnames, use the canonical cross-site URL (requires standard CORS).
+  const LIVE_URL=location.hostname==="pomegranatexlily.github.io"
+    ? location.origin+"/shabbat-calendar/calendar.json"
+    : "https://pomegranatexlily.github.io/shabbat-calendar/calendar.json";
+  function loadLive(){
+    if(!livePromise)livePromise=fetch(LIVE_URL,{cache:"no-cache"})
+      .then(r=>{if(!r.ok)throw Error("Live engine unavailable");return r.json()})
+      .then(j=>{
+        if(j.schema_version!==2||!j.tracks?.earlier?.years?.length||!j.tracks?.later?.years?.length)
+          throw Error("Live calendar schema invalid");
+        return j;
+      }).catch(e=>{livePromise=null;throw e});
+    return livePromise;
+  }
+  const liveEvent=e=>({
+    start:e.date,end:e.date,subject:e.title,
+    type:e.kind==="new_moon"?"new-moon":e.kind==="sabbath"?"sabbath":
+         e.kind==="preparation"?"preparation":"feast",
+    description:"Israelite year "+e.year+" · Month "+e.month+" · Day "+e.lunar_day,
+    source_row:"live",status:e.status,rule_status:e.rule_status,
+    track:e.track,year:e.year,month:e.month,lunar_day:e.lunar_day
+  });
   const make=(tag,label,cls)=>{const e=document.createElement(tag);if(label!==undefined)e.textContent=label;if(cls)e.className=cls;return e};
   const utc=(y,m,d)=>new Date(Date.UTC(y,m,d,12));
   const iso=date=>date.toISOString().slice(0,10);
@@ -130,21 +153,36 @@
     detail.setAttribute("aria-live","polite");target.append(detail);
     const foot=make("p","These are supplied historical calendar entries, not automatically calculated feast dates. No notifications are sent from this view.","feature-status calendar-footer");
     target.append(foot);
-    let source="xalendaria",events=[],days=new Map(),range=null,selected=null,year,month;
+    let source="earlier",events=[],days=new Map(),range=null,selected=null,year,month,archive=null,live=null;
     function setSource(sourceId){
       source=sourceId;
-      const src=data.sources.find(s=>s.id===source);
-      events=normalize(src);
-      days=dailyIndex(events);
-      const all=events.flatMap(e=>[e.start,e.end]).sort();
-      range={start:all[0],end:all.at(-1)};
-      if(!range.start)return;
-      // First render shows an actual populated calendar instead of the
-      // current unsupported future month. Today is an explicit jump.
-      const anchor=dateObj(range.end);year=anchor.getUTCFullYear();month=anchor.getUTCMonth();
-      selected=range.end;
+      const isLive=source==="earlier"||source==="later";
+      if(isLive){
+        if(!live?.tracks?.[source])return;
+        const track=live.tracks[source];
+        events=track.events.map(liveEvent);
+        days=dailyIndex(events);
+        const first=track.years[0],last=track.years.at(-1);
+        range={start:first.start_date,end:iso(utc(...(()=>{const d=dateObj(last.next_start_date);return [d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate()-1]})()))};
+        const anchor=dateObj(first.start_date);year=anchor.getUTCFullYear();month=anchor.getUTCMonth();
+        selected=first.start_date;
+        notice.textContent=SOURCE_LABELS[source]+" · projected year starts "+showDate(first.start_date)+". New Moons and Shabbats use modeled lunar months. Draft feast dates are not approved observances.";
+        recorded.textContent="Year start";
+        foot.textContent="Provisional model: not a confirmed crescent, sunset, or agricultural observation. Feast rules are draft only. No notifications are sent.";
+      }else{
+        const src=archive?.sources.find(s=>s.id===source);
+        if(!src)return;
+        events=normalize(src);
+        days=dailyIndex(events);
+        const all=events.flatMap(e=>[e.start,e.end]).sort();
+        range={start:all[0],end:all.at(-1)};
+        const anchor=dateObj(range.end);year=anchor.getUTCFullYear();month=anchor.getUTCMonth();
+        selected=range.end;
+        notice.textContent=SOURCE_LABELS[source]+" · recorded "+showDate(range.start)+" – "+showDate(range.end)+". Blank outside this range means the source has no records.";
+        recorded.textContent="Latest recorded";
+        foot.textContent="Historical source entries. No future dates are extrapolated from these files; no notifications are sent.";
+      }
       for(const b of sourceBar.querySelectorAll("button"))b.setAttribute("aria-pressed",String(b.dataset.source===source));
-      notice.textContent=SOURCE_LABELS[source]+" · recorded "+showDate(range.start)+" – "+showDate(range.end)+". Outside this range, a blank cell means no supplied data, not that no observance occurs.";
       update();
     }
     function showDay(isoDay){
