@@ -181,10 +181,10 @@ try{
   await page.locator(".research-correction").waitFor();
   assert.match(await page.locator(".research-correction").innerText(),/Luke 7:5/);
   assert.match(await page.locator(".research-correction").innerText(),/Acts 4:27/);
-  await page.locator(".research-terms summary").first().click();
-  assert.equal(await page.locator(".research-terms").first().locator(".research-term").count(),27);
-  await page.locator(".research-terms summary").last().click();
-  assert.ok(await page.locator(".research-term").count()>=42);
+  await page.locator('[data-research-section="terminology"] > summary').click();
+  assert.equal(await page.locator('[data-research-section="terminology"] .feature-list > .research-term').count(),27);
+  await page.locator('[data-research-section="witness-questions"] > summary').click();
+  assert.equal(await page.locator('[data-research-section="witness-questions"] > .research-term').count(),15);
   await page.getByRole("button",{name:"Saved chapters"}).click();
   await page.locator("#saved-panel[open]").waitFor();
   await page.locator("#saved-list button.list-button").getByText("Genesis 2:1").waitFor();
