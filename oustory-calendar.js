@@ -19,7 +19,38 @@
   const LIVE_URL=typeof location!=="undefined"&&location.hostname==="pomegranatexlily.github.io"
     ?location.origin+"/shabbat-calendar/calendar.json"
     :"https://pomegranatexlily.github.io/shabbat-calendar/calendar.json";
-  let feedPromise=null;
+  const SNAPSHOT_URL=new URL("./calendar/published.json",document.baseURI).href;
+  const LIVE_CACHE="oustory-calendar-live-v1";
+  let feedPromise=null,feedSource="live",feedSnapshot=null;
+  function checkFeed(data){
+    if(data?.schema_version!==2||data?.verification?.version!==1||
+       !data.tracks?.earlier?.years?.length||!data.tracks?.later?.years?.length||
+       !Array.isArray(data.tracks.earlier.events)||!Array.isArray(data.tracks.later.events)){
+      throw Error("Calendar schema or audit unavailable");
+    }
+    return data;
+  }
+  async function requestFeed(url,timeout){
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),timeout);
+    try{
+      const response=await fetch(url,{cache:"no-store",signal:controller.signal});
+      if(!response.ok)throw Error("Calendar HTTP "+response.status);
+      return checkFeed(await response.json());
+    }finally{clearTimeout(timer)}
+  }
+  async function storedLive(){
+    if(!("caches" in window))return null;
+    const response=await (await caches.open(LIVE_CACHE)).match(LIVE_URL);
+    return response?checkFeed(await response.json()):null;
+  }
+  async function keepLive(data){
+    if(!("caches" in window))return;
+    try{
+      await (await caches.open(LIVE_CACHE)).put(LIVE_URL,
+        new Response(JSON.stringify(data),{headers:{"Content-Type":"application/json"}}));
+    }catch{}
+  }
   const TRACK_KEY="oustory.calendar.track";
   function rememberedTrack(){
     try{return localStorage.getItem(TRACK_KEY)==="later"?"later":"earlier"}catch{return "earlier"}
@@ -27,14 +58,30 @@
   function rememberTrack(track){try{localStorage.setItem(TRACK_KEY,track)}catch{}}
 
   function loadLive(){
-    if(!feedPromise)feedPromise=fetch(LIVE_URL,{cache:"no-cache"}).then(r=>{
-      if(!r.ok)throw new Error("Calendar feed unavailable");
-      return r.json();
-    }).then(data=>{
-      if(data.schema_version!==2||!data.tracks?.earlier?.years?.length||!data.tracks?.later?.years?.length)
-        throw new Error("Unexpected calendar data");
-      return data;
-    }).catch(e=>{feedPromise=null;throw e});
+    if(!feedPromise)feedPromise=(async()=>{
+      try{
+        const data=await requestFeed(LIVE_URL,5000);
+        feedSource="live";feedSnapshot=null;
+        void keepLive(data);return data;
+      }catch(liveError){
+        // Never create alternative lunar dates: only use the same upstream
+        // generator's audited feed, previously fetched or bundled at build.
+        try{
+          const data=await storedLive();
+          if(data){feedSource="saved";feedSnapshot=null;return data}
+        }catch{}
+        try{
+          const data=await requestFeed(SNAPSHOT_URL,5000);
+          if(!data.oustory_snapshot?.revision||!data.oustory_snapshot?.generated_at_utc)
+            throw Error("Bundled calendar provenance unavailable");
+          feedSource="bundled";feedSnapshot=data.oustory_snapshot;
+          return data;
+        }catch(snapshotError){
+          throw Error("Live calendar and published fallback are both unavailable. "+
+            "Live: "+liveError.message+"; fallback: "+snapshotError.message);
+        }
+      }
+    })().catch(error=>{feedPromise=null;throw error});
     return feedPromise;
   }
   const typeOf=e=>e.kind==="new_moon"?"new-moon":e.kind==="sabbath"?"sabbath":
@@ -241,7 +288,11 @@
       heading.textContent=MONTHS[month]+" "+year;
       for(const b of sourceBar.querySelectorAll("button"))b.setAttribute("aria-pressed",String(b.dataset.source===source));
       const firstYear=track.years[0];
-      notice.textContent="Year-start options · "+TRACKS[source]+": "+fmt(firstYear.start_date)+" in 2027. Current lunar Shabbats remain the same on both.";
+      const sourceText=feedSource==="live"?"Live Shabbat Calendar feed":
+        feedSource==="saved"?"Saved last successful Shabbat Calendar feed (live update unavailable)":
+        "Published calendar snapshot from "+(feedSnapshot?.generated_at_utc?.slice(0,10)||"the last build")+" (live update unavailable)";
+      notice.textContent=sourceText+" · "+TRACKS[source]+": "+fmt(firstYear.start_date)+
+        " in 2027. Planning dates remain subject to the published verification audit.";
       grid.replaceChildren();
       for(const d of DAYS)grid.append(make("span",d,"calendar-weekday"));
       for(const c of calendarCells(year,month)){
@@ -297,10 +348,12 @@
       const event=shabbatAfter(active(),todayIso());
       jump(event?.date||todayIso());
     }).catch(e=>{
-      notice.textContent="Current calendar unavailable. Try again.";
+      notice.textContent="Calendar sources are currently unavailable.";
+      heading.textContent="Calendar unavailable";
+      grid.replaceChildren();
       const retry=make("button","Retry calendar","feature-action");
-      retry.type="button";retry.onclick=()=>render(target,back);
-      detail.replaceChildren(make("p","The lunar calendar could not be loaded.","feature-status"),retry);
+      retry.type="button";retry.onclick=()=>render(target,back,go);
+      detail.replaceChildren(make("p",e.message||"The lunar calendar could not be loaded.","feature-status"),retry);
     });
   }
   window.OustoryCalendar={render,loadLive,rememberedTrack,calendarCells,normalize,lunarFeasts,dailyIndex};
