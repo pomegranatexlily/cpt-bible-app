@@ -83,7 +83,7 @@ try{
   assert.equal((await dayCells.count())%7,0);
   await grid.locator('.calendar-day[data-date="2027-03-09"]').click();
   await page.locator(".calendar-detail-heading").getByText("March 9, 2027").waitFor();
-  await page.getByText("Israelite year 2027 · Month 1 · Day 1").waitFor();
+  await page.locator(".calendar-lunar-context").filter({hasText:"Israelite year 2027 · Month 1 · Day 1"}).waitFor();
   await grid.locator('.calendar-day[data-date="2027-03-16"]').click();
   await page.locator(".calendar-detail-item").getByRole("heading",{name:"Shabbat"}).waitFor();
   await grid.locator('.calendar-day[data-date="2027-03-22"]').click();
@@ -91,13 +91,13 @@ try{
   await page.locator('.calendar-source-tab[data-source="later"]').click();
   assert.equal(await page.locator(".calendar-month-heading").textContent(),"April 2027");
   await grid.locator('.calendar-day[data-date="2027-04-07"]').click();
-  await page.getByText("Israelite year 2027 · Month 1 · Day 1").waitFor();
+  await page.locator(".calendar-lunar-context").filter({hasText:"Israelite year 2027 · Month 1 · Day 1"}).waitFor();
   await grid.locator('.calendar-day[data-date="2027-04-14"]').click();
   await page.locator(".calendar-detail-item").getByRole("heading",{name:"Shabbat"}).waitFor();
   await page.locator('.calendar-source-tab[data-source="earlier"]').click();
   await page.getByRole("button",{name:"Next month"}).click();
   await grid.locator('.calendar-day[data-date="2027-04-07"]').click();
-  await page.getByText("Israelite year 2027 · Month 2 · Day 1").waitFor();
+  await page.locator(".calendar-lunar-context").filter({hasText:"Israelite year 2027 · Month 2 · Day 1"}).waitFor();
   await page.screenshot({path:"out/ui-smoke/calendar-mobile.png",fullPage:false});
   await page.locator('.calendar-source-tab[data-source="xalendaria"]').click();
   assert.equal(await page.locator(".calendar-month-heading").textContent(),"February 2026");
