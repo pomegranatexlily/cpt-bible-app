@@ -32,7 +32,7 @@
     if (cache.has(id)) return cache.get(id);
     if (inflight.has(id)) return inflight.get(id);
     const meta = books.find(item => item.id === id);
-    if (!meta) throw new Error('Book is not in this verified test edition.');
+    if (!meta) throw new Error('Book is unavailable in this reading edition.');
     const promise = (async () => {
       const response = await fetch('data/' + encodeURIComponent(id) + '.json');
       if (!response.ok) throw new Error('Unable to download ' + meta.title + ' (' + response.status + ').');
@@ -43,7 +43,10 @@
       for (let i = 0; i < data.chapters.length; i++) {
         const c = data.chapters[i], expected = meta.chapters[i];
         if (c.number !== expected.number || !Array.isArray(c.verses) || c.verses.length !== expected.verseCount ||
-          !c.verses.every((v,j) => v.number === j+1 && !!verseText(v).trim())) {
+          !c.verses.every((v,j) => Number.isInteger(v.number) &&
+            v.number >= (expected.firstVerse ?? 1) && v.number <= (expected.lastVerse ?? expected.verseCount) &&
+            (j === 0 ? v.number === (expected.firstVerse ?? 1) : v.number > c.verses[j-1].number) &&
+            !!verseText(v).trim())) {
           throw new Error(meta.title + ' ' + expected.number + ' failed verse integrity verification.');
         }
       }
@@ -171,7 +174,7 @@
     result.replaceChildren();
     if (!q) { $('#search-status').textContent = 'Enter a word or phrase.'; return; }
     let total = 0, failure = 0;
-    $('#search-status').textContent = 'Searching verified Genesis–Isaiah books…';
+    $('#search-status').textContent = 'Searching the 80-book reading edition…';
     for (const meta of books) {
       if (token !== searchToken) return;
       let data;
