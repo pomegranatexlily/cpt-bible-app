@@ -147,6 +147,7 @@
     }
   }
   function move(direction) {
+    if (supplementActive) { moveSupplement(direction); return; }
     if (!chapter()) return;
     supplementActive = null;
     let b = bi, c = ci + direction;
