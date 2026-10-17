@@ -27,7 +27,7 @@
   function validNotes(obj){
     if(!obj||typeof obj!=="object"||Array.isArray(obj))return false;
     const entries=Object.entries(obj);
-    return entries.length<=MAX_NOTES&&entries.every(([key,text])=>
+    return entries.length<=MAX_NOTES&&JSON.stringify(obj).length<=600000&&entries.every(([key,text])=>
       validNoteKey(key)&&typeof text==="string"&&text.length<=MAX_LENGTH&&
       text.trim().length>0&&!/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/.test(text));
   }
