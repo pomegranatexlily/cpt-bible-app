@@ -134,7 +134,10 @@
       for(const n of numbers)list.append(row(chapter,n,main.get(n)??null,older[String(n)]??null));
       dialog.append(list);
       dialog.append(el("p","Source revision: "+witness.source_revision+" · original coordinate alignment, no shifted verse numbering.","feature-status"));
-    }catch(e){if(dialog.open)dialog.append(el("p","Comparison unavailable: "+e.message,"feature-status"))}
+    }catch(e){if(dialog.open){
+      dialog.querySelectorAll(".feature-status").forEach(p=>p.remove());
+      dialog.append(el("p","Comparison unavailable: "+e.message,"feature-status"));
+    }}
   }
   async function appendProvenance(target,record){
     if(!sourcePending)sourcePending=fetchJson("data/manifest.json").then(m=>{

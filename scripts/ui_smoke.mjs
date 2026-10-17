@@ -289,6 +289,21 @@ try{
   await page.locator(".calendar-study-home .covenant-study-read").first().click();
   await page.locator("#chapter-title").getByText("Exodus 20").waitFor();
   await page.locator("#verse-8").waitFor();
+  // Regression for iPhone screenshot: Psalms 2 comparison must display
+  // two complete witness columns, not a 404 or a lingering loading message.
+  await page.getByRole("button",{name:"Search translation"}).click();
+  await page.locator("#search-panel[open]").waitFor();
+  await page.locator("#search-input").fill("Psalms 2:1");
+  await page.locator("#search-results button").getByText("Open Psalms 2:1").waitFor();
+  await page.locator("#search-results button").first().click();
+  await page.locator("#chapter-title").getByText("Psalms 2").waitFor();
+  await page.locator("#research-compare-chapter").click();
+  await page.locator("#research-chapter-dialog .research-pair").first().waitFor({timeout:15000});
+  assert.ok(await page.locator("#research-chapter-dialog .research-pair").count()>=10,
+    "Psalms 2 chapter comparison must contain historical verse pairs");
+  assert.ok(!/unavailable|loading both/i.test(await page.locator("#research-chapter-dialog").innerText()),
+    "Psalms 2 witness must not show a 404 or stale loading message");
+  await page.locator("#research-chapter-dialog .research-close").click();
   assert.deepEqual(errors,[],"No uncaught client errors");
   console.log("PASS Release 1 UI: native audio, saved verse, Study/More navigation, fast search, exact verse resume, calendar, all 80 books.");
 }finally{await browser.close()}
