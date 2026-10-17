@@ -13,10 +13,10 @@ try{
  await page.locator("#nav-more").click();
  await page.getByRole("button",{name:"Offline reading & backup"}).click();
  await page.locator("#release4-panel[open]").waitFor();
- await page.waitForFunction(()=>/of 80 books downloaded/.test(document.querySelector("#release4-offline-status")?.textContent||""),{timeout:15000});
+ await page.waitForFunction(()=>/of 80 books downloaded/.test(document.querySelector("#release4-offline-status")?.textContent||""),null,{timeout:15000});
  assert.equal(await page.locator("#release4-title").textContent(),"Offline & saved data");
  await page.locator("#release4-download").click();
- await page.waitForFunction(()=>document.querySelector("#release4-offline-status")?.textContent==="All 80 books are stored for offline reading.",{timeout:120000});
+ await page.waitForFunction(()=>document.querySelector("#release4-offline-status")?.textContent==="All 80 books are stored for offline reading.",null,{timeout:120000});
  const actualCount=await page.evaluate(async()=>{
   const cache=await caches.open("oustory-books-r4");
   return (await cache.keys()).filter(r=>/\/data\/[a-z0-9-]+\.json$/.test(new URL(r.url).pathname)).length;
