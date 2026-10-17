@@ -23,7 +23,7 @@ assert "Luke 7:5" in gentiles[0]["review"] and "Acts 4:27" in gentiles[0]["revie
 assert "never blanket" in gentiles[0]["review"].lower()
 f=[n for n in notes["notes"] if n["label"]=="Nations and Gentiles: determine the referent by context"]
 assert len(f)==1 and f[0]["status"]=="author-ruling"
-assert {"Luke 7:5","Acts 4:27","Matthew 28:19","Romans 11:13"}<=set(f[0]["refs"])
+assert {"Luke 7:5","Acts 4:27","Romans 11:13"}<=set(f[0]["refs"]) and "Matthew 28:19" in f[0]["body"]
 assert len(questions["questions"])==15 and questions["witnesses_independently_verified"] is False
 assert all(q["status"]=="source_review_pending" and not q["independent_witness_citations"] for q in questions["questions"])
 assert {x["kind"] for x in questions["questions"]}>={"witness-variant","translation-interpretation","punctuation-interpretation"}
