@@ -79,3 +79,33 @@
 .calendar-day-lunar{color:var(--covenant-gold);font-weight:650}
 .calendar-lunar-context{font-size:14px;margin:0 0 14px;color:var(--covenant-gold)}
 @media(max-width:520px){.calendar-next{margin-top:9px;padding:12px 13px}.calendar-next-date{font-size:22px}.calendar-day-lunar{font-size:9px}.calendar-day{gap:4px}.calendar-source-tab{font-size:13px}}
+
+/* Release 3: source-coordinate readings linked to the actual lunar dates.
+   Separate from approval of the month start, feast observance, or liturgy. */
+.calendar-study{margin:18px 0 0;padding:16px 0 0;border-top:1px solid var(--line)}
+.covenant-study-heading{font:500 24px/1.25 Georgia,serif;margin:0 0 12px;color:var(--text)}
+.covenant-study-group{padding:12px;border:1px solid var(--line);border-radius:13px;background:var(--sheet);margin:11px 0}
+.covenant-study-group h4,.covenant-study-question h4{margin:0 0 7px;color:var(--text);font:600 17px/1.35 Georgia,serif}
+.covenant-study-note{color:var(--muted);font-size:12px;margin:0 0 10px;line-height:1.55}
+.covenant-study-readings{display:grid;gap:10px}
+.covenant-study-reading{border-top:1px solid var(--line);padding-top:10px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;align-items:center}
+.covenant-study-reading-text{display:grid;gap:1px;flex:1;min-width:130px}
+.covenant-study-reading-text strong{color:var(--text);font-size:13px}
+.covenant-study-reading-text span{color:var(--muted);font-size:12px}
+.covenant-study-actions{display:flex;align-items:center;flex-wrap:wrap;gap:7px}
+.covenant-study-actions button{min-height:34px;border:1px solid var(--line);background:var(--control);border-radius:9px;color:var(--text);font-size:12px;font-weight:650;padding:6px 10px}
+.covenant-study-actions button.covenant-study-read{background:var(--selected);border-color:var(--covenant-gold)}
+.covenant-study-actions button[aria-pressed=true]{border-color:var(--covenant-gold);color:var(--covenant-gold)}
+.covenant-study-question{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
+.calendar-verification{border:1px solid var(--line);border-radius:10px;padding:9px 12px;margin:16px 0 0;background:var(--sheet)}
+.calendar-verification summary{color:var(--covenant-gold);cursor:pointer;font-size:13px;font-weight:700;padding:5px 0}
+.calendar-verification ul{padding-left:20px;margin:8px 0;color:var(--muted);font-size:12px;line-height:1.75}
+.calendar-verification p{font-size:12px;line-height:1.55;color:var(--muted)}
+.calendar-study-home,.calendar-study-next,.calendar-study-discover{margin-top:9px}
+@media(max-width:520px){
+ .covenant-study-group{padding:10px}
+ .covenant-study-reading{align-items:start}
+ .covenant-study-reading-text{min-width:100%}
+ .covenant-study-actions{width:100%}
+ .covenant-study-actions button{flex:1}
+}
