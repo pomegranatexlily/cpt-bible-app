@@ -98,3 +98,18 @@ jobs:
       - name: Publish app
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Verify the actual public calendar endpoint responds with valid dates
+        shell: bash
+        run: |
+          URL="https://pomegranatexlily.github.io/cpt-bible-app/calendar/published.json"
+          for attempt in $(seq 1 12); do
+            if curl --fail --silent --show-error --location --max-time 12 "$URL" -o /tmp/oustory-live-calendar.json && \
+              python3 -c 'import json; d=json.load(open("/tmp/oustory-live-calendar.json")); assert d["schema_version"]==2; assert d["tracks"]["earlier"]["years"][0]["start_date"]=="2027-03-09"; assert d["tracks"]["later"]["years"][0]["start_date"]=="2027-04-07"'; then
+              echo "PASS $URL serves valid Early and Late calendar JSON"
+              exit 0
+            fi
+            echo "Calendar endpoint not ready (attempt $attempt of 12)"
+            sleep 5
+          done
+          echo "FAIL: public Oustory calendar endpoint missing or invalid"
+          exit 1
