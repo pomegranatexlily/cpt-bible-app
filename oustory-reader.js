@@ -289,8 +289,16 @@
   apply();
   if (books.length) {
     const last=read('cpt.reader.position',null);
-    if (!last || !books.some(b => b.id === last.book && b.chapters.some(c => c.number === last.chapter))) render();
-    else go(last.book,last.chapter,Number.isInteger(last.verse) ? last.verse : undefined);
+    const lastIndex=books.findIndex(b => b.id === last?.book &&
+      b.chapters.some(c => c.number === last.chapter));
+    // Initialize the saved chapter behind Home. Do not call go() until
+    // OustoryFeatures.init has mounted its navigation/root (returning
+    // readers previously hit root.hidden on an undefined feature root).
+    if (lastIndex >= 0) {
+      bi=lastIndex;
+      ci=books[bi].chapters.findIndex(c => c.number === last.chapter);
+    }
+    render(lastIndex >= 0 && Number.isInteger(last?.verse) ? last.verse : 1);
   } else showMessage('No verified manuscript index was loaded.', true);
   (async () => {
     try { const fonts = await document.fonts.load('400 16px "Schibsted Grotesk"');
