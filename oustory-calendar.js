@@ -10,7 +10,7 @@
   let archivePromise=null, livePromise=null;
   // Both GitHub Pages projects are published on the same host. For other
   // hostnames, use the canonical cross-site URL (requires standard CORS).
-  const LIVE_URL=location.hostname==="pomegranatexlily.github.io"
+  const LIVE_URL=typeof location!=="undefined"&&location.hostname==="pomegranatexlily.github.io"
     ? location.origin+"/shabbat-calendar/calendar.json"
     : "https://pomegranatexlily.github.io/shabbat-calendar/calendar.json";
   function loadLive(){
