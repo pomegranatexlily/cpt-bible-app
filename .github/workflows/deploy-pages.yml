@@ -27,6 +27,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: main
+      - name: Verify Genesis–Isaiah reader data and JavaScript
+        run: python3 scripts/check_content.py
       - name: Configure Pages
         uses: actions/configure-pages@v5
         with:
@@ -35,10 +37,13 @@ jobs:
         shell: bash
         run: |
           mkdir -p _site
-          cp index.html manifest.webmanifest oustory-branding.css oustory-branding.js _site/
+          cp index.html manifest.webmanifest oustory-branding.css oustory-branding.js cpt-index.js oustory-reader.js _site/
           cp -R assets _site/assets
-          if [ -f cpt-data.js ]; then cp cpt-data.js _site/; fi
-          if [ -d data ]; then cp -R data _site/data; fi
+          cp -R data _site/data
+          test -f _site/data/genesis.json
+          test -f _site/data/isaiah.json
+          test -f _site/oustory-reader.js
+          test "$(find _site/data -maxdepth 1 -name '*.json' | wc -l)" -eq 24
       - name: Upload app
         uses: actions/upload-pages-artifact@v4
         with:

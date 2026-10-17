@@ -1,0 +1,16 @@
+name: Oustory Manuscript QC
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify source manuscript integrity and JavaScript
+        run: python3 scripts/check_content.py
