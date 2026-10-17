@@ -18,7 +18,8 @@ try{
  assert.equal(await more.getAttribute("open"),null,"Advanced tools should be folded by default");
  await page.getByRole("button",{name:"Interlinear",exact:true}).click();
  await page.locator("#workbench-root:not([hidden])").waitFor();
- assert.equal(await page.locator(".bottom-dock").isVisible(),false,"Dedicated study page must not show desktop toolbars");
+ assert.equal(await page.locator(".bottom-dock").isVisible(),true,"Bible footer must stay reachable inside study");
+ assert.equal(await page.locator(".chapter-navigation").isVisible(),false,"Chapter arrows stay hidden inside study");
  await page.waitForFunction(()=>/Verified Hebrew\/Greek word alignment has not been published/.test(document.querySelector("#workbench-body")?.textContent||""),null,{timeout:10000});
  assert.equal(await page.locator(".workbench-original-word").count(),0,
    "No original-language words or Strong's numbers may be invented");
