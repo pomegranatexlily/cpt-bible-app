@@ -96,6 +96,7 @@ try{
   await page.getByRole("heading",{name:"Covenant Calendar"}).waitFor();
   const grid=page.locator(".calendar-grid");
   await page.locator('.calendar-source-tab[data-source="earlier"]').waitFor();
+  await page.locator(".calendar-month-heading").getByText("October 2026").waitFor();
   assert.equal(await page.locator(".calendar-month-heading").textContent(),"October 2026");
   assert.equal(await page.locator(".calendar-source-tab[aria-pressed=true]").textContent(),"Early Start");
   assert.equal(await page.locator(".calendar-source-tab").count(),2,"Only the two current cycle choices should be visible");
