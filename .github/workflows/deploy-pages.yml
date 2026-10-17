@@ -37,11 +37,13 @@ jobs:
         shell: bash
         run: |
           mkdir -p _site
-          cp index.html manifest.webmanifest oustory-branding.css oustory-branding.js cpt-index.js _site/
+          cp index.html manifest.webmanifest oustory-branding.css oustory-branding.js cpt-index.js oustory-reader.js _site/
           cp -R assets _site/assets
           cp -R data _site/data
           test -f _site/data/genesis.json
           test -f _site/data/isaiah.json
+          test -f _site/oustory-reader.js
+          test "$(find _site/data -maxdepth 1 -name '*.json' | wc -l)" -eq 24
       - name: Upload app
         uses: actions/upload-pages-artifact@v4
         with:
