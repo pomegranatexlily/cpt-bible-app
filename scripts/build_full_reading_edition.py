@@ -139,9 +139,9 @@ def old_index():
     m=re.search(r"window\.CPT_BOOKS=(\[.*?\]);",raw,re.S)
     if not m:raise ValueError("Reader's original 23-book index missing")
     data=json.loads(m.group(1))
-    if len(data)!=23 or data[0]["title"]!="Genesis" or data[-1]["title"]!="Isaiah":
+    if len(data) not in (23,80) or data[0]["title"]!="Genesis" or data[22]["title"]!="Isaiah":
         raise ValueError("Unexpected original CPT edition index")
-    return data
+    return data[:23]
 
 def build():
     catalog=json.loads(CATALOG.read_text(encoding="utf8"))
