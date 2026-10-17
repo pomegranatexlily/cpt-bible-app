@@ -139,6 +139,26 @@
       dialog.append(el("p","Comparison unavailable: "+e.message,"feature-status"));
     }}
   }
+  async function renderChapter(id,chapter,target){
+    target.replaceChildren(el("p","Loading verified Scripture and 1611 comparison…","feature-status"));
+    try{
+      const [book,witness]=await Promise.all([api.loadBook(id),loadWitness(id)]);
+      if(!target.isConnected)return;
+      target.replaceChildren(el("p","1611 KJV is a historical printed English witness, not a Hebrew or Greek manuscript. Highlighted wording can reflect spelling alone.","research-source-warning"));
+      if(witness.status!=="available"){
+        target.append(el("p","The pinned 1611 repository does not provide aligned verse positions for this book.","feature-status"));
+        return;
+      }
+      const c=book.chapters.find(item=>item.number===Number(chapter));
+      if(!c)throw Error("Chapter unavailable in the Oustory source");
+      const original=new Map(c.verses.map(v=>[v.number,textOf(v)]));
+      const witnessVerses=witness.positions[String(chapter)]||{};
+      const nums=[...new Set([...original.keys(),...Object.keys(witnessVerses).map(Number)])].sort((a,b)=>a-b);
+      const list=el("div",undefined,"research-chapter-list");
+      for(const n of nums)list.append(row(chapter,n,original.get(n)??null,witnessVerses[String(n)]??null));
+      target.append(list,el("p","Pinned source revision: "+witness.source_revision+". Original verse positions are preserved.","feature-status"));
+    }catch(e){if(target.isConnected)target.replaceChildren(el("p","Comparison unavailable: "+e.message,"feature-status"))}
+  }
   async function appendProvenance(target,record){
     if(!sourcePending)sourcePending=fetchJson("data/manifest.json").then(m=>{
       if(!Array.isArray(m.new_book_provenance)||!m.source_pdf_sha256)throw Error("Invalid manuscript record");
@@ -236,15 +256,15 @@
     api=options;
     const title=document.getElementById("chapter-title");
     if(title&&!document.getElementById("research-compare-chapter")){
-      const b=el("button","Compare 1611 KJV","research-compare-button");
+      const b=el("button","Compare versions","research-compare-button");
       b.id="research-compare-chapter";b.type="button";
       b.onclick=()=>{
         const m=/^(.*)\s+(\d+)$/.exec(title.textContent||"");
         const book=m&&api.books.find(x=>x.title===m[1]);
-        if(book)void compareChapter(book.id,Number(m[2]));
+        if(book)window.OustoryWorkbench?.openChapter(book.id,Number(m[2]));
       };
       title.after(b);
     }
   }
-  window.OustoryResearch={init,compareVerse,compareChapter,fillStudy,appendEvidence,appendProvenance};
+  window.OustoryResearch={init,compareVerse,compareChapter,renderChapter,fillStudy,appendEvidence,appendProvenance};
 })();
