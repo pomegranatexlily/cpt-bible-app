@@ -64,7 +64,7 @@ jobs:
           test -f _site/oustory-calendar.css
           test -f _site/calendar/archive.json
           test -f _site/data/editorial-notes.json
-          test "$(find _site/data -maxdepth 1 -name '*.json' | wc -l)" -eq 82
+          test "$(find _site/data -maxdepth 1 -name '*.json' | wc -l)" -eq 84
       - name: Generate version-matched full-text index
         run: |
           python3 scripts/build_search_index.py --output _site/data/search-index.json
