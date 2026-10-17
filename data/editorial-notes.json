@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "source": "CPT–APE founder October 16 rulings and 38-page Doctrinal-Drift Editorial Notes draft",
+  "status": "partial apparatus; not all draft entries sealed",
+  "source_verification": "notes paraphrase editorial positions; separate from actual verse witness",
+  "notes": [
+    {
+      "refs": [
+        "Matthew 28:19"
+      ],
+      "label": "The name in the commission",
+      "status": "author-ruling",
+      "body": "Founder editorial direction: invocation is in the name of Yahawah alone, and this commission is not to be treated as a water-baptism instruction. The received manuscript wording and this author-directed adaptation must remain distinguished. The currently displayed source verse may not yet implement this ruling."
+    },
+    {
+      "refs": [
+        "John 1:1"
+      ],
+      "label": "The Word and Yahawah",
+      "status": "author-ruling",
+      "body": "Yahawashi is distinct from Yahawah and is a created Son who served among the agents of Yahawah's heavenly council. This is the founder's interpretive ruling, not a claim that the surviving Greek manuscripts literally use that full explanation. A final main-text rendering remains an editorial task."
+    },
+    {
+      "refs": [
+        "John 1:18"
+      ],
+      "label": "Son of God",
+      "status": "author-ruling",
+      "body": "The founder directs the Son of God reading, rather than 'only begotten God.' Manuscript witnesses differ at this passage; preserve their distinctions and document the choice in the final apparatus."
+    },
+    {
+      "refs": [
+        "John 8:58"
+      ],
+      "label": "Before Abraham",
+      "status": "author-ruling",
+      "body": "The founder understands Yahawashi as existing spiritually before Abraham, not bodily. Avoid an English rendering that turns this into identification with Yahawah in Exodus 3:14. The precise previously accepted short wording still requires reconciliation against the author transcript."
+    },
+    {
+      "refs": [
+        "John 10:30"
+      ],
+      "label": "Oneness in purpose",
+      "status": "author-ruling",
+      "body": "The founder reads unity as shared purpose and action, not identity of being or a theory of shared divine substance."
+    },
+    {
+      "refs": [
+        "John 20:28"
+      ],
+      "label": "Thomas and the appointed king",
+      "status": "author-ruling",
+      "body": "The founder directs a royal reading of Thomas's address to Yahawashi, distinct from identifying Yahawashi as Yahawah. Any change to the main text requires transparent editorial identification."
+    },
+    {
+      "refs": [
+        "Colossians 2:9"
+      ],
+      "label": "Fullness of authority",
+      "status": "author-ruling",
+      "body": "The founder's ruling emphasizes fullness of authority and divine appointment, not a three-person substance or co-identical beings. This is a reading note, not invented manuscript wording."
+    },
+    {
+      "refs": [
+        "Hebrews 1:8"
+      ],
+      "label": "Royal address",
+      "status": "author-ruling",
+      "body": "The founder favors the royal address 'Your throne, O Lord,' with 'Lord' as a kingly title. This is an editorial adaptation, not a claim that the surviving manuscript reads exactly this in English."
+    },
+    {
+      "refs": [
+        "1 John 5:20"
+      ],
+      "label": "The true God",
+      "status": "author-ruling",
+      "body": "The founder identifies the true God as Yahawah and distinguishes him from Yahawashi."
+    },
+    {
+      "refs": [
+        "Isaiah 7:14"
+      ],
+      "label": "Young woman",
+      "status": "author-ruling",
+      "body": "The founder chooses 'young woman' for Hebrew almah. The Septuagint's Greek term and later interpretations must be distinguished in the textual notes. Do not conflate the different source traditions."
+    },
+    {
+      "refs": [
+        "Isaiah 53:1",
+        "Isaiah 53:3",
+        "Isaiah 53:4",
+        "Isaiah 53:5",
+        "Isaiah 53:6",
+        "Isaiah 53:10"
+      ],
+      "label": "Israel as the suffering servant",
+      "status": "author-ruling",
+      "body": "The founder identifies national Israel as the suffering servant, with Isaiah 41:8, 44:1 and 49:3 providing the covenant context. Retain the singular literary pronouns in the source and explain the collective interpretation in notes; this interpretation does not independently establish the identity of the pierced figure in Zechariah."
+    },
+    {
+      "refs": [
+        "Psalm 110:1"
+      ],
+      "label": "Yahawah and my lord",
+      "status": "author-ruling",
+      "body": "Distinguish Yahawah from the royal lord or coming anointed intercessor. The speaker's authorship may not be established by the traditional psalm heading alone."
+    },
+    {
+      "refs": [
+        "Daniel 9:24",
+        "Daniel 9:25",
+        "Daniel 9:26",
+        "Daniel 9:27"
+      ],
+      "label": "The seventy weeks",
+      "status": "provisional",
+      "body": "Founder interpretation: this prophecy concerns Israel and Jerusalem, with Second Temple and 70 CE historical context and a possible recurring pattern across later captivities and restorations. The precise relationship to a final week is unresolved; the founder does not believe we are presently in that final week."
+    },
+    {
+      "refs": [
+        "Zechariah 12:10"
+      ],
+      "label": "The pierced one and national mourning",
+      "status": "open-question",
+      "body": "The founder considers a messianic figure possible, but does not identify the pierced one definitively with Isaiah 53's servant or Zechariah 13's struck shepherd. Preserve the Hebrew 'me' / 'him' shift as evidence and do not force an identity through translation."
+    },
+    {
+      "refs": [
+        "Psalm 22:16"
+      ],
+      "label": "Like a lion / pierced",
+      "status": "open-question",
+      "body": "This textual reading is not settled. Compare the available Hebrew manuscripts and ancient versions before choosing the final wording; do not fabricate agreement between witnesses."
+    },
+    {
+      "refs": [
+        "Matthew 16:18"
+      ],
+      "label": "Assembly, not institution",
+      "status": "draft-note",
+      "body": "The October 16 editorial draft flags ekklesia being turned into an institutional 'church.' The proposed terminology is 'assembly.' This note is draft editorial guidance and does not by itself authorize rewriting the main-text witness."
+    },
+    {
+      "refs": [
+        "Acts 12:4"
+      ],
+      "label": "Passover terminology",
+      "status": "draft-note",
+      "body": "The editorial draft distinguishes Greek pascha ('Passover') from the English term 'Easter.' Treat an English festival substitution as a translation question and preserve the underlying witness evidence."
+    }
+  ],
+  "watchlist_status": "25-rule watchlist is source material, not yet a fully approved machine rule set",
+  "verses_rewritten": false
+}
