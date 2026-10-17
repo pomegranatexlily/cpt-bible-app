@@ -1,0 +1,11 @@
+/* Release 5: image sharing previews remain responsive without network assets. */
+#oustory-share-card-dialog{width:min(100%,600px);max-height:88dvh}
+#oustory-share-card-dialog .sheet-header{align-items:flex-start}
+#oustory-share-card-dialog h2{font-family:Georgia,serif;font-weight:500;font-size:21px;line-height:1.25;margin:0}
+#oustory-share-card-dialog .share-card-close{min-height:44px;flex:none}
+#oustory-share-card-dialog .share-card-preview{display:flex;justify-content:center;min-height:120px}
+#oustory-share-card-dialog .share-card-preview img{display:block;width:100%;height:auto;max-height:47dvh;object-fit:contain;object-position:center;box-shadow:0 3px 20px rgb(0 0 0 / 13%);border:1px solid var(--line);border-radius:8px}
+#oustory-share-card-dialog #share-card-status{line-height:1.65}
+#oustory-share-card-dialog .feature-actions{display:flex;gap:10px;flex-wrap:wrap}
+#oustory-share-card-dialog .feature-actions button{min-height:44px;flex:1}
+@media (forced-colors:active){#oustory-share-card-dialog .share-card-preview img{border:2px solid CanvasText}}
