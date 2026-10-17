@@ -15,6 +15,7 @@ from collections import Counter
 from pathlib import Path
 
 USFM_URL="https://ebible.org/Scriptures/eng-web_usfm.zip"
+WEB_ARCHIVE_SHA256="614f08ed7c1bf86e55d80638d8b1f3b420acf031342250a420c9d1feed0c5273"
 # These align by ordinary chapter:verse coordinates with historical source.
 CODES={
     "1 Esdras":"1ES",
@@ -96,6 +97,9 @@ def load_archive(path:Path):
     raw=path.read_bytes()
     if len(raw)<100_000 or len(raw)>25_000_000:
         raise ValueError("Unexpected WEB modern source archive size")
+    actual_sha=hashlib.sha256(raw).hexdigest()
+    if actual_sha!=WEB_ARCHIVE_SHA256:
+        raise ValueError(f"Modern public-domain witness changed unexpectedly: {actual_sha}")
     z=zipfile.ZipFile(io.BytesIO(raw))
     modern={}
     provenance={}
