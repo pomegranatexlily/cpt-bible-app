@@ -25,7 +25,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Prepare pinned gold icon assets
+      - name: Prepare pinned Oustory poster icon assets
         run: |
           python -m pip install Pillow==11.3.0
           python scripts/build_covenant_icons.py
@@ -77,9 +77,9 @@ jobs:
           test -f _site/data/the-rest-of-esther.json
           test -f _site/data/2-maccabees.json
           test -f _site/data/revelation.json
-          test -f _site/assets/covenant-bible-gold-180.png
-          test -f _site/assets/covenant-bible-gold-192.png
-          test -f _site/assets/covenant-bible-gold-512.png
+          test -f _site/assets/oustory-poster-icon-180.png
+          test -f _site/assets/oustory-poster-icon-192.png
+          test -f _site/assets/oustory-poster-icon-512.png
           test -f _site/sw.js
           test -f _site/oustory-release4.js
           test -f _site/oustory-release4.css
