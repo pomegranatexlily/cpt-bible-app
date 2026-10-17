@@ -72,6 +72,7 @@
     });
   }
   function showBible(){
+    window.OustoryWorkbench?.dismiss();
     document.body.classList.remove("feature-mode");
     root.hidden=true;
     const ref=byId("reference"),chapter=byId("chapter-title");
@@ -80,6 +81,7 @@
   }
   function show(view){
     if(view==="bible"){showBible();byId("reader").focus();return}
+    window.OustoryWorkbench?.dismiss();
     window.OustoryAudio?.stop(); // Never leave unseen audio playing behind another app screen.
     if(view==="more"){
       const menu=byId("oustory-menu");
