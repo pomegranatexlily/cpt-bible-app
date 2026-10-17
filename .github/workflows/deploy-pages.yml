@@ -35,7 +35,14 @@ jobs:
         run: |
           node --check sw.js
           node --check oustory-release4.js
+          node --check oustory-calendar.js
           node --check scripts/release4_ui.mjs
+      - name: Stage the canonical Shabbat Calendar as offline fallback
+        shell: bash
+        run: |
+          git clone --quiet --depth 1 https://github.com/pomegranatexlily/shabbat-calendar.git /tmp/oustory-shabbat-calendar
+          (cd /tmp/oustory-shabbat-calendar && python3 -m unittest -q test_intercalation.py test_dual_tracks.py && python3 generate.py)
+          python3 scripts/stage_calendar_feed.py /tmp/oustory-shabbat-calendar/public/calendar.json calendar/published.json "$(git -C /tmp/oustory-shabbat-calendar rev-parse HEAD)"
       - name: Configure Pages
         uses: actions/configure-pages@v5
         with:
@@ -72,6 +79,7 @@ jobs:
           test -f _site/oustory-calendar-study.js
           test -f _site/data/covenant-study.json
           test -f _site/oustory-calendar.css
+          test -s _site/calendar/published.json
           test -f _site/calendar/archive.json
           test -f _site/data/editorial-notes.json
           test "$(find _site/data -maxdepth 1 -name '*.json' | wc -l)" -eq 85

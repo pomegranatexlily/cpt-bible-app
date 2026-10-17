@@ -1,6 +1,6 @@
 /* Oustory Release 4: first-party offline reading. No Scripture transformations. */
 "use strict";
-const SHELL="oustory-shell-r4-20261017-v1";
+const SHELL="oustory-shell-r4-calendar-fallback-20261017-v2";
 const BOOKS="oustory-books-r4";
 const RUNTIME="oustory-runtime-r4";
 const APP=new URL(self.registration.scope);
@@ -15,7 +15,7 @@ const CORE=[
  "./assets/covenant-bible-gold-180.png","./data/genesis.json",
  "./data/editorial-notes.json","./data/covenant-study.json",
  "./data/terminology-review.json","./data/witness-questions.json",
- "./calendar/archive.json"
+ "./calendar/archive.json","./calendar/published.json"
 ].map(path=>new URL(path,APP).href);
 let activeDownload=null;
 self.addEventListener("install",event=>{
