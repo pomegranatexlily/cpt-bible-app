@@ -5,7 +5,8 @@
  const KEYS=[
   "cpt.reader.settings","cpt.reader.saved","cpt.reader.position",
   "oustory.highlights","oustory.plan.progress","oustory.calendar.study.v1",
-  "oustory.calendar.track","oustory.audio.rate"
+  "oustory.calendar.track","oustory.audio.rate",
+  "oustory.personal-notes.v1"
  ];
  const books=Array.isArray(window.CPT_BOOKS)?window.CPT_BOOKS:[];
  const findBook=id=>books.find(b=>b.id===id);
@@ -36,6 +37,13 @@
   if(key==="oustory.calendar.study.v1")return isRecord(data)&&Object.keys(data).length<=10000&&
    Object.entries(data).every(([k,v])=>k.length<180&&
     /^(earlier|later)\|[0-9]{4}-[0-9]{2}-[0-9]{2}\|[^|]+\|[0-9]+:[0-9]+$/.test(k)&&v===true);
+  if(key==="oustory.personal-notes.v1")return isRecord(data)&&value.length<=600000&&
+    Object.keys(data).length<=2000&&Object.entries(data).every(([ref,entry])=>{
+     const m=/^([a-z0-9-]+)\|([1-9][0-9]*)\|([1-9][0-9]*)$/.exec(ref);
+     if(!m||typeof entry!=="string"||!entry.trim()||entry.length>6000||
+        /[\u0000-\u0008\u000b\u000c\u000e-\u001f]/.test(entry))return false;
+     return validPlace({book:m[1],chapter:Number(m[2]),verse:Number(m[3])});
+    });
   if(key==="oustory.audio.rate")return Number.isFinite(data)&&data>=0.5&&data<=2;
   return false;
  }
@@ -72,7 +80,7 @@
   dialog.append(buttons);
   const storage=el("p","", "sheet-copy");storage.id="release4-storage";dialog.append(storage);
   dialog.append(el("h3","Saved study backup"));
-  dialog.append(el("p","Export your bookmarks, exact reading position, highlights, study progress, calendar track and reading/audio preferences as a JSON file. The export contains no Bible text. Store the file somewhere you control.","sheet-copy"));
+  dialog.append(el("p","Export your bookmarks, personal verse notes, exact reading position, highlights, study progress, calendar track and reading/audio preferences as a JSON file. The export contains no Bible text. Store the file somewhere you control.","sheet-copy"));
   const backupActions=el("div",undefined,"release4-actions");
   row(backupActions,"Export saved data",exportSaved,"release4-export");
   row(backupActions,"Import backup file",()=>qs("release4-file").click(),"release4-import");
