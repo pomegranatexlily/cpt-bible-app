@@ -17,6 +17,9 @@ import re
 from datetime import datetime, timezone
 
 ROOT=Path(__file__).resolve().parents[1]
+import sys
+sys.path.insert(0,str(ROOT/"engine"))
+from modern_usfm import load_archive
 CATALOG=ROOT/"canon/books.json"
 LEDGERS=ROOT/"out"
 DATA=ROOT/"data"
@@ -164,6 +167,9 @@ def build():
     total_v=18947
     missing=[]
     modernized=0
+    modern_hits=0
+    traditional_fallbacks=0
+    modern,modern_sources,modern_zip_sha=load_archive(LEDGERS/"modern-web-usfm.zip")
     for info in books[23:]:
         title=info["title"]
         historical=not info.get("source_key")
@@ -178,7 +184,8 @@ def build():
         tracked=set(doc.get("documented_source_empty_positions",[])+doc.get("known_source_omissions",[]))
         if tracked!=wanted:raise ValueError(f"{title} witness-omission ledger changed: {tracked} != {wanted}")
         result={"id":slug(title),"title":title,"sourceStatus":"PROVISIONAL_READING_EDIT",
-                "sourceType":"1611_orthographic_modernization" if historical else "WEB_house_name_adaptation",
+                "sourceType":("WEB_modern_public_domain_USFM_with_historical_fallback" if title in modern else
+                              "1611_orthographic_modernization" if historical else "WEB_house_name_adaptation"),
                 "chapters":[]}
         for ch,entries in sorted(doc["chapters"].items(),key=lambda x:int(x[0])):
             chap={"number":int(ch),"verses":[]}
@@ -193,8 +200,14 @@ def build():
                     continue
                 text=entries[str(n)]
                 if historical:
-                    text,hist_counts=historical_modernize(text)
-                    changed_counts.update(hist_counts)
+                    modern_text=modern.get(title,{}).get(ch,{}).get(str(n))
+                    if modern_text:
+                        text=modern_text
+                        modern_hits+=1
+                    else:
+                        text,hist_counts=historical_modernize(text)
+                        changed_counts.update(hist_counts)
+                        traditional_fallbacks+=1
                     modernized+=1
                 text, namecounts=names(text,historical)
                 changed_counts.update({f"house:{k}":v for k,v in namecounts.items()})
@@ -222,11 +235,14 @@ def build():
                                "source_sha256":doc.get("source_sha256"),
                                "source_url":doc["source_url"],
                                "source_provenance":doc.get("source_provenance"),
+                               "modern_secondary_witness":modern_sources.get(title),
                                "chapters":len(chaptermeta),
                                "verses":allbooks[-1]["verseCount"],"author_approved":False})
     if len(allbooks)!=80 or len(bookprovenance)!=57 or total_ch!=1362 or total_v!=36801:
         raise ValueError(f"Unexpected 80-book counts: {len(allbooks)}, {total_ch}, {total_v}")
     if len(missing)!=6:raise ValueError(f"Expected 6 documented omitted verse positions; found {missing}")
+    if modern_hits<3500 or modern_hits+traditional_fallbacks!=5703:
+        raise ValueError(f"Insufficient modern additional-book coverage: modern={modern_hits}, fallback={traditional_fallbacks}")
 
     (ROOT/"cpt-index.js").write_text(
        "// Oustory CPT–APE 80-book editable reading edition; Genesis–Isaiah verified master; other 57 books provisional source adaptations.\n"
@@ -236,8 +252,11 @@ def build():
        "source_pdf_sha256":CURRENT_SOURCE_SHA,"scope":"80-title working canonical sequence",
        "books":80,"chapters":total_ch,"verses":total_v,
        "verified_seed_books":23,"candidate_source_books":57,"historic_additional_books":14,
-       "historical_verses_orthographically_modernized":modernized,
-       "historical_modernization_status":"PROVISIONAL_NOT_FINAL_TRANSLATION",
+       "historical_verses_with_readability_adaptation":modernized,
+       "historical_verses_using_modern_WEB_witness":modern_hits,
+       "historical_1611_fallback_verses":traditional_fallbacks,
+       "web_modern_archive_sha256":modern_zip_sha,
+       "historical_modernization_status":"PROVISIONAL_MODERN_WITNESS_SELECTION_NOT_FINAL_TRANSLATION",
        "colors":"PRESERVE_SEED_ONLY_REVIEW_PENDING_NEW_BOOKS_BLACK",
        "missing_source_positions":missing,"files_sha256":filesha,
        "historical_word_replacements":dict(changed_counts.most_common()),
@@ -245,7 +264,7 @@ def build():
        "no_authorial_approval_claimed":True,
        "generated_utc":datetime.now(timezone.utc).isoformat()}
     (DATA/"manifest.json").write_text(json.dumps(release,indent=2,ensure_ascii=False)+"\n",encoding="utf8")
-    print(f"FULL READING EDITION: {len(allbooks)} books {total_ch} chapters {total_v} source verses; {modernized} historical verses adapted; {len(missing)} honest source omissions",flush=True)
+    print(f"FULL READING EDITION: {len(allbooks)} books {total_ch} chapters {total_v} source verses; {modern_hits} modern WEB verses; {traditional_fallbacks} traditional 1611 fallback verses; {len(missing)} honest source omissions",flush=True)
     return release
 
 if __name__=="__main__":build()
