@@ -12,6 +12,8 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
+      - name: Verify committed calendar snapshot and publication source
+        run: python3 scripts/test_published_calendar.py
       - name: Verify source manuscript integrity and JavaScript
         run: python3 scripts/check_content.py
       - name: Check Release 1 search index and source alignment
