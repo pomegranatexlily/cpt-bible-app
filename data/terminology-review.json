@@ -7,7 +7,7 @@
   "count_note": "The draft refers to a 25-rule watchlist, but the printed list includes 27 term groups; no two are silently discarded.",
   "auto_replace": false,
   "requires_passage_context": true,
-  "founder_correction": "2026-10-17: Gentiles/ethnē = nations/peoples as a lexical category. Israel itself may be called a nation. Sometimes the word refers specifically to non-Israelites. Decide who is being addressed or described from each passage; never presume outsider status from English Gentiles alone.",
+  "founder_correction": "2026-10-17: Gentiles/ethnos = nations or peoples lexically. The October 16 draft itself recognizes Israel can be among nations. Explicit founder clarification: not every occurrence called Gentiles denotes non-Israelites; other passages plainly contrast nations with Israel. Use the lexical starting sense with contextual referent analysis and no unreviewed mass text substitution.",
   "terms": [
     {
       "id": "T01",
@@ -43,8 +43,8 @@
       "id": "T04",
       "term": "Gentiles",
       "source_term": "ethnos / ethnē",
-      "proposal": "nation(s) / people(s) in context",
-      "review": "FOUNDER CORRECTION: ethnos denotes nation/people, not automatically a non-Israelite person. Luke 7:5 calls Israel a nation; Acts 4:27 contrasts nations with Israel. At some loci non-Israelite nations are indeed meant. Determine referent locally and record evidence; never blanket-replace.",
+      "proposal": "nation(s) / people(s), honoring singular/plural grammar and immediate context",
+      "review": "FOUNDER CLARIFICATION: Greek ethnos denotes nation/people; ethnē denotes nations/peoples. Israel itself can be called a nation (Luke 7:5). Acts 4:27 contrasts nations with the people of Israel, so non-Israelite groups are meant there. Use nations/peoples as the lexical starting point, not as proof of outsider identity. Determine the actual referent for each verse by its context; never blanket-classify every Gentile as non-Israelite, and never perform an unreviewed global text replacement.",
       "pdf_page": 36,
       "status": "founder_contextual_correction",
       "global_replace_allowed": false
