@@ -99,6 +99,7 @@
     window.OustoryAudio?.loading();
     updateControls();
     showMessage('Loading ' + book().title + ' ' + selectedChapter + '…');
+    $('#scripture').setAttribute('aria-busy','true');
     $('#save-place').disabled = true;
     try {
       const data = await loadBook(selectedId);
@@ -130,6 +131,7 @@
       window.OustoryFeatures?.refreshNotes();
       $('#save-place').disabled = false;
       $('#reader').scrollTop = 0;
+      $('#scripture').setAttribute('aria-busy','false');
       // Carry a specific resume verse across restarts; never rewrite the
       // source verse numbering or invent an omitted source position.
       const actualVerse = Number.isInteger(Number(targetVerse)) &&
@@ -138,6 +140,7 @@
     } catch (error) {
       if (token !== renderToken) return;
       showMessage(error.message || 'Unable to read this chapter.', true);
+      $('#scripture').setAttribute('aria-busy','false');
     }
   }
   function move(direction) {

@@ -42,3 +42,13 @@ A new `data/covenant-study.json` curates **Scripture references** (never substit
 Draft feast dates still display `unapproved_draft`. **Shavuot has no calculated day** pending a founder-approved count; its supporting passages are offered in an undated research section. The thirteenth-month seasonal model is not a Jubilee, and no makeup feast is automatically doubled because two year-start traditions exist.
 
 `scripts/test_release3.py` validates each linked Scripture reference against the actual 80-book source JSON, including non-contiguous verse numbering. Mobile tests check October 19, 2026 (supplied Month Day 8 Shabbat), the three associated Day 8 readings, track-separated completion marks, working verse navigation, and the audit disclosure. Release 3 changes no CPT–APE manuscript or AI implementation.
+
+## Release 4 — Offline reading and publication preparation (October 17, 2026)
+
+**More → Offline reading & backup** provides an optional one-time download of the 80-book working text for reading without a network connection. A first-party service worker caches the app's interface and Genesis; other source books are cached as opened or downloaded. Progress and cancellation are shown in the app. The **Remove downloaded books** control leaves saved study data untouched; offline cache is local to the device and subject to browser storage eviction.
+
+**Export saved data** creates an Oustory JSON v1 file containing the reader's saved places/verse position, highlights, reading-plan and Sabbath study completion, selected calendar track, and reading/audio settings. **Import backup file** validates the format and Scripture references, requests explicit confirmation before replacing those fields, then reloads to refresh every saved-data view. Neither backup nor offline downloads transmit saved personal study data to the server. There is no login, cloud sync, or automatic multi-device backup.
+
+Accessibility refinements include clearer chapter-change announcements, loading states, keyboard focus, higher contrast, reduced-motion handling, and live download/restore feedback. The CI browser test exercises a full 80-book download, airplane-mode-equivalent browser reload and chapter reading, backup round-trip, and malformed import rejection. See [Release 4 publication checklist](docs/RELEASE4_OFFLINE_PUBLICATION_2026-10-17.md).
+
+**Publication status:** web/PWA distribution is prepared and testable, but no native app-store submission or founder approval of the final CPT–APE manuscript is implied. Provisional source witness status remains explicitly unchanged. Live Shabbat calendar data and unvisited comparison/search files may still need a network connection. POM AI remains outside the Release 4 scope.

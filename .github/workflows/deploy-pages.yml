@@ -31,6 +31,11 @@ jobs:
           python scripts/build_covenant_icons.py
       - name: Verify complete 80-book reader data and JavaScript
         run: python3 scripts/check_content.py
+      - name: Validate Release 4 JavaScript syntax
+        run: |
+          node --check sw.js
+          node --check oustory-release4.js
+          node --check scripts/release4_ui.mjs
       - name: Configure Pages
         uses: actions/configure-pages@v5
         with:
@@ -39,7 +44,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p _site
-          cp index.html manifest.webmanifest oustory-branding.css oustory-branding.js oustory-features.css oustory-features.js oustory-calendar.css oustory-calendar.js oustory-calendar-study.js oustory-audio.js oustory-search.js oustory-research.js oustory-research.css cpt-index.js oustory-reader.js _site/
+          cp index.html manifest.webmanifest oustory-branding.css oustory-branding.js oustory-features.css oustory-features.js oustory-calendar.css oustory-calendar.js oustory-calendar-study.js oustory-audio.js oustory-search.js oustory-research.js oustory-research.css cpt-index.js oustory-reader.js oustory-release4.js oustory-release4.css sw.js _site/
           cp -R assets _site/assets
           cp -R data _site/data
           cp -R calendar _site/calendar
@@ -51,6 +56,9 @@ jobs:
           test -f _site/assets/covenant-bible-gold-180.png
           test -f _site/assets/covenant-bible-gold-192.png
           test -f _site/assets/covenant-bible-gold-512.png
+          test -f _site/sw.js
+          test -f _site/oustory-release4.js
+          test -f _site/oustory-release4.css
           test -f _site/oustory-reader.js
           test -f _site/oustory-search.js
           test -f _site/oustory-research.js

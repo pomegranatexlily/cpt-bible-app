@@ -1,0 +1,15 @@
+/* Release 4: accessible offline and backup controls. */
+#release4-panel{width:min(100%,620px)}
+#release4-panel h3{margin:24px 0 9px;font-size:18px}
+.release4-actions{display:flex;flex-wrap:wrap;gap:9px;margin:13px 0 18px}
+.release4-action{min-height:44px;border:1px solid var(--line);background:var(--control);color:var(--text);border-radius:12px;padding:10px 14px;font-size:14px;line-height:1.4;text-align:center}
+.release4-action:hover:not(:disabled){background:var(--hover)}
+.release4-action:focus-visible,#release4-panel .icon-button:focus-visible{outline:3px solid var(--covenant-gold);outline-offset:3px}
+.release4-status{font-size:14px;line-height:1.6;color:var(--text);margin:12px 0}
+#release4-file[hidden]{display:none}
+#release4-settings-link{margin-top:15px;width:100%}
+#release4-cancel{border-color:var(--covenant-gold)}
+@media(max-width:390px){.release4-actions{display:grid;grid-template-columns:1fr}.release4-action{width:100%}}
+@media(forced-colors:active){.release4-action{border:2px solid ButtonText}.verse-entry.is-highlighted{outline:2px solid Highlight}}
+@media(prefers-contrast:more){.release4-action{border-width:2px}.verse-entry:focus-visible{outline-width:3px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
