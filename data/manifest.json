@@ -9,8 +9,11 @@
   "verified_seed_books": 23,
   "candidate_source_books": 57,
   "historic_additional_books": 14,
-  "historical_verses_orthographically_modernized": 5703,
-  "historical_modernization_status": "PROVISIONAL_NOT_FINAL_TRANSLATION",
+  "historical_verses_with_readability_adaptation": 5703,
+  "historical_verses_using_modern_WEB_witness": 5390,
+  "historical_1611_fallback_verses": 313,
+  "web_modern_archive_sha256": "614f08ed7c1bf86e55d80638d8b1f3b420acf031342250a420c9d1feed0c5273",
+  "historical_modernization_status": "PROVISIONAL_MODERN_WITNESS_SELECTION_NOT_FINAL_TRANSLATION",
   "colors": "PRESERVE_SEED_ONLY_REVIEW_PENDING_NEW_BOOKS_BLACK",
   "missing_source_positions": [
     {
@@ -84,20 +87,20 @@
     "haggai": "a09ab8b703e425bf922ebcd2f0ea02dac1515155f61814df5ad5c871355e557c",
     "zechariah": "713769c97c3d13779a6d15014f8f1d518f8ab413768b5d4ca31557cf980f569f",
     "malachi": "aeacb66f5495e572a494f0823abcec926b78457eb68536c40c96aed8ca8b4a45",
-    "1-esdras": "9a3bab5b8f164f3f4590a1e6e07d3c8222d639362042c9d6643d995167b8fd2e",
-    "2-esdras": "1ac054e162c4cb90aac61ad9468b12e8d235a20d16e862ee14a5aa9b104c74f5",
-    "tobit": "51db9ba7c5bc749b51856439c3a79119e510067bbc182f0c05c0a6a0c7ef7330",
-    "judith": "8c7bb0f218a4e64845634e673fe3bb0844214f5f8c6410f6bc37ee227b851d20",
+    "1-esdras": "8ef22ee0f8ca6f4f8ff62838573fc65362757512b84cdc6f6b554dcea0923e40",
+    "2-esdras": "c42beb2b74e943aedba5e37ca0177d46da5815a7c7ebda5169a21b6abb2eb685",
+    "tobit": "927b62a878c05ce723057f40bbd0d6c91f8bebc8257738f9d4f3c315bbe31e1e",
+    "judith": "227e84a13e252f976baf92bf79ee1e7b53f126b4fd63b9a3d0715887cfc545ed",
     "the-rest-of-esther": "165c21495b93c940712eeec0609dc97a5d7bcc4ae510057e3b80cd1361b55aa0",
-    "the-wisdom-of-solomon": "2a967a2f7f66b9157263dc17c05785e6830c020d83bbe83645994f34c97afb13",
-    "ecclesiasticus": "8be441dd6395da53940870df8ca3a6616676b49132a0a836aa072e7cd49230a3",
-    "baruch": "d6e45cae103add50f538bdbb51b479551191649fac0a7d4d95a255305dfe5fcf",
+    "the-wisdom-of-solomon": "f045c0ecd84aab89687446455f40a440829850bfe36133f222e84e325b340afe",
+    "ecclesiasticus": "42990a5c15a10d9ac4a16f7e885f73c4cd03ad7362ec1fc693b71c0d950f1e48",
+    "baruch": "24dc6f5260d3e1998b9a2be0eb0a12749401b8703e35d79879656bbb4d311a32",
     "the-song-of-the-three-holy-children": "83cf6e6ef62c9e959d7dc16064008668ace4f6014a42acc0dbe037616fb7eb0d",
     "the-history-of-susanna": "cbbfd59caf4f811f8620b61a0559446b286e81d038e2a73f9dd7005b4f2388c4",
     "bel-and-the-dragon": "26ba8f6fab6a9f8444e887cdd84e3e0457fdc4207af71581e978b215f1069d01",
     "the-prayer-of-manasses": "de7cbe7e98d626af85b588e902555118c0756a69230fc93204744cdec95de94c",
-    "1-maccabees": "b285e6d580e23a2ce8ffed8d507ca493c0f566e496fa36ac22658f0da28a2b84",
-    "2-maccabees": "30209fd08ad4f830da83c99ac42066c83d2b720329ed569eb46469cb1d7f70ac",
+    "1-maccabees": "988b397e766aff155a90a4c40a8f5772a425246c9633a921cccfbc120a829d06",
+    "2-maccabees": "13ad12f582b5da2bb3f27a2a5f3ca4f0a83853b853a885d8e8a7d82818ec239e",
     "matthew": "4033a156f1f48b3e63712e1072d365aaf4edc7b8c0bcc2d34fa1e8fe68fab903",
     "mark": "f1fb64f9f96abf49a5daf354bfd4e31741130fb83b1787163058115a710179cd",
     "luke": "692950566c24dbbc8cef8cd5bd1854c700e14261cdf2a6507b9cb1786e7bd1ad",
@@ -127,166 +130,100 @@
     "revelation": "7c01101efea4357c69ae1912298cd0a0c3af997d0f90cd09f53ea38fc6f19f60"
   },
   "historical_word_replacements": {
-    "house:God": 2120,
+    "house:God": 2084,
     "house:Yahweh": 1709,
-    "vnto": 1075,
     "house:Jesus": 978,
-    "thou": 937,
-    "thy": 814,
-    "house:Israel": 727,
-    "haue": 581,
-    "hee": 567,
-    "vpon": 538,
-    "thee": 536,
-    "vp": 400,
-    "hath": 365,
-    "vs": 358,
-    "sonne": 259,
-    "hast": 228,
-    "euery": 206,
-    "doe": 199,
-    "ierusalem": 196,
-    "sonnes": 192,
-    "giue": 184,
-    "bee": 168,
-    "owne": 165,
-    "downe": 163,
-    "ouer": 156,
-    "thine": 151,
-    "shalt": 141,
-    "feare": 141,
-    "citie": 139,
-    "ye": 138,
-    "euen": 138,
-    "iudas": 136,
-    "euer": 133,
-    "dayes": 132,
-    "againe": 125,
-    "gaue": 122,
-    "giuen": 115,
-    "iewes": 115,
-    "himselfe": 113,
-    "art": 111,
-    "wherefore": 109,
-    "shal": 109,
-    "thereof": 109,
-    "brethren": 107,
-    "aboue": 107,
-    "countrey": 102,
-    "selfe": 102,
-    "heauen": 96,
-    "wee": 90,
-    "vnderstanding": 86,
-    "shalbe": 79,
-    "yee": 76,
-    "seruants": 71,
-    "euill": 70,
-    "shew": 66,
-    "sinnes": 65,
-    "neuer": 62,
-    "sinne": 62,
-    "iudgement": 59,
-    "shee": 57,
-    "onely": 56,
-    "fiue": 55,
-    "speake": 55,
-    "vnder": 55,
-    "receiue": 55,
-    "liue": 55,
-    "vngodly": 55,
-    "minde": 54,
-    "loue": 54,
-    "seuen": 53,
-    "receiued": 48,
-    "maketh": 46,
-    "bene": 45,
-    "therein": 45,
-    "shewed": 45,
-    "seruant": 42,
-    "beene": 42,
-    "vntill": 41,
-    "didst": 40,
-    "wayes": 39,
-    "twentie": 37,
-    "trueth": 37,
-    "certaine": 37,
-    "iudge": 36,
-    "iacob": 36,
-    "foure": 35,
-    "saith": 34,
-    "righteousnesse": 34,
-    "wherein": 32,
-    "liuing": 32,
-    "doeth": 31,
-    "serue": 29,
-    "vse": 28,
-    "fauour": 28,
-    "knoweth": 27,
-    "vnderstand": 26,
-    "sixe": 25,
-    "booke": 25,
-    "iust": 24,
-    "wilt": 24,
-    "amongst": 24,
-    "iesus": 24,
-    "doth": 24,
-    "seuenth": 20,
-    "iosias": 19,
-    "knowest": 19,
-    "saued": 18,
-    "liued": 17,
-    "ouercome": 16,
-    "fiftie": 16,
-    "goeth": 15,
-    "olde": 15,
-    "giueth": 15,
-    "wisdome": 15,
-    "iustice": 15,
-    "whosoeuer": 14,
-    "taketh": 14,
-    "heauens": 14,
-    "giuing": 14,
-    "therewith": 14,
-    "beleeue": 13,
-    "saluation": 12,
-    "darkenesse": 12,
-    "betweene": 12,
-    "goodnesse": 11,
-    "dwelleth": 10,
-    "wouldest": 10,
-    "shouldest": 10,
-    "vsed": 9,
-    "beleeued": 9,
-    "holinesse": 9,
-    "loued": 8,
-    "speaketh": 8,
-    "greatnesse": 8,
-    "ioseph": 8,
-    "bookes": 7,
-    "sauiour": 7,
-    "hauen": 6,
-    "sayth": 6,
-    "vncleane": 6,
-    "prouided": 5,
-    "sheweth": 5,
-    "reuenge": 5,
-    "seeketh": 5,
-    "mightest": 4,
-    "iustified": 4,
-    "vnknowen": 4,
-    "kindnesse": 4,
-    "vnhappy": 3,
-    "glorie": 3,
-    "whoso": 3,
-    "asketh": 2,
-    "faithfulnesse": 2,
-    "beholdeth": 2,
-    "iew": 2,
+    "house:Israel": 734,
+    "thou": 77,
+    "ye": 60,
+    "thy": 49,
+    "euer": 45,
+    "aboue": 42,
+    "thee": 40,
+    "hast": 34,
+    "vnto": 30,
+    "hath": 29,
+    "vs": 27,
+    "art": 20,
+    "thine": 19,
+    "haue": 18,
+    "yee": 14,
+    "doe": 12,
+    "vpon": 11,
+    "hee": 11,
+    "vp": 11,
+    "feare": 9,
+    "loue": 9,
+    "euery": 9,
+    "heauen": 9,
+    "knowest": 8,
+    "bee": 8,
+    "owne": 8,
+    "giuen": 7,
+    "wee": 7,
+    "seruants": 7,
+    "shew": 6,
+    "giue": 6,
+    "thereof": 5,
+    "didst": 5,
+    "iudgement": 5,
+    "wherefore": 4,
+    "sinnes": 4,
+    "euen": 4,
+    "againe": 4,
+    "wilt": 4,
+    "neuer": 4,
+    "liuing": 4,
+    "shalt": 3,
+    "darkenesse": 3,
+    "euill": 3,
+    "receiued": 3,
+    "goodnesse": 3,
+    "ouer": 3,
+    "downe": 3,
+    "dayes": 3,
+    "saued": 3,
+    "iust": 3,
+    "wherein": 2,
+    "wayes": 2,
+    "vnderstanding": 2,
+    "seruant": 2,
+    "sinne": 2,
+    "shalbe": 2,
+    "trueth": 2,
+    "vnder": 2,
+    "onely": 2,
+    "heauens": 2,
+    "sixe": 2,
+    "iacob": 2,
     "house:LORD": 2,
-    "sayest": 1,
     "thyself": 1,
-    "prouide": 1,
-    "eightie": 1
+    "wisdome": 1,
+    "goeth": 1,
+    "therein": 1,
+    "saluation": 1,
+    "gaue": 1,
+    "giuing": 1,
+    "doth": 1,
+    "receiue": 1,
+    "liue": 1,
+    "sauiour": 1,
+    "sonne": 1,
+    "vngodly": 1,
+    "citie": 1,
+    "ierusalem": 1,
+    "wouldest": 1,
+    "bene": 1,
+    "iewes": 1,
+    "selfe": 1,
+    "beleeued": 1,
+    "sonnes": 1,
+    "saith": 1,
+    "speaketh": 1,
+    "shewed": 1,
+    "iew": 1,
+    "seuen": 1,
+    "seuenth": 1
   },
   "new_book_provenance": [
     {
@@ -296,6 +233,7 @@
       "source_sha256": "7638586245a089fc37d74063b6b29285bc398d0755151197465711e37e5d3a6f",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/jeremiah.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 52,
       "verses": 1364,
       "author_approved": false
@@ -307,6 +245,7 @@
       "source_sha256": "2cf81ab41c4a84a405e6b104d7892c5057f70d9ff156ef5bf7aba2bee0ebee87",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/lamentations.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 5,
       "verses": 154,
       "author_approved": false
@@ -318,6 +257,7 @@
       "source_sha256": "ebd08af1f2914a9980f0523d11a440cdea47a2c835e9d6f32c9f8f2252a8acf1",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/ezekiel.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 48,
       "verses": 1273,
       "author_approved": false
@@ -329,6 +269,7 @@
       "source_sha256": "8a14b085f1688f3f549857ced9bf3de2a1b96ec24b5c47cd3760c91d4f5449d7",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/daniel.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 12,
       "verses": 357,
       "author_approved": false
@@ -340,6 +281,7 @@
       "source_sha256": "661c0ea1e35181894047cb409547f42eea019553a18423926d9658f11212f960",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/hosea.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 14,
       "verses": 197,
       "author_approved": false
@@ -351,6 +293,7 @@
       "source_sha256": "1e5494e9af8369f06b27e989fc60e30673bad4aec16e9ab26a9123ddc07d4119",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/joel.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 3,
       "verses": 73,
       "author_approved": false
@@ -362,6 +305,7 @@
       "source_sha256": "67299b1369de2c8d0594b7416fca48615c4c7bc69d3b8d26e12926d786890bde",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/amos.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 9,
       "verses": 146,
       "author_approved": false
@@ -373,6 +317,7 @@
       "source_sha256": "6bd94985566adaaea3f6f935e2d2debaee5061e3fc105900cf08cc7201b1a134",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/obadiah.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 1,
       "verses": 21,
       "author_approved": false
@@ -384,6 +329,7 @@
       "source_sha256": "346b63a5aae7943778f5a1a9eb8b36226ee810d46fe5539bb8e1944a62edd4d5",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/jonah.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 4,
       "verses": 48,
       "author_approved": false
@@ -395,6 +341,7 @@
       "source_sha256": "65ca9b7bcd05dbc263d24b2a11892e9d7ecc1d28eb0f5dc9b75186cfea7f1e5b",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/micah.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 7,
       "verses": 105,
       "author_approved": false
@@ -406,6 +353,7 @@
       "source_sha256": "b77438a607b1f5d3c3866e0a8d2f4ec85c882799b221cc02f64d790cf3c95549",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/nahum.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 3,
       "verses": 47,
       "author_approved": false
@@ -417,6 +365,7 @@
       "source_sha256": "5aed926615c30c8bd687f95b938c74a148b790f120ab84a756a7cf834e045cc3",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/habakkuk.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 3,
       "verses": 56,
       "author_approved": false
@@ -428,6 +377,7 @@
       "source_sha256": "7416ff879e31a0595ce500e15a4e1ba18155e22e9e0caf53f7b88fe50e549d00",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/zephaniah.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 3,
       "verses": 53,
       "author_approved": false
@@ -439,6 +389,7 @@
       "source_sha256": "8a77306f3a6b1a00d5873b1f5b9d2c553d8535e82dd9f01ce0502b12a53de13f",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/haggai.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 2,
       "verses": 38,
       "author_approved": false
@@ -450,6 +401,7 @@
       "source_sha256": "989c95fc59d0f6358521aaacaf59de4829dbbdca84a7bacbce4bbe2100af1d7c",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/zechariah.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 14,
       "verses": 211,
       "author_approved": false
@@ -461,6 +413,7 @@
       "source_sha256": "2162d1895a11dfbcfe90a254331e266b2e1c2a1a424bcf21a30c91ad234865ff",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/malachi.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 4,
       "verses": 55,
       "author_approved": false
@@ -468,7 +421,7 @@
     {
       "title": "1 Esdras",
       "id": "1-esdras",
-      "source_type": "1611_orthographic_modernization",
+      "source_type": "WEB_modern_public_domain_USFM_with_historical_fallback",
       "source_sha256": null,
       "source_url": "https://raw.githubusercontent.com/aruljohn/Bible-kjv-1611/8ef066868ad1b7204d7be48658ea3bd1783d409b/1%20Esdras.json",
       "source_provenance": [
@@ -477,6 +430,14 @@
           "sha256": "2927440945ebd1a240afd0963d4fdfc6c29d8577e235bd85e84bdfa5409f0628"
         }
       ],
+      "modern_secondary_witness": {
+        "modern_witness": "World English Bible Classic public-domain USFM",
+        "source_url": "https://ebible.org/Scriptures/eng-web_usfm.zip",
+        "source_code": "1ES",
+        "source_file": "54-1ESeng-web.usfm",
+        "source_sha256": "7d05bfcd8356d134b48d9b629f87cc4eb6b78ca7dc8bc4ea17aca8d2354414a7",
+        "source_verse_positions": 448
+      },
       "chapters": 9,
       "verses": 448,
       "author_approved": false
@@ -484,7 +445,7 @@
     {
       "title": "2 Esdras",
       "id": "2-esdras",
-      "source_type": "1611_orthographic_modernization",
+      "source_type": "WEB_modern_public_domain_USFM_with_historical_fallback",
       "source_sha256": null,
       "source_url": "https://raw.githubusercontent.com/aruljohn/Bible-kjv-1611/8ef066868ad1b7204d7be48658ea3bd1783d409b/2%20Esdras.json",
       "source_provenance": [
@@ -493,6 +454,14 @@
           "sha256": "8bdf8c4b92eeaee2eb8f752ba834043ed39449330de6b5d8ea10a8d7f2a2614a"
         }
       ],
+      "modern_secondary_witness": {
+        "modern_witness": "World English Bible Classic public-domain USFM",
+        "source_url": "https://ebible.org/Scriptures/eng-web_usfm.zip",
+        "source_code": "2ES",
+        "source_file": "58-2ESeng-web.usfm",
+        "source_sha256": "96cfee2e746cb0c8dc6c84e4d5b9f315686d3a9f5e96f75508f77e191ed2b74d",
+        "source_verse_positions": 944
+      },
       "chapters": 16,
       "verses": 874,
       "author_approved": false
@@ -500,7 +469,7 @@
     {
       "title": "Tobit",
       "id": "tobit",
-      "source_type": "1611_orthographic_modernization",
+      "source_type": "WEB_modern_public_domain_USFM_with_historical_fallback",
       "source_sha256": null,
       "source_url": "https://raw.githubusercontent.com/aruljohn/Bible-kjv-1611/8ef066868ad1b7204d7be48658ea3bd1783d409b/Tobit.json",
       "source_provenance": [
@@ -509,6 +478,14 @@
           "sha256": "9c3b2f44188a5b830fe41768362f8f32222b679e3928abd660122170176a0511"
         }
       ],
+      "modern_secondary_witness": {
+        "modern_witness": "World English Bible Classic public-domain USFM",
+        "source_url": "https://ebible.org/Scriptures/eng-web_usfm.zip",
+        "source_code": "TOB",
+        "source_file": "41-TOBeng-web.usfm",
+        "source_sha256": "39da13000df54b460e003894be05575a70f03cb9cfdccd1e845a9b09dccbd35d",
+        "source_verse_positions": 244
+      },
       "chapters": 14,
       "verses": 244,
       "author_approved": false
@@ -516,7 +493,7 @@
     {
       "title": "Judith",
       "id": "judith",
-      "source_type": "1611_orthographic_modernization",
+      "source_type": "WEB_modern_public_domain_USFM_with_historical_fallback",
       "source_sha256": null,
       "source_url": "https://raw.githubusercontent.com/aruljohn/Bible-kjv-1611/8ef066868ad1b7204d7be48658ea3bd1783d409b/Judith.json",
       "source_provenance": [
@@ -525,6 +502,14 @@
           "sha256": "3f4b37e23048c65340f315e8ce6e912cce58cb3186d610b1eb324cfed3a79b79"
         }
       ],
+      "modern_secondary_witness": {
+        "modern_witness": "World English Bible Classic public-domain USFM",
+        "source_url": "https://ebible.org/Scriptures/eng-web_usfm.zip",
+        "source_code": "JDT",
+        "source_file": "42-JDTeng-web.usfm",
+        "source_sha256": "d8d450dec5bd9cce8e05d77a788e69f94962772f6d773b766b7424548c5cdde8",
+        "source_verse_positions": 339
+      },
       "chapters": 16,
       "verses": 339,
       "author_approved": false
@@ -541,6 +526,7 @@
           "sha256": "5f56fe46ac13abc518f2358d51c7c830426f043ec2e65ac704cd0401882ae1b6"
         }
       ],
+      "modern_secondary_witness": null,
       "chapters": 7,
       "verses": 105,
       "author_approved": false
@@ -548,7 +534,7 @@
     {
       "title": "The Wisdom of Solomon",
       "id": "the-wisdom-of-solomon",
-      "source_type": "1611_orthographic_modernization",
+      "source_type": "WEB_modern_public_domain_USFM_with_historical_fallback",
       "source_sha256": null,
       "source_url": "https://raw.githubusercontent.com/aruljohn/Bible-kjv-1611/8ef066868ad1b7204d7be48658ea3bd1783d409b/Wisdom%20of%20Solomon.json",
       "source_provenance": [
@@ -557,6 +543,14 @@
           "sha256": "a1b2de59b3939df6a24bc1231395c62d1a0bd69442f4b1c47b0a147aa6d5971b"
         }
       ],
+      "modern_secondary_witness": {
+        "modern_witness": "World English Bible Classic public-domain USFM",
+        "source_url": "https://ebible.org/Scriptures/eng-web_usfm.zip",
+        "source_code": "WIS",
+        "source_file": "45-WISeng-web.usfm",
+        "source_sha256": "f013bcb46836d814e685747a82f9949eafe0ac129bdce9133031d96ce87e76a3",
+        "source_verse_positions": 436
+      },
       "chapters": 19,
       "verses": 436,
       "author_approved": false
@@ -564,7 +558,7 @@
     {
       "title": "Ecclesiasticus",
       "id": "ecclesiasticus",
-      "source_type": "1611_orthographic_modernization",
+      "source_type": "WEB_modern_public_domain_USFM_with_historical_fallback",
       "source_sha256": null,
       "source_url": "https://raw.githubusercontent.com/aruljohn/Bible-kjv-1611/8ef066868ad1b7204d7be48658ea3bd1783d409b/Ecclesiasticus.json",
       "source_provenance": [
@@ -573,6 +567,14 @@
           "sha256": "d1a6b050cef93872802fca17271fd7f888c2a13bab68538db343d7192a18a511"
         }
       ],
+      "modern_secondary_witness": {
+        "modern_witness": "World English Bible Classic public-domain USFM",
+        "source_url": "https://ebible.org/Scriptures/eng-web_usfm.zip",
+        "source_code": "SIR",
+        "source_file": "46-SIReng-web.usfm",
+        "source_sha256": "102424b55c3e48a2880cad8deafd0a2bd8bf8a0dba79f774e801fb41cd599549",
+        "source_verse_positions": 1359
+      },
       "chapters": 51,
       "verses": 1391,
       "author_approved": false
@@ -580,7 +582,7 @@
     {
       "title": "Baruch",
       "id": "baruch",
-      "source_type": "1611_orthographic_modernization",
+      "source_type": "WEB_modern_public_domain_USFM_with_historical_fallback",
       "source_sha256": null,
       "source_url": "https://raw.githubusercontent.com/aruljohn/Bible-kjv-1611/8ef066868ad1b7204d7be48658ea3bd1783d409b/Baruch.json",
       "source_provenance": [
@@ -593,6 +595,14 @@
           "sha256": "3be0e34356a45f11e1f1bcd13445b982ebac4043b30a83511d3af2a67bb5a315"
         }
       ],
+      "modern_secondary_witness": {
+        "modern_witness": "World English Bible Classic public-domain USFM",
+        "source_url": "https://ebible.org/Scriptures/eng-web_usfm.zip",
+        "source_code": "BAR",
+        "source_file": "47-BAReng-web.usfm",
+        "source_sha256": "59488efac7bfd4cf8b8964f7e638e9f994ddff8620f927d4ca6f2add2b64a061",
+        "source_verse_positions": 213
+      },
       "chapters": 6,
       "verses": 213,
       "author_approved": false
@@ -609,6 +619,7 @@
           "sha256": "096714d8a45d735315fa9d5e50fbdafdd7d662c7ec2c10938a444620d0b20f1b"
         }
       ],
+      "modern_secondary_witness": null,
       "chapters": 1,
       "verses": 67,
       "author_approved": false
@@ -625,6 +636,7 @@
           "sha256": "9e22e3a2718bdc824ef26b67a329051e325b386457bf78d178bdda1210f732ac"
         }
       ],
+      "modern_secondary_witness": null,
       "chapters": 1,
       "verses": 64,
       "author_approved": false
@@ -641,6 +653,7 @@
           "sha256": "cd66b76f31cdddfd62439162a3c5519cedda717b0d4f9b9df4dddaffaa675a2a"
         }
       ],
+      "modern_secondary_witness": null,
       "chapters": 1,
       "verses": 42,
       "author_approved": false
@@ -657,6 +670,7 @@
           "sha256": "125bfd89e31e8b02070ce118902e63dd9066ac3d786f5ddae4c41971e08c2e84"
         }
       ],
+      "modern_secondary_witness": null,
       "chapters": 1,
       "verses": 1,
       "author_approved": false
@@ -664,7 +678,7 @@
     {
       "title": "1 Maccabees",
       "id": "1-maccabees",
-      "source_type": "1611_orthographic_modernization",
+      "source_type": "WEB_modern_public_domain_USFM_with_historical_fallback",
       "source_sha256": null,
       "source_url": "https://raw.githubusercontent.com/aruljohn/Bible-kjv-1611/8ef066868ad1b7204d7be48658ea3bd1783d409b/1%20Maccabees.json",
       "source_provenance": [
@@ -673,6 +687,14 @@
           "sha256": "18599eda5058cb0bf25a51a6474cf015872298dbd1686a5535f1569284bfdb44"
         }
       ],
+      "modern_secondary_witness": {
+        "modern_witness": "World English Bible Classic public-domain USFM",
+        "source_url": "https://ebible.org/Scriptures/eng-web_usfm.zip",
+        "source_code": "1MA",
+        "source_file": "52-1MAeng-web.usfm",
+        "source_sha256": "4bb9983c22d6e9b02b3f9a40e6d05602af64f3cd75069fe2100a180960758648",
+        "source_verse_positions": 924
+      },
       "chapters": 16,
       "verses": 924,
       "author_approved": false
@@ -680,7 +702,7 @@
     {
       "title": "2 Maccabees",
       "id": "2-maccabees",
-      "source_type": "1611_orthographic_modernization",
+      "source_type": "WEB_modern_public_domain_USFM_with_historical_fallback",
       "source_sha256": null,
       "source_url": "https://raw.githubusercontent.com/aruljohn/Bible-kjv-1611/8ef066868ad1b7204d7be48658ea3bd1783d409b/2%20Maccabees.json",
       "source_provenance": [
@@ -689,6 +711,14 @@
           "sha256": "5e1e4422f819c3d139a1951fcc525e6e2cdef657bfa83f89a5cb974519e7ac1a"
         }
       ],
+      "modern_secondary_witness": {
+        "modern_witness": "World English Bible Classic public-domain USFM",
+        "source_url": "https://ebible.org/Scriptures/eng-web_usfm.zip",
+        "source_code": "2MA",
+        "source_file": "53-2MAeng-web.usfm",
+        "source_sha256": "c532fbf99ecd3eb81cbc68fe99f91c848085c0ea8ffab27dcd4e9212eada1326",
+        "source_verse_positions": 555
+      },
       "chapters": 15,
       "verses": 555,
       "author_approved": false
@@ -700,6 +730,7 @@
       "source_sha256": "6b516d1e764922739693c066bec6f6d9ddc5f71044c0d56df6cd2fbfdc4cd5c7",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/matthew.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 28,
       "verses": 1071,
       "author_approved": false
@@ -711,6 +742,7 @@
       "source_sha256": "15f1cda63a5f4f4df78c835e8ccf2210bc3fe95c19ca4964494edf23972e8e9c",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/mark.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 16,
       "verses": 678,
       "author_approved": false
@@ -722,6 +754,7 @@
       "source_sha256": "694049096220388bfc7f953dc6d1f78b6d3596b15957ae176a5509429f00f169",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/luke.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 24,
       "verses": 1150,
       "author_approved": false
@@ -733,6 +766,7 @@
       "source_sha256": "0eb8b055bba9640143f1bd9ff47bbaf7d375eff17565add83e6e93348d44d7dc",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/john.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 21,
       "verses": 879,
       "author_approved": false
@@ -744,6 +778,7 @@
       "source_sha256": "ea02ac9e548b70a5f56241511c621ba74156865d2924b8847162ec14d47331d3",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/acts.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 28,
       "verses": 1004,
       "author_approved": false
@@ -755,6 +790,7 @@
       "source_sha256": "9fde61d5d1a6d23d55092a9d7d58b4f0af4f2dcc71da7ff8cebcec5b0ac62136",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/romans.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 16,
       "verses": 433,
       "author_approved": false
@@ -766,6 +802,7 @@
       "source_sha256": "d21d1cf50adbbb831662dfba0254fd2e8e4c1ff5de7517f0d4e4de8a689d7599",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/1corinthians.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 16,
       "verses": 437,
       "author_approved": false
@@ -777,6 +814,7 @@
       "source_sha256": "30e87a11f7e7555453d54eb57830b501491fa6872cc985a48ebb94fba4c9076c",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/2corinthians.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 13,
       "verses": 257,
       "author_approved": false
@@ -788,6 +826,7 @@
       "source_sha256": "73e3542f076043719ce6a580b383c485b75733c677f7e797f39e255811f96768",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/galatians.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 6,
       "verses": 149,
       "author_approved": false
@@ -799,6 +838,7 @@
       "source_sha256": "52cb1e44fd607070dad0d560b7e2866200f9867dca695d64b76cc2b223559a1c",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/ephesians.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 6,
       "verses": 155,
       "author_approved": false
@@ -810,6 +850,7 @@
       "source_sha256": "396f16729a7ad991e454b8dbe02c74f9d41e5178b7ffec2ecd1a2996471e0633",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/philippians.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 4,
       "verses": 104,
       "author_approved": false
@@ -821,6 +862,7 @@
       "source_sha256": "5331b673a82f25596c47877f4f04c4880eac5548a4b3b3623539b7d43174912c",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/colossians.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 4,
       "verses": 95,
       "author_approved": false
@@ -832,6 +874,7 @@
       "source_sha256": "b7492d5a6af82233abc167a40bea8addf123e5099959af7a3b37f56290f5e530",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/1thessalonians.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 5,
       "verses": 89,
       "author_approved": false
@@ -843,6 +886,7 @@
       "source_sha256": "4db1af711c31f5b26d457b164b229cb08bffe804a1739d72b9368fbd658a69aa",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/2thessalonians.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 3,
       "verses": 47,
       "author_approved": false
@@ -854,6 +898,7 @@
       "source_sha256": "38ac35c046692fc5aa1267659c40edda9aa9e2e9bf0f69db11f3b285b9768c20",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/1timothy.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 6,
       "verses": 113,
       "author_approved": false
@@ -865,6 +910,7 @@
       "source_sha256": "c22a703b56302184f76a28ef5e2eb8dfcc01b443d701a8d99792c0946a95ff8c",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/2timothy.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 4,
       "verses": 83,
       "author_approved": false
@@ -876,6 +922,7 @@
       "source_sha256": "2f6e8b6e9af641618b312347f4d11fa2bde84d3d0e824cc6a46c74c66812232d",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/titus.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 3,
       "verses": 46,
       "author_approved": false
@@ -887,6 +934,7 @@
       "source_sha256": "aee827c72facccacf1d068798b7a36261ef7c1f960f5784b2008ae79f5edfae2",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/philemon.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 1,
       "verses": 25,
       "author_approved": false
@@ -898,6 +946,7 @@
       "source_sha256": "be65180e3622efd809ac55e5b6687cfb705a91d85a4b3159b849cdef74f4fcc7",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/hebrews.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 13,
       "verses": 303,
       "author_approved": false
@@ -909,6 +958,7 @@
       "source_sha256": "43457ba7b66f707a6e1fb2fb124a5d8c63e5a93a73c2c5d3aeb41ffe8f270419",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/james.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 5,
       "verses": 108,
       "author_approved": false
@@ -920,6 +970,7 @@
       "source_sha256": "f13af9e3f1234b8a302184e253c24ba7c79003d83f21bd9cd1c2c08d9be489ab",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/1peter.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 5,
       "verses": 105,
       "author_approved": false
@@ -931,6 +982,7 @@
       "source_sha256": "017a1adba509aeeb5bbcee0ff37f71d140872ffb9d6eb8e8f1cbc96fed56df87",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/2peter.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 3,
       "verses": 61,
       "author_approved": false
@@ -942,6 +994,7 @@
       "source_sha256": "b44795a1ad4e041a00e09e4a6822df973533c7251bfd0ac24e6927a5f412d0b9",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/1john.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 5,
       "verses": 105,
       "author_approved": false
@@ -953,6 +1006,7 @@
       "source_sha256": "0297a15def09740cefe76834085f331d37841fadcc777fcd5bda1cac33588ad9",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/2john.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 1,
       "verses": 13,
       "author_approved": false
@@ -964,6 +1018,7 @@
       "source_sha256": "09fffb2bfc76f0c372efe7614a5969ed30a43c581ca810ee24002c87e8f5d367",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/3john.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 1,
       "verses": 14,
       "author_approved": false
@@ -975,6 +1030,7 @@
       "source_sha256": "6fdee61025b9775700be73ab60e1febb6cb737f0ef043e0ceb3b753379d5613d",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/jude.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 1,
       "verses": 25,
       "author_approved": false
@@ -986,11 +1042,12 @@
       "source_sha256": "2028247fa6821c650e237bba56b0e0a76fb9c6c36447194be3894892888c7543",
       "source_url": "https://raw.githubusercontent.com/TehShrike/world-english-bible/68669ba3be9719ae4d1135b19d9e0b6587b7c356/json/revelation.json",
       "source_provenance": null,
+      "modern_secondary_witness": null,
       "chapters": 22,
       "verses": 404,
       "author_approved": false
     }
   ],
   "no_authorial_approval_claimed": true,
-  "generated_utc": "2026-10-17T03:18:41.672104+00:00"
+  "generated_utc": "2026-10-17T03:24:40.060274+00:00"
 }
