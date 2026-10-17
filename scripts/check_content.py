@@ -44,7 +44,7 @@ assert '<script src="cpt-index.js"></script>' in html
 assert '<script src="oustory-reader.js"></script>' in html
 reader=(ROOT/'oustory-reader.js').read_text()
 assert 'async function loadBook(id)' in reader
-assert 'speaker-blue' in reader and 'speaker-purple' in reader and 'speaker-green' in reader
+assert "'speaker-' + color" in reader and "['blue', 'green', 'purple']" in reader, 'speech color renderer missing'
 assert '.scripture .speaker-blue' in html and '.scripture .speaker-purple' in html
 for source in ('cpt-index.js','oustory-reader.js'):
  subprocess.run(['node','--check',str(ROOT/source)],check=True,capture_output=True)
