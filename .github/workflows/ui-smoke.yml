@@ -5,6 +5,10 @@ on:
     branches: [main]
     paths:
       - 'index.html'
+      - 'sw.js'
+      - 'oustory-release4.js'
+      - 'oustory-release4.css'
+      - 'scripts/release4_ui.mjs'
       - 'oustory-reader.js'
       - 'oustory-search.js'
       - 'oustory-research.js'
@@ -60,10 +64,17 @@ jobs:
         run: python3 scripts/test_release2.py
       - name: Validate study mapping against actual Oustory verses
         run: python3 scripts/test_release3.py
+      - name: Check Release 4 syntax
+        run: |
+          node --check sw.js
+          node --check oustory-release4.js
+          node --check scripts/release4_ui.mjs
       - name: Run isolated local site
         run: python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/oustory-site.log 2>&1 &
       - name: Check all mobile navigation and verse details
         run: node scripts/ui_smoke.mjs
+      - name: Verify offline reading, saved-data backup and accessibility
+        run: node scripts/release4_ui.mjs
       - name: Save mobile preview screenshots
         if: always()
         uses: actions/upload-artifact@v4
