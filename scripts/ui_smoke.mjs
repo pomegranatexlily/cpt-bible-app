@@ -182,7 +182,7 @@ try{
   assert.match(await page.locator(".research-correction").innerText(),/Luke 7:5/);
   assert.match(await page.locator(".research-correction").innerText(),/Acts 4:27/);
   await page.locator(".research-terms summary").first().click();
-  assert.equal(await page.locator(".research-term").count(),27);
+  assert.equal(await page.locator(".research-terms").first().locator(".research-term").count(),27);
   await page.locator(".research-terms summary").last().click();
   assert.ok(await page.locator(".research-term").count()>=42);
   await page.getByRole("button",{name:"Saved chapters"}).click();
