@@ -23,9 +23,9 @@ jobs:
           for name in fs:
               if any(s in name.upper() for s in ['1ES','2ES','TOB','JDT','WIS','SIR','BAR','SUS','BEL','MAN','MA1','MA2','GES','ESG','AZA','EST']):
                   print("MATCH",name,flush=True)
-          print("FIRST_FILES",fs[:30],flush=True)
+          print("ALL_FILES",fs,flush=True)
           for name in fs:
-              if name.lower().endswith(('.sfm','.usfm','.txt')) and any(s in name.upper() for s in ['1ES','TOB']):
+              if name.lower().endswith(('.sfm','.usfm','.txt')) and any(s in name.upper() for s in ['43-ESG']):
                   print("SAMPLE_FILE",name,flush=True)
                   print(z.read(name).decode('utf8','replace')[:2400],flush=True)
                   break
