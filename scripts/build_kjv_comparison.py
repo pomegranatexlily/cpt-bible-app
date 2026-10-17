@@ -19,8 +19,11 @@ def normalize(obj):
         chapters[n]={}
         for v in chapter["verses"]:
             k=v["verse"]
-            if k in chapters[n] or not v["text"].strip():raise ValueError("Invalid verse")
-            chapters[n][k]=v["text"]
+            if k in chapters[n]:raise ValueError(f"Duplicate witness coordinate {n}:{k}")
+            if not isinstance(v.get("text"),str):raise ValueError(f"Nontext witness coordinate {n}:{k}")
+            # Preserve an explicitly empty transcription entry as a
+            # documented source gap. Do not manufacture verse wording.
+            chapters[n][k]=v["text"] if v["text"].strip() else None
     return chapters
 def build(output,raw):
     output.mkdir(parents=True,exist_ok=True)
@@ -42,11 +45,12 @@ def build(output,raw):
         witness=normalize(json.loads(candidates[filename])) if supported else {}
         if b["title"]=="Baruch":witness[6]=normalize(json.loads(candidates["Letter of Jeremiah.json"]))[1]
         own={c["number"]:{v["number"]:v for v in c["verses"]} for c in main["chapters"]}
-        positions={str(ch):{str(n):txt for n,txt in vs.items()} for ch,vs in witness.items()}
-        common=sum(n in own.get(ch,{}) for ch,vs in witness.items() for n in vs)
-        only_kjv=sum(n not in own.get(ch,{}) for ch,vs in witness.items() for n in vs)
-        only_main=sum(n not in witness.get(ch,{}) for ch,vs in own.items() for n in vs)
-        row={"version":1,"book_id":b["id"],"status":"available" if supported else "unavailable","source_revision":REV,"positions":positions,"matched":common,"kjv_only":only_kjv,"oustory_only":only_main,"source_files":[filename]+(["Letter of Jeremiah.json"] if b["title"]=="Baruch" else []) if supported else []}
+        empty_source=[f"{ch}:{n}" for ch,vs in witness.items() for n,txt in vs.items() if txt is None]
+        positions={str(ch):{str(n):txt for n,txt in vs.items() if txt is not None} for ch,vs in witness.items()}
+        common=sum(n in own.get(ch,{}) for ch,vs in witness.items() for n,txt in vs.items() if txt is not None)
+        only_kjv=sum(n not in own.get(ch,{}) for ch,vs in witness.items() for n,txt in vs.items() if txt is not None)
+        only_main=sum(n not in witness.get(ch,{}) or witness[ch][n] is None for ch,vs in own.items() for n in vs)
+        row={"version":1,"book_id":b["id"],"status":"available" if supported else "unavailable","source_revision":REV,"positions":positions,"matched":common,"kjv_only":only_kjv,"oustory_only":only_main,"empty_witness_positions":empty_source,"source_files":[filename]+(["Letter of Jeremiah.json"] if b["title"]=="Baruch" else []) if supported else []}
         (output/(b["id"]+".json")).write_text(json.dumps(row,ensure_ascii=False,separators=(",",":"))+"\n")
         result.append({k:row[k] for k in ("book_id","status","matched","kjv_only","oustory_only","source_files")})
     meta={"version":1,"source":"English 1611 printed KJV transcription, not ancient Hebrew or Greek manuscript collation","upstream":"https://github.com/aruljohn/Bible-kjv-1611","revision":REV,"sha256":hashlib.sha256(raw).hexdigest(),"books":result}
