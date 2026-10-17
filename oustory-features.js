@@ -164,6 +164,9 @@
       button.onclick=()=>jump(meta.id,ch,v);
       list.append(button);
     }
+    const research=card(root,"Research desk");
+    const content=el("div",undefined,"research-study-content");research.append(content);
+    window.OustoryResearch?.fillStudy(content,(id,ch,verse)=>jump(id,ch,verse));
     const quick=card(root,"Your saved study");
     const savedButtons=actions(quick);
     addAction(savedButtons,"Saved chapters",()=>window.OustoryReader?.openSaved());
@@ -247,6 +250,8 @@
     const a=actions(verseDialog);
     const k=refKey(record.book,record.chapter,record.verse);
     addAction(a,"Copy verse",copyVerse);
+    const comparison=el("div",undefined,"research-verse-panel");
+    addAction(a,"Compare 1611",()=>window.OustoryResearch?.compareVerse(record,comparison));
     addAction(a,"Save verse",()=>{
       const stored=window.OustoryReader?.saveVerse(record.id,record.chapter,record.verse);
       byId("verse-feedback").textContent=stored?"Verse saved on this device.":"Verse could not be saved.";
@@ -264,6 +269,7 @@
       catch(e){if(e.name!=="AbortError")byId("verse-feedback").textContent="Sharing unavailable."}
     });
     const feedback=el("p","","feature-status");feedback.id="verse-feedback";verseDialog.append(feedback);
+    verseDialog.append(comparison);
     const entry=notesByRef.get(k);
     const note=card(verseDialog,entry?"Why this rendering":"Translation provenance");
     if(entry){
@@ -273,6 +279,7 @@
       note.append(el("p","No verse-specific editorial note is indexed here yet. The first 23 books retain the earlier master wording; the other 57 books use public-domain sources with disclosed provisional adaptations."));
     }
     note.append(el("p","An editorial note explains a position; it does not certify a manuscript variant or assert the currently displayed verse has already been revised.","feature-status"));
+    window.OustoryResearch?.appendEvidence(note,record);
     verseDialog.showModal();
   }
   function annotateVerse(info){
