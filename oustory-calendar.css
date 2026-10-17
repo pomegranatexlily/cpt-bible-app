@@ -65,3 +65,17 @@
 .calendar-source-tab{overflow-wrap:anywhere;line-height:1.3;min-height:52px}
 @media(max-width:520px){.calendar-day-lunar{font-size:9px}.calendar-day{gap:5px}.calendar-source-tab{padding:8px 6px}}
 @media(max-width:345px){.calendar-day-lunar{font-size:8px}}
+
+/* Simple current-cycle view: upcoming Shabbat always above the month grid. */
+.calendar-next{width:100%;display:grid;gap:4px;align-items:start;text-align:left;background:var(--selected);border:1px solid var(--covenant-gold);border-radius:13px;padding:14px 16px;color:var(--text);margin:12px 0 18px}
+.calendar-next[hidden]{display:none}
+.calendar-next-eyebrow{font-size:10px;letter-spacing:.14em;font-weight:750;text-transform:uppercase;color:var(--covenant-gold)}
+.calendar-next-date{font:500 clamp(21px,5vw,27px)/1.3 Georgia,serif;color:var(--text)}
+.calendar-next-note{font-size:12px;color:var(--muted)}
+.calendar-track-help{font-size:12px;line-height:1.55;color:var(--muted);margin:-9px 0 17px}
+.calendar-source-tabs{grid-template-columns:1fr 1fr;gap:9px;margin:10px 0 18px}
+.calendar-source-tab{font-size:14px;min-height:47px;padding:10px 7px;font-weight:700}
+.calendar-source-tab[aria-pressed=true]{border-color:var(--covenant-gold);background:var(--selected)}
+.calendar-day-lunar{color:var(--covenant-gold);font-weight:650}
+.calendar-lunar-context{font-size:14px;margin:0 0 14px;color:var(--covenant-gold)}
+@media(max-width:520px){.calendar-next{margin-top:9px;padding:12px 13px}.calendar-next-date{font-size:22px}.calendar-day-lunar{font-size:9px}.calendar-day{gap:4px}.calendar-source-tab{font-size:13px}}
