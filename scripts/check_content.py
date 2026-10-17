@@ -82,6 +82,13 @@ html=(ROOT/"index.html").read_text(encoding="utf8")
 assert "S<span>Books" not in html and "><span>Books</span>" in html
 assert '<script src="cpt-index.js"></script>' in html
 assert '<script src="oustory-reader.js"></script>' in html
+assert '<script src="oustory-audio.js"></script>' in html
+audio=(ROOT/"oustory-audio.js").read_text(encoding="utf8")
+assert all(token in audio for token in ("SpeechSynthesisUtterance", "splitIntoChunks", "playPause", "setChapter", "Speech playback", "aria-label"))
+assert "#chapter-title" not in audio or "chapter-title" in audio
+assert ".chapter-audio" in stylesheet
+assert "window.OustoryAudio?.setChapter" in reader and "window.OustoryAudio?.init" in reader
+
 notes=json.loads((DATA/"editorial-notes.json").read_text(encoding="utf8"))
 assert notes["verses_rewritten"] is False
 assert len(notes["notes"])>=17 and notes["watchlist_status"].startswith("25-rule")
@@ -105,7 +112,7 @@ reader=(ROOT/"oustory-reader.js").read_text(encoding="utf8")
 assert "Number.isInteger(v.number)" in reader
 assert "window.OustoryFeatures?.init" in reader and "window.OustoryFeatures?.annotateVerse" in reader
 assert "'speaker-' + color" in reader
-for source in ("cpt-index.js","oustory-reader.js","oustory-features.js","oustory-branding.js"):
+for source in ("cpt-index.js","oustory-reader.js","oustory-features.js","oustory-audio.js","oustory-branding.js"):
     subprocess.run(["node","--check",str(ROOT/source)],check=True,capture_output=True)
 inline=re.findall(r"<script(?:\s[^>]*)?>(.*?)</script>",html,flags=re.S)
 with tempfile.TemporaryDirectory() as temp:
