@@ -1,95 +1,54 @@
 "use strict";
-/* Oustory Covenant Calendar — source-faithful Gregorian month GRID.
- * Archive dates are observations from supplied files, not recurrence rules.
- * Future engine integration replaces normalized records, not the interface.
+/* Oustory: a single practical Covenant Calendar showing the current month,
+ * two parallel year-start cycles, and the next Shabbat. Historical source
+ * archives remain in the repo for research but NEVER appear in this UI.
+ * Live dates come exclusively from Shabbat Calendar's shared JSON feed.
  */
 (() => {
   const MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
   const DAYS=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-  const SOURCE_LABELS={earlier:"Earlier · March start",later:"Later · April start",xalendaria:"Xalendaria archive",lunar2025:"2025 Lunar archive"};
-  let archivePromise=null, livePromise=null;
-  // Both GitHub Pages projects are published on the same host. For other
-  // hostnames, use the canonical cross-site URL (requires standard CORS).
-  const LIVE_URL=typeof location!=="undefined"&&location.hostname==="pomegranatexlily.github.io"
-    ? location.origin+"/shabbat-calendar/calendar.json"
-    : "https://pomegranatexlily.github.io/shabbat-calendar/calendar.json";
-  function loadLive(){
-    if(!livePromise)livePromise=fetch(LIVE_URL,{cache:"no-cache"})
-      .then(r=>{if(!r.ok)throw Error("Live engine unavailable");return r.json()})
-      .then(j=>{
-        if(j.schema_version!==2||!j.tracks?.earlier?.years?.length||!j.tracks?.later?.years?.length)
-          throw Error("Live calendar schema invalid");
-        return j;
-      }).catch(e=>{livePromise=null;throw e});
-    return livePromise;
-  }
-  const liveEvent=e=>({
-    start:e.date,end:e.date,subject:e.title,
-    type:e.kind==="new_moon"?"new-moon":e.kind==="sabbath"?"sabbath":
-         e.kind==="preparation"?"preparation":"feast",
-    description:"Israelite year "+e.year+" · Month "+e.month+" · Day "+e.lunar_day,
-    source_row:"live",status:e.status,rule_status:e.rule_status,
-    track:e.track,year:e.year,month:e.month,lunar_day:e.lunar_day
-  });
-  const make=(tag,label,cls)=>{const e=document.createElement(tag);if(label!==undefined)e.textContent=label;if(cls)e.className=cls;return e};
+  const TRACKS={earlier:"Early Start",later:"Late Start"};
+  const typeName={feast:"Feast (draft)",sabbath:"Shabbat","new-moon":"New Moon",preparation:"Preparation"};
+  const make=(tag,text,cls)=>{const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(cls)e.className=cls;return e};
   const utc=(y,m,d)=>new Date(Date.UTC(y,m,d,12));
   const iso=date=>date.toISOString().slice(0,10);
   const dateObj=s=>utc(+s.slice(0,4),+s.slice(5,7)-1,+s.slice(8,10));
-  const monthId=date=>date.getUTCFullYear()*12+date.getUTCMonth();
-  const inRange=(date,from,to)=>date>=from&&date<=to;
-  const showDate=s=>dateObj(s).toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric",timeZone:"UTC"});
-  const typeName={feast:"Feast",sabbath:"Sabbath","new-moon":"New moon",preparation:"Preparation"};
-  const category=s=>s.startsWith("Prep /")?"preparation":s==="Weekly Sabbath"?"sabbath":s==="New Moon"?"new-moon":"feast";
-  function parseEnglishDate(s,defaultMonth){
-    const m=/^(?:([A-Za-z]+)\s+)?(\d{1,2})$/.exec(s.trim());
-    if(!m)return null;
-    const monthName=m[1]||defaultMonth;
-    const month=MONTHS.findIndex(x=>x.toLowerCase()===monthName.toLowerCase());
-    if(month<0||+m[2]<1||+m[2]>31)return null;
-    const d=utc(2025,month,+m[2]);
-    return (d.getUTCMonth()===month)?iso(d):null;
+  const fmt=s=>dateObj(s).toLocaleDateString("en-US",{timeZone:"UTC",month:"long",day:"numeric",year:"numeric"});
+  const dayName=s=>dateObj(s).toLocaleDateString("en-US",{timeZone:"UTC",weekday:"long"});
+  const todayIso=()=>{const d=new Date();return iso(utc(d.getFullYear(),d.getMonth(),d.getDate()))};
+  const LIVE_URL=typeof location!=="undefined"&&location.hostname==="pomegranatexlily.github.io"
+    ?location.origin+"/shabbat-calendar/calendar.json"
+    :"https://pomegranatexlily.github.io/shabbat-calendar/calendar.json";
+  let feedPromise=null;
+  function loadLive(){
+    if(!feedPromise)feedPromise=fetch(LIVE_URL,{cache:"no-cache"}).then(r=>{
+      if(!r.ok)throw new Error("Calendar feed unavailable");
+      return r.json();
+    }).then(data=>{
+      if(data.schema_version!==2||!data.tracks?.earlier?.years?.length||!data.tracks?.later?.years?.length)
+        throw new Error("Unexpected calendar data");
+      return data;
+    }).catch(e=>{feedPromise=null;throw e});
+    return feedPromise;
   }
-  function lunarFeasts(raw){
-    const feasts=[];
-    const reg=/(Trumpets|Atonement|Feast of Tabernacles|Feast of Dedication)\s*\(([^)]+)\)/g;
-    let m;
-    while((m=reg.exec(raw||""))){
-      const bits=m[2].split(/\s*-\s*/);
-      const first=/^([A-Za-z]+)\s+\d{1,2}$/.exec(bits[0]);
-      if(!first||bits.length>2)continue;
-      const start=parseEnglishDate(bits[0]);
-      const end=bits[1]?parseEnglishDate(bits[1],first[1]):start;
-      if(!start||!end||end<start)continue;
-      feasts.push({start,end,subject:m[1],type:"feast",description:"Feast dates as written in the 2025 lunar calendar",source_row:raw});
+  const typeOf=e=>e.kind==="new_moon"?"new-moon":e.kind==="sabbath"?"sabbath":
+                 e.kind==="preparation"?"preparation":"feast";
+  function mapEvents(track){
+    const byDay=new Map();
+    for(const event of [...(track.current_events||[]),...track.events]){
+      if(!byDay.has(event.date))byDay.set(event.date,[]);
+      byDay.get(event.date).push(event);
     }
-    return feasts;
+    return byDay;
   }
-  function normalize(source){
-    if(source.id==="xalendaria"){
-      return source.entries.map(e=>({
-        start:e.start,end:e.end,subject:e.subject,type:category(e.subject),
-        description:e.description,source_row:e.row,prep_reminder_date:e.reminder_enabled?e.reminder_date:null
-      }));
-    }
-    const out=[];
-    for(const m of source.entries){
-      out.push({start:m.new_moon,end:m.new_moon,subject:"New Moon",type:"new-moon",description:m.lunar_month,source_row:m.row});
-      for(const day of m.sabbaths)out.push({start:day,end:day,subject:"Weekly Sabbath",type:"sabbath",description:m.lunar_month,source_row:m.row});
-      for(const feast of lunarFeasts(m.feasts_raw))out.push({...feast,source_row:m.row});
-    }
-    return out;
+  function monthAt(track,day){
+    return [...(track.current_months||[]),...track.months]
+      .find(m=>m.start<=day&&m.end>=day);
   }
-  function dailyIndex(events){
-    const days=new Map();
-    for(const event of events){
-      let d=dateObj(event.start),last=dateObj(event.end);
-      if(last<d)continue;
-      for(let n=0;d<=last&&n<45;n++,d=utc(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate()+1)){
-        const key=iso(d);if(!days.has(key))days.set(key,[]);
-        days.get(key).push(event);
-      }
-    }
-    return days;
+  function shabbatAfter(track,today){
+    return [...(track.current_events||[]),...track.events]
+      .filter(e=>e.kind==="sabbath"&&e.date>=today)
+      .sort((a,b)=>a.date.localeCompare(b.date))[0]||null;
   }
   function calendarCells(year,month){
     const first=utc(year,month,1),offset=first.getUTCDay();
@@ -100,44 +59,87 @@
       return {iso:iso(d),day:d.getUTCDate(),inMonth:d.getUTCMonth()===month};
     });
   }
-  function getCurrentCivilDate(){
-    // Date-only label: local current civil date, never used to calculate
-    // religious observances or choose covenant-day boundaries.
-    const d=new Date();
-    return [d.getFullYear(),d.getMonth(),d.getDate()];
-  }
-  function bootData(){
-    if(!archivePromise){
-      archivePromise=fetch("calendar/archive.json").then(r=>{
-        if(!r.ok)throw new Error("Calendar archive unavailable");
-        return r.json();
-      }).then(j=>{
-        if(j.schema_version!==1||j.sources?.[0]?.entries?.length!==152||j.sources?.[1]?.entries?.length!==11)throw new Error("Unexpected source calendar format");
-        return j;
-      }).catch(e=>{archivePromise=null;throw e});
+  // Archive parsing utilities remain exported solely for the historical
+  // integrity tests. No file names or archived source choices are shown.
+  function lunarFeasts(raw){
+    const out=[];
+    const reg=/(Trumpets|Atonement|Feast of Tabernacles|Feast of Dedication)\s*\(([^)]+)\)/g;
+    let m;
+    function parse(val,defaultMonth){
+      const match=/^(?:([A-Za-z]+)\s+)?(\d{1,2})$/.exec(val.trim());
+      if(!match)return null;
+      const mon=MONTHS.findIndex(x=>x.toLowerCase()===(match[1]||defaultMonth||"").toLowerCase());
+      const d=utc(2025,mon,+match[2]);
+      return mon>=0&&d.getUTCMonth()===mon?iso(d):null;
     }
-    return archivePromise;
+    while((m=reg.exec(raw||""))){
+      const parts=m[2].split(/\s*-\s*/);
+      const month=/^([A-Za-z]+)\s+\d{1,2}$/.exec(parts[0]);
+      if(!month||parts.length>2)continue;
+      const start=parse(parts[0]);
+      const end=parts[1]?parse(parts[1],month[1]):start;
+      if(start&&end&&end>=start)out.push({start,end,subject:m[1],type:"feast",description:"Feast listed in archived lunar source"});
+    }
+    return out;
   }
+  function normalize(source){
+    if(source.id==="xalendaria")return source.entries.map(e=>({
+      start:e.start,end:e.end,subject:e.subject,
+      type:e.subject.startsWith("Prep /")?"preparation":e.subject==="Weekly Sabbath"?"sabbath":e.subject==="New Moon"?"new-moon":"feast",
+      source_row:e.row,description:e.description
+    }));
+    return source.entries.flatMap(m=>[
+      {start:m.new_moon,end:m.new_moon,subject:"New Moon",type:"new-moon"},
+      ...m.sabbaths.map(day=>({start:day,end:day,subject:"Weekly Sabbath",type:"sabbath"})),
+      ...lunarFeasts(m.feasts_raw)
+    ]);
+  }
+  function dailyIndex(events){
+    const map=new Map();
+    for(const e of events){
+      const first=dateObj(e.start),last=dateObj(e.end);
+      for(let d=first,n=0;d<=last&&n<45;n++,d=utc(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate()+1)){
+        const key=iso(d);
+        if(!map.has(key))map.set(key,[]);
+        map.get(key).push(e);
+      }
+    }
+    return map;
+  }
+
   function render(target,back){
     target.replaceChildren();
-    target.append(make("p","Oustory · Covenant dates","feature-eyebrow"),make("h1","Covenant Calendar","feature-title"),make("p","Explore a real month-by-month calendar with your recorded feasts, new moons, Sabbaths, and preparation days.","feature-description"));
-    const top=make("div",undefined,"calendar-top");
+    target.append(make("p","Oustory · Covenant time","feature-eyebrow"),
+      make("h1","Covenant Calendar","feature-title"),
+      make("p","Your current lunar month, Shabbats, New Moons, and upcoming observances.","feature-description"));
     const backBtn=make("button","← Home","feature-action");
     backBtn.type="button";backBtn.onclick=()=>back?.();
-    top.append(backBtn);target.append(top);
-    const notice=make("p","Loading your historical calendars…","calendar-source-notice");target.append(notice);
-    const sourceBar=make("div",undefined,"calendar-source-tabs");sourceBar.setAttribute("role","group");sourceBar.setAttribute("aria-label","Calendar source");target.append(sourceBar);
+    const actions=make("div",undefined,"calendar-top");actions.append(backBtn);target.append(actions);
+    const notice=make("p","Loading calendar…","calendar-source-notice");target.append(notice);
+    const upNext=make("button",undefined,"calendar-next");
+    upNext.type="button";upNext.setAttribute("aria-label","Go to next Shabbat");upNext.hidden=true;
+    target.append(upNext);
+    const sourceBar=make("div",undefined,"calendar-source-tabs");
+    sourceBar.setAttribute("role","group");sourceBar.setAttribute("aria-label","Choose year-start calendar");
+    for(const [id,label] of Object.entries(TRACKS)){
+      const b=make("button",label,"calendar-source-tab");b.type="button";b.dataset.source=id;
+      b.setAttribute("aria-pressed",String(id==="earlier"));sourceBar.append(b);
+    }
+    target.append(sourceBar);
+    const explanation=make("p","Both choices follow the same lunar dates. They differ in which spring New Moon begins the religious year.","calendar-track-help");
+    target.append(explanation);
     const nav=make("div",undefined,"calendar-month-nav");
     const previous=make("button","‹","calendar-nav-button");
     previous.type="button";previous.setAttribute("aria-label","Previous month");
-    const heading=make("h2",undefined,"calendar-month-heading");heading.id="calendar-month-heading";
+    const heading=make("h2","Loading…","calendar-month-heading");
     const next=make("button","›","calendar-nav-button");
     next.type="button";next.setAttribute("aria-label","Next month");
     nav.append(previous,heading,next);target.append(nav);
     const quick=make("div",undefined,"calendar-jump");
-    const today=make("button","Today","feature-action"),recorded=make("button","Latest recorded","feature-action");
-    today.type=recorded.type="button";
-    quick.append(today,recorded);target.append(quick);
+    const today=make("button","Today","feature-action");
+    const newYear=make("button","Next New Year","feature-action");
+    for(const b of [today,newYear])b.type="button";
+    quick.append(today,newYear);target.append(quick);
     const legend=make("div",undefined,"calendar-legend");
     for(const [type,label] of Object.entries(typeName)){
       const item=make("span",undefined,"calendar-legend-item");
@@ -146,143 +148,122 @@
     }
     target.append(legend);
     const grid=make("div",undefined,"calendar-grid");
-    grid.setAttribute("role","group");
-    grid.setAttribute("aria-label","Month dates");
+    grid.setAttribute("role","group");grid.setAttribute("aria-label","Month dates");
     target.append(grid);
     const detail=make("section",undefined,"calendar-details");
     detail.setAttribute("aria-live","polite");target.append(detail);
-    const foot=make("p","These are supplied historical calendar entries, not automatically calculated feast dates. No notifications are sent from this view.","feature-status calendar-footer");
-    target.append(foot);
-    let source="earlier",events=[],days=new Map(),range=null,selected=null,year,month,archive=null,live=null;
-    function setSource(sourceId){
-      source=sourceId;
-      const isLive=source==="earlier"||source==="later";
-      if(isLive){
-        if(!live?.tracks?.[source])return;
-        const track=live.tracks[source];
-        events=track.events.map(liveEvent);
-        days=dailyIndex(events);
-        const first=track.years[0],last=track.years.at(-1);
-        const endDate=dateObj(last.next_start_date);endDate.setUTCDate(endDate.getUTCDate()-1);
-        range={start:first.start_date,end:iso(endDate)};
-        const anchor=dateObj(first.start_date);year=anchor.getUTCFullYear();month=anchor.getUTCMonth();
-        selected=first.start_date;
-        notice.textContent=SOURCE_LABELS[source]+" · projected year starts "+showDate(first.start_date)+". New Moons and Shabbats use modeled lunar months. Draft feast dates are not approved observances.";
-        recorded.textContent="Year start";
-        foot.textContent="Provisional model: not a confirmed crescent, sunset, or agricultural observation. Feast rules are draft only. No notifications are sent.";
-      }else{
-        const src=archive?.sources.find(s=>s.id===source);
-        if(!src)return;
-        events=normalize(src);
-        days=dailyIndex(events);
-        const all=events.flatMap(e=>[e.start,e.end]).sort();
-        range={start:all[0],end:all.at(-1)};
-        const anchor=dateObj(range.end);year=anchor.getUTCFullYear();month=anchor.getUTCMonth();
-        selected=range.end;
-        notice.textContent=SOURCE_LABELS[source]+" · recorded "+showDate(range.start)+" – "+showDate(range.end)+". Blank outside this range means the source has no records.";
-        recorded.textContent="Latest recorded";
-        foot.textContent="Historical source entries. No future dates are extrapolated from these files; no notifications are sent.";
-      }
-      for(const b of sourceBar.querySelectorAll("button"))b.setAttribute("aria-pressed",String(b.dataset.source===source));
-      update();
+    const footer=make("p","Calendar dates use supplied lunar month starts and modeled future months. Draft feasts are not approved dates. Sunset timing is not calculated.","feature-status calendar-footer");
+    target.append(footer);
+
+    let data=null,source="earlier",year=0,month=0,selected=null,days=new Map();
+    function active(){return data?.tracks[source]}
+    function jump(day){
+      const d=dateObj(day);year=d.getUTCFullYear();month=d.getUTCMonth();selected=day;update();
     }
-    function showDay(isoDay){
-      const entries=days.get(isoDay)||[];
-      detail.replaceChildren();
-      const h=make("h3",showDate(isoDay),"calendar-detail-heading");detail.append(h);
-      const isLive=source==="earlier"||source==="later";
-      const lunar=isLive?live?.tracks[source]?.months.find(m=>m.start<=isoDay&&m.end>=isoDay):null;
+    function renderNext(){
+      const event=shabbatAfter(active(),todayIso());
+      upNext.replaceChildren();
+      upNext.hidden=!event;
+      if(!event)return;
+      upNext.append(make("span","UP NEXT · SHABBAT","calendar-next-eyebrow"));
+      upNext.append(make("strong",dayName(event.date)+", "+fmt(event.date),"calendar-next-date"));
+      upNext.append(make("span","Lunar Day "+event.lunar_day+
+        (event.source==="user_supplied_month_start"?" · From supplied New Moon":" · Projected"),"calendar-next-note"));
+      upNext.onclick=()=>jump(event.date);
+    }
+    function renderDay(){
+      const events=days.get(selected)||[];
+      const lunar=monthAt(active(),selected);
+      detail.replaceChildren(make("h3",fmt(selected),"calendar-detail-heading"));
       if(lunar){
-        const dayNo=Math.round((dateObj(isoDay)-dateObj(lunar.start))/86400000)+1;
-        detail.append(make("p","Israelite year "+lunar.year+" · Month "+lunar.month+
-          (lunar.is_thirteenth?" (13th month)":"")+" · Day "+dayNo,"calendar-lunar-context"));
-      }
-      if(!inRange(isoDay,range.start,range.end)){
-        detail.append(make("p",isLive?"Outside this model\'s published coverage; no dates inferred.":"Outside this source\'s recorded dates. Oustory has not calculated any observances for this day.","feature-status"));
-      }else if(!entries.length){
-        detail.append(make("p",isLive?"No marked observance for this lunar day.":"No observance recorded for this date in the selected file. This does not establish that none occurred.","feature-status"));
+        const n=Math.round((dateObj(selected)-dateObj(lunar.start))/86400000)+1;
+        detail.append(make("p",lunar.month?
+          "Israelite year "+lunar.year+" · Month "+lunar.month+
+          (lunar.is_thirteenth?" (13th month)":"")+" · Day "+n:
+          "Lunar Day "+n+" · New Moon "+fmt(lunar.start),"calendar-lunar-context"));
       }else{
-        const list=make("div",undefined,"calendar-detail-list");
-        const unique=new Set();
-        for(const e of entries){
-          const signature=e.subject+"|"+e.start+"|"+e.end;
-          if(unique.has(signature))continue;unique.add(signature);
-          const item=make("article",undefined,"calendar-detail-item");
-          item.classList.add("calendar-type-"+e.type);
-          item.append(make("span",e.rule_status==="unapproved_draft"?"Draft feast · unapproved":typeName[e.type]+(isLive?" · projected":""),"calendar-detail-type"),make("h4",e.subject));
-          if(e.start!==e.end)item.append(make("p","Recorded: "+showDate(e.start)+" – "+showDate(e.end),"feature-status"));
-          if(e.description)item.append(make("p",e.description,"feature-status"));
-          item.append(make("p",isLive?"Shabbat Calendar engine · planning projection":SOURCE_LABELS[source]+" · source row "+e.source_row,"calendar-provenance"));
-          list.append(item);
-        }
-        detail.append(list);
+        detail.append(make("p","No lunar month is supplied or projected for this date.","feature-status"));
       }
+      if(!events.length&&lunar)detail.append(make("p","No marked observance for this lunar day.","feature-status"));
+      const list=make("div",undefined,"calendar-detail-list");
+      for(const event of events){
+        const kind=typeOf(event),item=make("article",undefined,"calendar-detail-item calendar-type-"+kind);
+        const marker=event.rule_status==="unapproved_draft"?"DRAFT FEAST · NOT APPROVED":
+          event.status==="projected"?typeName[kind]+" · PROJECTED":typeName[kind]+" · SUPPLIED MONTH";
+        item.append(make("span",marker,"calendar-detail-type"),make("h4",event.title));
+        item.append(make("p",(event.month?"Month "+event.month+" · ":"")+
+          "Lunar Day "+event.lunar_day,"feature-status"));
+        if(event.rule_status==="unapproved_draft")item.append(make("p","Tentative mapping; not a confirmed feast date.","feature-status"));
+        list.append(item);
+      }
+      detail.append(list);
     }
     function update(){
-      const cells=calendarCells(year,month);
+      if(!data)return;
+      const track=active();
+      days=mapEvents(track);
       heading.textContent=MONTHS[month]+" "+year;
+      for(const b of sourceBar.querySelectorAll("button"))b.setAttribute("aria-pressed",String(b.dataset.source===source));
+      const firstYear=track.years[0];
+      notice.textContent="Year-start options · "+TRACKS[source]+": "+fmt(firstYear.start_date)+" in 2027. Current lunar Shabbats remain the same on both.";
       grid.replaceChildren();
       for(const d of DAYS)grid.append(make("span",d,"calendar-weekday"));
-      const current=getCurrentCivilDate();
-      const currentIso=iso(utc(...[current[0],current[1],current[2]]));
-      for(const c of cells){
-        const eventList=days.get(c.iso)||[];
-        const button=make("button",undefined,"calendar-day"+(c.inMonth?"":" outside-month")+(c.iso===selected?" selected":"")+(c.iso===currentIso?" is-today":""));
-        button.type="button";button.dataset.date=c.iso;
-        button.setAttribute("aria-label",showDate(c.iso)+(eventList.length?", "+eventList.map(e=>e.subject).join(", "):", no recorded observances"));
-        button.setAttribute("aria-pressed",String(c.iso===selected));
-        button.append(make("span",String(c.day),"calendar-day-number"));
-        if(source==="earlier"||source==="later"){
-          const lunar=live?.tracks[source]?.months.find(m=>m.start<=c.iso&&m.end>=c.iso);
-          if(lunar){
-            const dayNo=Math.round((dateObj(c.iso)-dateObj(lunar.start))/86400000)+1;
-            button.append(make("span","M"+lunar.month+" · "+dayNo,"calendar-day-lunar"));
-            button.setAttribute("aria-label",button.getAttribute("aria-label")+
-              ", Israelite month "+lunar.month+", day "+dayNo);
-          }
+      for(const c of calendarCells(year,month)){
+        const events=days.get(c.iso)||[];
+        const lunar=monthAt(track,c.iso);
+        const b=make("button",undefined,"calendar-day"+(c.inMonth?"":" outside-month")+
+          (c.iso===selected?" selected":"")+(c.iso===todayIso()?" is-today":""));
+        b.type="button";b.dataset.date=c.iso;b.setAttribute("aria-pressed",String(c.iso===selected));
+        b.append(make("span",String(c.day),"calendar-day-number"));
+        let dNum=null;
+        if(lunar){
+          dNum=Math.round((dateObj(c.iso)-dateObj(lunar.start))/86400000)+1;
+          b.append(make("span",lunar.month?"M"+lunar.month+" · "+dNum:"Day "+dNum,"calendar-day-lunar"));
         }
-        if(eventList.length){
-          const indicators=make("span",undefined,"calendar-day-dots");
-          for(const t of ["feast","sabbath","new-moon","preparation"]){
-            if(eventList.some(e=>e.type===t))indicators.append(make("span",undefined,"calendar-dot dot-"+t));
+        b.setAttribute("aria-label",fmt(c.iso)+(dNum?", lunar day "+dNum:"")+
+          (events.length?", "+events.map(e=>e.title).join(", "):""));
+        if(events.length){
+          const dots=make("span",undefined,"calendar-day-dots");
+          for(const kind of ["feast","sabbath","new-moon","preparation"]){
+            if(events.some(e=>typeOf(e)===kind))dots.append(make("span",undefined,"calendar-dot dot-"+kind));
           }
-          button.append(indicators);
-          const highlighted=eventList.find(e=>e.type==="feast")||eventList.find(e=>e.type==="sabbath")||eventList[0];
-          button.append(make("span",highlighted.subject.replace(/^Prep \/\s*/,"Prep: "),"calendar-day-summary"));
+          b.append(dots);
+          const primary=events.find(e=>e.kind==="sabbath")||events.find(e=>e.kind==="feast")||events[0];
+          b.append(make("span",primary.title,"calendar-day-summary"));
         }
-        button.onclick=()=>{
-          if(!c.inMonth){const d=dateObj(c.iso);year=d.getUTCFullYear();month=d.getUTCMonth()}
-          selected=c.iso;update();
-        };
-        grid.append(button);
+        b.onclick=()=>jump(c.iso);
+        grid.append(b);
       }
-      showDay(selected??iso(utc(year,month,1)));
+      renderNext();
+      renderDay();
     }
-    previous.onclick=()=>{const d=utc(year,month-1,1);year=d.getUTCFullYear();month=d.getUTCMonth();selected=iso(d);update()};
-    next.onclick=()=>{const d=utc(year,month+1,1);year=d.getUTCFullYear();month=d.getUTCMonth();selected=iso(d);update()};
-    today.onclick=()=>{const c=getCurrentCivilDate();year=c[0];month=c[1];selected=iso(utc(...c));update()};
-    recorded.onclick=()=>{const isLive=source==="earlier"||source==="later";const anchor=isLive?live.tracks[source].years[0].start_date:range.end;const d=dateObj(anchor);year=d.getUTCFullYear();month=d.getUTCMonth();selected=anchor;update()};
-    Promise.allSettled([bootData(),loadLive()]).then(([archived,engine])=>{
+    for(const b of sourceBar.querySelectorAll("button")){
+      b.onclick=()=>{
+        if(!data)return;
+        source=b.dataset.source;
+        // Changing religious years must NEVER move the Gregorian day.
+        update();
+      };
+    }
+    previous.onclick=()=>jump(iso(utc(year,month-1,1)));
+    next.onclick=()=>jump(iso(utc(year,month+1,1)));
+    today.onclick=()=>jump(todayIso());
+    newYear.onclick=()=>{
+      if(!data)return;
+      const candidate=active().years.find(y=>y.start_date>=selected)||active().years.at(-1);
+      jump(candidate.start_date);
+    };
+    loadLive().then(j=>{
       if(!target.isConnected||target.querySelector(".calendar-grid")!==grid)return;
-      archive=archived.status==="fulfilled"?archived.value:null;
-      live=engine.status==="fulfilled"?engine.value:null;
-      const sources=[];
-      if(live)sources.push("earlier","later");
-      if(archive)sources.push(...archive.sources.map(s=>s.id));
-      if(!sources.length){
-        notice.textContent="Calendar unavailable. Both the Shabbat engine and historic archive could not be loaded.";
-        return;
-      }
-      for(const id of sources){
-        const b=make("button",SOURCE_LABELS[id],"calendar-source-tab");
-        b.type="button";b.dataset.source=id;b.onclick=()=>setSource(id);
-        sourceBar.append(b);
-      }
-      const issue=make("p","Earlier and later tracks share the same lunar New Moons but number the religious years differently. Historical 2025 files remain separate and may disagree.","calendar-conflict");
-      notice.after(issue);
-      setSource(live?"earlier":sources[0]);
-      if(!live)notice.textContent="Live Shabbat engine unavailable. Historical sources remain accessible.";
-    }).catch(e=>{notice.textContent="Calendar load error: "+e.message});
+      data=j;
+      const event=shabbatAfter(active(),todayIso());
+      jump(event?.date||todayIso());
+    }).catch(e=>{
+      notice.textContent="Current calendar unavailable. Try again.";
+      const retry=make("button","Retry calendar","feature-action");
+      retry.type="button";retry.onclick=()=>render(target,back);
+      detail.replaceChildren(make("p","The lunar calendar could not be loaded.","feature-status"),retry);
+    });
   }
   window.OustoryCalendar={render,calendarCells,normalize,lunarFeasts,dailyIndex};
 })();
