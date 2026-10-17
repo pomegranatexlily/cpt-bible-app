@@ -82,10 +82,30 @@ html=(ROOT/"index.html").read_text(encoding="utf8")
 assert "S<span>Books" not in html and "><span>Books</span>" in html
 assert '<script src="cpt-index.js"></script>' in html
 assert '<script src="oustory-reader.js"></script>' in html
+notes=json.loads((DATA/"editorial-notes.json").read_text(encoding="utf8"))
+assert notes["verses_rewritten"] is False
+assert len(notes["notes"])>=17 and notes["watchlist_status"].startswith("25-rule")
+assert {x["status"] for x in notes["notes"]}=={"author-ruling","open-question","provisional","draft-note"}
+valid_titles={b["title"] for b in books}
+linked=set()
+for entry in notes["notes"]:
+    assert entry["label"] and len(entry["body"])>45
+    for ref in entry["refs"]:
+        mref=re.fullmatch(r"(.+) (\d+):(\d+)",ref)
+        assert mref and mref.group(1) in valid_titles,f"Apparatus reference not in canon: {ref}"
+        assert ref not in linked,f"Duplicate note verse {ref}"
+        linked.add(ref)
+features=(ROOT/"oustory-features.js").read_text(encoding="utf8")
+stylesheet=(ROOT/"oustory-features.css").read_text(encoding="utf8")
+assert all(s in features for s in ("Why this rendering","Home","Study","Discover","annotateVerse","openVerse","THEMES","TOPICS","PLANS"))
+assert "verse-entry" in stylesheet and "feature-mode" in stylesheet
+assert '<script src="oustory-features.js"></script>' in html
+assert '<link rel="stylesheet" href="oustory-features.css">' in html
 reader=(ROOT/"oustory-reader.js").read_text(encoding="utf8")
 assert "Number.isInteger(v.number)" in reader
+assert "window.OustoryFeatures?.init" in reader and "window.OustoryFeatures?.annotateVerse" in reader
 assert "'speaker-' + color" in reader
-for source in ("cpt-index.js","oustory-reader.js"):
+for source in ("cpt-index.js","oustory-reader.js","oustory-features.js","oustory-branding.js"):
     subprocess.run(["node","--check",str(ROOT/source)],check=True,capture_output=True)
 inline=re.findall(r"<script(?:\s[^>]*)?>(.*?)</script>",html,flags=re.S)
 with tempfile.TemporaryDirectory() as temp:
