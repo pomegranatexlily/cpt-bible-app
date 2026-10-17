@@ -1,6 +1,6 @@
 /* Oustory Release 4: first-party offline reading. No Scripture transformations. */
 "use strict";
-const SHELL="oustory-shell-r4-calendar-static-20261017-v3";
+const SHELL="oustory-shell-r5-verse-share-20261017-v1";
 const BOOKS="oustory-books-r4";
 const RUNTIME="oustory-runtime-r4";
 const APP=new URL(self.registration.scope);
@@ -11,6 +11,7 @@ const CORE=[
  "./oustory-calendar-study.js","./oustory-calendar.css","./oustory-audio.js",
  "./oustory-search.js","./oustory-research.js","./oustory-research.css",
  "./oustory-release4.js","./oustory-release4.css",
+ "./oustory-share-card.js","./oustory-share-card.css",
  "./assets/covenant-bible-gold-192.png","./assets/covenant-bible-gold-512.png",
  "./assets/covenant-bible-gold-180.png","./data/genesis.json",
  "./data/editorial-notes.json","./data/covenant-study.json",
