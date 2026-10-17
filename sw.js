@@ -1,11 +1,11 @@
 /* Oustory Release 4: first-party offline reading. No Scripture transformations. */
 "use strict";
-const SHELL="oustory-shell-r6-new-icon-20261017-v2";
+const SHELL="oustory-shell-r7-supplemental-20261017";
 const BOOKS="oustory-books-r4";
 const RUNTIME="oustory-runtime-r4";
 const APP=new URL(self.registration.scope);
 const CORE=[
- "./","./index.html","./manifest.webmanifest","./cpt-index.js",
+ "./","./index.html","./manifest.webmanifest","./cpt-index.js","./supplemental-books.js",
  "./oustory-reader.js","./oustory-features.js","./oustory-features.css",
  "./oustory-branding.js","./oustory-branding.css","./oustory-calendar.js",
  "./oustory-calendar-study.js","./oustory-calendar.css","./oustory-audio.js",
