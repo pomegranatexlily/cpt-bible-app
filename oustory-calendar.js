@@ -19,7 +19,7 @@
   const LIVE_URL=typeof location!=="undefined"&&location.hostname==="pomegranatexlily.github.io"
     ?location.origin+"/shabbat-calendar/calendar.json"
     :"https://pomegranatexlily.github.io/shabbat-calendar/calendar.json";
-  const SNAPSHOT_URL=new URL("./calendar/published.json",document.baseURI).href;
+  const SNAPSHOT_URL="calendar/published.json";
   const LIVE_CACHE="oustory-calendar-live-v1";
   let feedPromise=null,feedSource="live",feedSnapshot=null;
   function checkFeed(data){
