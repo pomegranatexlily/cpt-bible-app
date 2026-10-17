@@ -74,6 +74,8 @@
   function showBible(){
     document.body.classList.remove("feature-mode");
     root.hidden=true;
+    const ref=byId("reference"),chapter=byId("chapter-title");
+    if(ref&&chapter&&chapter.textContent)ref.textContent=chapter.textContent;
     setCurrent("bible");
   }
   function show(view){
@@ -85,6 +87,7 @@
       return;
     }
     document.body.classList.add("feature-mode");
+    const ref=byId("reference");if(ref)ref.textContent="Oustory";
     root.hidden=false;root.replaceChildren();setCurrent(view);
     byId("reader").scrollTop=0;
     if(view==="home")void renderHome();
