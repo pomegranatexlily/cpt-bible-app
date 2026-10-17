@@ -1,0 +1,41 @@
+/* Oustory covenant reading layer. No imported biblical imagery. */
+:root{--covenant-gold:#c9a227;--covenant-red:#8b0000;--note-border:#b59a52}
+:root[data-theme=paper]{--note-border:#b99b4d}
+.bottom-dock{grid-template-columns:repeat(5,minmax(0,1fr));width:min(calc(100% - 22px),560px);left:11px;right:11px}
+.bottom-dock .dock-button{min-height:58px;padding:8px 2px;gap:5px;font-size:10px}
+.bottom-dock .dock-button .nav-symbol{font-size:22px;line-height:1;display:block;color:inherit;font-weight:400}
+.bottom-dock .dock-button[aria-current=page]{outline:1px solid var(--line);background:var(--selected)}
+body.feature-mode .chapter-navigation{display:none}
+body.feature-mode .reading-column{display:none}
+.feature-root{width:min(100%,760px);min-height:100%;margin:auto;padding:30px 20px calc(130px + env(safe-area-inset-bottom,0px))}
+.feature-eyebrow{text-transform:uppercase;letter-spacing:.13em;font-size:11px;font-weight:700;color:var(--covenant-gold);margin:0 0 9px}
+.feature-title{font-family:Georgia,serif;font-size:clamp(29px,7vw,43px);font-weight:500;line-height:1.12;letter-spacing:-.04em;margin:0 0 13px}
+.feature-description{color:var(--muted);line-height:1.65;font-size:14px;margin:0 0 22px}
+.feature-card{border:1px solid var(--line);background:var(--sheet);border-radius:20px;padding:21px;margin:12px 0;box-shadow:0 2px 14px rgba(0,0,0,.04)}
+.feature-card h2,.feature-card h3{font-size:17px;margin:0 0 11px;letter-spacing:-.02em}
+.feature-card p{font-size:14px;line-height:1.6;margin:8px 0;color:var(--muted)}
+.feature-verse{font-family:Georgia,"Times New Roman",serif;font-size:clamp(19px,4.6vw,24px)!important;line-height:1.6!important;color:var(--text)!important}
+.feature-kicker{font-size:11px!important;text-transform:uppercase;letter-spacing:.12em;color:var(--covenant-gold)!important;font-weight:700}
+.feature-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}
+.feature-action{min-height:42px;padding:10px 15px;border-radius:99px;border:1px solid var(--note-border);background:transparent;color:var(--text);font-size:13px;font-weight:600}
+.feature-action.primary{background:var(--covenant-gold);border-color:var(--covenant-gold);color:#141210}
+.feature-action:focus-visible,.verse-entry:focus-visible{outline:2px solid var(--covenant-gold);outline-offset:3px}
+.feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.feature-grid .feature-card{margin:0;min-height:110px}
+.feature-list{display:grid;gap:8px}
+.feature-list button{display:block;width:100%;padding:14px 10px;text-align:left;background:transparent;color:var(--text);border:0;border-bottom:1px solid var(--line);font-size:15px}
+.feature-list button small{display:block;margin-top:5px;color:var(--muted);font-size:12px;line-height:1.45}
+.feature-status{font-size:12px;line-height:1.6;color:var(--muted)}
+.feature-warning{border-left:3px solid var(--covenant-red);padding-left:11px}
+.feature-note-type{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+#verse-panel{padding-top:22px}
+#verse-panel h2{font-family:Georgia,serif;font-size:24px}
+#verse-panel .verse-text{font-family:Georgia,serif;font-size:19px;line-height:1.7;color:var(--text)}
+#verse-panel .note-text{white-space:pre-wrap;line-height:1.65;font-size:14px}
+#verse-panel .feature-actions{margin-bottom:20px}
+.verse-entry{border-radius:4px;cursor:pointer;-webkit-tap-highlight-color:rgba(201,162,39,.15)}
+.verse-entry:active{background:var(--selected)}
+.verse-entry.is-highlighted{background:rgba(201,162,39,.19);box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.verse-entry.has-editorial-note .verse-number{color:var(--covenant-gold)}
+.verse-entry .note-mark{font-size:.62em;vertical-align:super;color:var(--covenant-gold);font-weight:700;margin:0 .08em}
+@media(max-width:390px){.feature-root{padding-inline:15px}.feature-card{padding:17px}.feature-grid{gap:8px}.bottom-dock .dock-button{font-size:9px}.bottom-dock .nav-symbol{font-size:19px}}
