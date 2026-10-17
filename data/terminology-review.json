@@ -1,0 +1,283 @@
+{
+  "schema_version": 1,
+  "title": "CPT–APE terminology review index",
+  "source": "Doctrinal-Drift Editorial Notes, 2026-10-16, draft pp.36–38",
+  "source_claimed_count": 25,
+  "actual_term_groups": 27,
+  "count_note": "The draft refers to a 25-rule watchlist, but the printed list includes 27 term groups; no two are silently discarded.",
+  "auto_replace": false,
+  "requires_passage_context": true,
+  "founder_correction": "2026-10-17: Gentiles/ethnē = nations/peoples as a lexical category. Israel itself may be called a nation. Sometimes the word refers specifically to non-Israelites. Decide who is being addressed or described from each passage; never presume outsider status from English Gentiles alone.",
+  "terms": [
+    {
+      "id": "T01",
+      "term": "church",
+      "source_term": "ekklesia",
+      "proposal": "assembly / congregation",
+      "review": "Check actual assembly referent instead of assuming institution.",
+      "pdf_page": 36,
+      "status": "draft_requires_review",
+      "global_replace_allowed": false
+    },
+    {
+      "id": "T02",
+      "term": "Christ",
+      "source_term": "christos",
+      "proposal": "anointed / Messiah",
+      "review": "Confirm function as royal or other anointed title in context.",
+      "pdf_page": 36,
+      "status": "draft_requires_review",
+      "global_replace_allowed": false
+    },
+    {
+      "id": "T03",
+      "term": "baptism / baptize",
+      "source_term": "baptizo",
+      "proposal": "immerse / immersion",
+      "review": "Distinguish immersion terminology from ritual assumptions.",
+      "pdf_page": 36,
+      "status": "draft_requires_review",
+      "global_replace_allowed": false
+    },
+    {
+      "id": "T04",
+      "term": "Gentiles",
+      "source_term": "ethnos / ethnē",
+      "proposal": "nation(s) / people(s) in context",
+      "review": "FOUNDER CORRECTION: ethnos denotes nation/people, not automatically a non-Israelite person. Luke 7:5 calls Israel a nation; Acts 4:27 contrasts nations with Israel. At some loci non-Israelite nations are indeed meant. Determine referent locally and record evidence; never blanket-replace.",
+      "pdf_page": 36,
+      "status": "founder_contextual_correction",
+      "global_replace_allowed": false
+    },
+    {
+      "id": "T05",
+      "term": "Jew / Jews",
+      "source_term": "Ioudaios",
+      "proposal": "Judean / Judahite, context dependent",
+      "review": "Tribal, regional and ethnic meanings must be evaluated in historical context; not automatically interchangeable.",
+      "pdf_page": 36,
+      "status": "draft_requires_review",
+      "global_replace_allowed": false
+    },
+    {
+      "id": "T06",
+      "term": "LORD",
+      "source_term": "YHWH",
+      "proposal": "divine name per source",
+      "review": "Check whether the source actually has the Tetragrammaton; do not insert it without textual evidence.",
+      "pdf_page": 36,
+      "status": "draft_requires_review",
+      "global_replace_allowed": false
+    },
+    {
+      "id": "T07",
+      "term": "Lord",
+      "source_term": "kyrios",
+      "proposal": "lord / master / sir / divine referent",
+      "review": "Different senses depend on source, syntax, speaker and textual context.",
+      "pdf_page": 36,
+      "status": "draft_requires_review",
+      "global_replace_allowed": false
+    },
+    {
+      "id": "T08",
+      "term": "hell",
+      "source_term": "Sheol / Hades / Gehenna / Tartarus",
+      "proposal": "preserve distinct source terms",
+      "review": "Examine distinct source terms, context and imagery.",
+      "pdf_page": 36,
+      "status": "draft_requires_review",
+      "global_replace_allowed": false
+    },
+    {
+      "id": "T09",
+      "term": "eternal / everlasting",
+      "source_term": "aiōnios / olam",
+      "proposal": "age-related, enduring or everlasting as context warrants",
+      "review": "Duration must be evaluated contextually; the draft's automatic age-limited reading is not ratified.",
+      "pdf_page": 37,
+      "status": "draft_requires_review",
+      "global_replace_allowed": false
+    },
+    {
+      "id": "T10",
+      "term": "Lucifer",
+      "source_term": "hêlēl ben šaḥar",
+      "proposal": "shining one / dawn imagery",
+      "review": "Review Isaiah 14:4–12 and ancient-language evidence before approving a rendering.",
+      "pdf_page": 37,
+      "status": "draft_requires_review",
+      "global_replace_allowed": false
+    },
+    {
+      "id": "T11",
+      "term": "Easter",
+      "source_term": "pascha",
+      "proposal": "Passover",
+      "review": "Review Greek pascha at Acts 12:4 and context, rather than relying on English feast naming.",
+      "pdf_page": 37,
+      "status": "draft_requires_review",
+      "global_replace_allowed": false
+    },
+    {
+      "id": "T12",
+      "term": "bishop",
+      "source_term": "episkopos",
+      "proposal": "overseer",
+      "review": "Review function, usage and audience; avoid assuming a later institutional rank.",
+      "pdf_page": 37,
+      "status": "draft_requires_review",
+      "global_replace_allowed": false
+    },
+    {
+      "id": "T13",
+      "term": "priest",
+      "source_term": "presbyteros / hiereus",
+      "proposal": "elder or priest according to source term",
+      "review": "Do not conflate presbyteros with hiereus / Hebrew kohen.",
+      "pdf_page": 37,
+      "status": "draft_requires_review",
+      "global_replace_allowed": false
+    },
+    {
+      "id": "T14",
+      "term": "apostle",
+      "source_term": "apostolos",
+      "proposal": "sent one / delegate / apostle",
+      "review": "Assess commission, office and traditional equivalent, as context requires.",
+      "pdf_page": 37,
+      "status": "draft_requires_review",
+      "global_replace_allowed": false
+    },
+    {
+      "id": "T15",
+      "term": "saint",
+      "source_term": "hagios",
+      "proposal": "holy / set-apart one",
+      "review": "Determine grammatical role and audience; avoid later canonization assumptions.",
+      "pdf_page": 37,
+      "status": "draft_requires_review",
+      "global_replace_allowed": false
+    },
+    {
+      "id": "T16",
+      "term": "gospel",
+      "source_term": "euangelion",
+      "proposal": "good news / glad tidings",
+      "review": "Identify announcement and its topic; draft still needs approval.",
+      "pdf_page": 37,
+      "status": "draft_requires_review",
+      "global_replace_allowed": false
+    },
+    {
+      "id": "T17",
+      "term": "repent / repentance",
+      "source_term": "metanoia / shuv",
+      "proposal": "turn / return / repent",
+      "review": "Study change of mind, return and national or personal context.",
+      "pdf_page": 37,
+      "status": "draft_requires_review",
+      "global_replace_allowed": false
+    },
+    {
+      "id": "T18",
+      "term": "faith",
+      "source_term": "pistis / emunah",
+      "proposal": "trust / faith / faithfulness",
+      "review": "Distinguish belief, loyalty and fidelity in immediate context.",
+      "pdf_page": 37,
+      "status": "draft_requires_review",
+      "global_replace_allowed": false
+    },
+    {
+      "id": "T19",
+      "term": "grace",
+      "source_term": "charis / chen",
+      "proposal": "grace / favor",
+      "review": "Assess idiom and usage; no automatic replacement.",
+      "pdf_page": 37,
+      "status": "draft_requires_review",
+      "global_replace_allowed": false
+    },
+    {
+      "id": "T20",
+      "term": "soul",
+      "source_term": "nephesh / psychē",
+      "proposal": "life / person / soul",
+      "review": "Check term and context; avoid unwarranted philosophical inference.",
+      "pdf_page": 37,
+      "status": "draft_requires_review",
+      "global_replace_allowed": false
+    },
+    {
+      "id": "T21",
+      "term": "spirit",
+      "source_term": "ruach / pneuma",
+      "proposal": "breath / wind / spirit",
+      "review": "Distinguish physical wind, breath, disposition and divine Spirit.",
+      "pdf_page": 38,
+      "status": "draft_requires_review",
+      "global_replace_allowed": false
+    },
+    {
+      "id": "T22",
+      "term": "worship",
+      "source_term": "proskyneō",
+      "proposal": "bow / do homage / worship",
+      "review": "Identify action, recipient and whether an honorific sense is intended.",
+      "pdf_page": 38,
+      "status": "draft_requires_review",
+      "global_replace_allowed": false
+    },
+    {
+      "id": "T23",
+      "term": "religion",
+      "source_term": "thrēskeia and other terms",
+      "proposal": "observance / service / religious practice",
+      "review": "Use underlying original term; do not pre-delete an English category.",
+      "pdf_page": 38,
+      "status": "draft_requires_review",
+      "global_replace_allowed": false
+    },
+    {
+      "id": "T24",
+      "term": "Old / New Testament",
+      "source_term": "diathēkē and library labels",
+      "proposal": "covenant language where supported",
+      "review": "Separate ancient covenant usage from modern edition section headings.",
+      "pdf_page": 38,
+      "status": "draft_requires_review",
+      "global_replace_allowed": false
+    },
+    {
+      "id": "T25",
+      "term": "ordinance / sacrament",
+      "source_term": "multiple Greek and Hebrew terms",
+      "proposal": "describe the particular act",
+      "review": "Identify source term; draft language is not a global correction.",
+      "pdf_page": 38,
+      "status": "draft_requires_review",
+      "global_replace_allowed": false
+    },
+    {
+      "id": "T26",
+      "term": "clergy / laity",
+      "source_term": "multiple original-language expressions",
+      "proposal": "underlying people / office / service",
+      "review": "Do not project later institutional distinction backwards without source evidence.",
+      "pdf_page": 38,
+      "status": "draft_requires_review",
+      "global_replace_allowed": false
+    },
+    {
+      "id": "T27",
+      "term": "devil / demon",
+      "source_term": "diabolos / daimonion",
+      "proposal": "accuser / slanderer / hostile spirit, context dependent",
+      "review": "Different Greek terms require separate analysis; no blanket substitution.",
+      "pdf_page": 38,
+      "status": "draft_requires_review",
+      "global_replace_allowed": false
+    }
+  ]
+}
