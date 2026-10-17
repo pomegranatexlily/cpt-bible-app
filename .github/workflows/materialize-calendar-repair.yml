@@ -1,0 +1,34 @@
+name: Materialize calendar fallback on repair branch
+on:
+  push:
+    branches:
+      - fix/calendar-404-static-publication-20261017
+permissions:
+  contents: write
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Generate audited canonical Shabbat data
+        shell: bash
+        run: |
+          git clone --quiet --depth 1 https://github.com/pomegranatexlily/shabbat-calendar.git /tmp/shabbat-generator
+          (cd /tmp/shabbat-generator && python3 -m unittest -q test_intercalation.py test_dual_tracks.py && python3 generate.py)
+          python3 scripts/stage_calendar_feed.py /tmp/shabbat-generator/public/calendar.json calendar/published.json "$(git -C /tmp/shabbat-generator rev-parse HEAD)"
+      - name: Commit generated fallback to the branch
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f calendar/published.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Commit audited Shabbat Calendar snapshot for branch Pages"
+            git push origin "HEAD:refs/heads/fix/calendar-404-static-publication-20261017"
+          fi
