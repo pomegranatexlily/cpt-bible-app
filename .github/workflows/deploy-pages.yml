@@ -4,7 +4,7 @@ on:
     branches: [main]
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 concurrency:
@@ -39,6 +39,22 @@ jobs:
           node --check scripts/release4_ui.mjs
       - name: Verify source-controlled calendar and offline static publication
         run: python3 scripts/test_published_calendar.py
+      - name: Build and validate published historical witness and search data
+        run: |
+          python3 scripts/build_search_index.py --output data/search-index.json
+          python3 scripts/build_kjv_comparison.py --out data/compare
+          python3 scripts/test_release2.py
+          python3 scripts/test_published_research.py
+      - name: Commit generated publication assets for both GitHub Pages modes
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/search-index.json data/compare/
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish source-pinned 1611 comparison and 80-book search index"
+            git push origin HEAD:main
+          fi
       - name: Configure Pages
         uses: actions/configure-pages@v5
         with:
@@ -76,21 +92,13 @@ jobs:
           test -f _site/oustory-calendar-study.js
           test -f _site/data/covenant-study.json
           test -f _site/oustory-calendar.css
+          test -s _site/data/search-index.json
+          test -s _site/data/compare/manifest.json
+          test -s _site/data/compare/psalms.json
           test -s _site/calendar/published.json
           test -f _site/calendar/archive.json
           test -f _site/data/editorial-notes.json
-          test "$(find _site/data -maxdepth 1 -name '*.json' | wc -l)" -eq 85
-      - name: Generate version-matched full-text index
-        run: |
-          python3 scripts/build_search_index.py --output _site/data/search-index.json
-          test -s _site/data/search-index.json
-      - name: Generate pinned historical KJV comparison for all 80 titles
-        run: |
-          python3 scripts/build_kjv_comparison.py --out _site/data/compare
-          test -s _site/data/compare/manifest.json
-          test -f _site/data/compare/genesis.json
-          test -f _site/data/compare/matthew.json
-          test -f _site/data/compare/the-rest-of-esther.json
+          test "$(find _site/data -maxdepth 1 -name '*.json' | wc -l)" -eq 86
       - name: Upload app
         uses: actions/upload-pages-artifact@v4
         with:
@@ -98,6 +106,23 @@ jobs:
       - name: Publish app
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Confirm hosted 1611 Psalms 2 and 80-book search files exist
+        shell: bash
+        run: |
+          ROOT="https://pomegranatexlily.github.io/cpt-bible-app"
+          for attempt in $(seq 1 12); do
+            if curl --fail --silent --show-error --location --max-time 12 "$ROOT/data/compare/manifest.json" -o /tmp/live-compare-manifest.json && \
+               curl --fail --silent --show-error --location --max-time 12 "$ROOT/data/compare/psalms.json" -o /tmp/live-compare-psalms.json && \
+               curl --fail --silent --show-error --location --max-time 20 "$ROOT/data/search-index.json" -o /tmp/live-verse-search.json && \
+               python3 -c 'import json; m=json.load(open("/tmp/live-compare-manifest.json")); p=json.load(open("/tmp/live-compare-psalms.json")); s=json.load(open("/tmp/live-verse-search.json")); assert m["version"]==1 and len(m["books"])==80; assert p["book_id"]=="psalms" and "2" in p["positions"] and p["positions"]["2"].get("1"); assert s["verse_count"]==36801 and len(s["book_ids"])==80'; then
+              echo "PASS hosted Psalms 2 1611 comparison and complete search index"
+              exit 0
+            fi
+            echo "Research publication not ready (attempt $attempt of 12)"
+            sleep 5
+          done
+          echo "FAIL: published historical comparison or Scripture search missing"
+          exit 1
       - name: Verify the actual public calendar endpoint responds with valid dates
         shell: bash
         run: |
