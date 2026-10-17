@@ -1,0 +1,808 @@
+{
+  "version": 1,
+  "source": "English 1611 printed KJV transcription, not ancient Hebrew or Greek manuscript collation",
+  "upstream": "https://github.com/aruljohn/Bible-kjv-1611",
+  "revision": "8ef066868ad1b7204d7be48658ea3bd1783d409b",
+  "sha256": "6eede4c5cf79a0173077e701f4fc76694a109434a023817269c7000715061bf3",
+  "books": [
+    {
+      "book_id": "genesis",
+      "status": "available",
+      "matched": 1533,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Genesis.json"
+      ]
+    },
+    {
+      "book_id": "exodus",
+      "status": "available",
+      "matched": 1213,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Exodus.json"
+      ]
+    },
+    {
+      "book_id": "leviticus",
+      "status": "available",
+      "matched": 859,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Leviticus.json"
+      ]
+    },
+    {
+      "book_id": "numbers",
+      "status": "available",
+      "matched": 1288,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Numbers.json"
+      ]
+    },
+    {
+      "book_id": "deuteronomy",
+      "status": "available",
+      "matched": 959,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Deuteronomy.json"
+      ]
+    },
+    {
+      "book_id": "joshua",
+      "status": "available",
+      "matched": 658,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Joshua.json"
+      ]
+    },
+    {
+      "book_id": "judges",
+      "status": "available",
+      "matched": 618,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Judges.json"
+      ]
+    },
+    {
+      "book_id": "ruth",
+      "status": "available",
+      "matched": 85,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Ruth.json"
+      ]
+    },
+    {
+      "book_id": "1-samuel",
+      "status": "available",
+      "matched": 810,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "1 Samuel.json"
+      ]
+    },
+    {
+      "book_id": "2-samuel",
+      "status": "available",
+      "matched": 695,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "2 Samuel.json"
+      ]
+    },
+    {
+      "book_id": "1-kings",
+      "status": "available",
+      "matched": 816,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "1 Kings.json"
+      ]
+    },
+    {
+      "book_id": "2-kings",
+      "status": "available",
+      "matched": 719,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "2 Kings.json"
+      ]
+    },
+    {
+      "book_id": "1-chronicles",
+      "status": "available",
+      "matched": 942,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "1 Chronicles.json"
+      ]
+    },
+    {
+      "book_id": "2-chronicles",
+      "status": "available",
+      "matched": 822,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "2 Chronicles.json"
+      ]
+    },
+    {
+      "book_id": "ezra",
+      "status": "available",
+      "matched": 280,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Ezra.json"
+      ]
+    },
+    {
+      "book_id": "nehemiah",
+      "status": "available",
+      "matched": 406,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Nehemiah.json"
+      ]
+    },
+    {
+      "book_id": "esther",
+      "status": "available",
+      "matched": 167,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Esther.json"
+      ]
+    },
+    {
+      "book_id": "job",
+      "status": "available",
+      "matched": 1070,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Job.json"
+      ]
+    },
+    {
+      "book_id": "psalms",
+      "status": "available",
+      "matched": 2461,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Psalms.json"
+      ]
+    },
+    {
+      "book_id": "proverbs",
+      "status": "available",
+      "matched": 915,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Proverbs.json"
+      ]
+    },
+    {
+      "book_id": "ecclesiastes",
+      "status": "available",
+      "matched": 222,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Ecclesiastes.json"
+      ]
+    },
+    {
+      "book_id": "song-of-solomon",
+      "status": "available",
+      "matched": 117,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Song of Solomon.json"
+      ]
+    },
+    {
+      "book_id": "isaiah",
+      "status": "available",
+      "matched": 1292,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Isaiah.json"
+      ]
+    },
+    {
+      "book_id": "jeremiah",
+      "status": "available",
+      "matched": 1364,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Jeremiah.json"
+      ]
+    },
+    {
+      "book_id": "lamentations",
+      "status": "available",
+      "matched": 154,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Lamentations.json"
+      ]
+    },
+    {
+      "book_id": "ezekiel",
+      "status": "available",
+      "matched": 1273,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Ezekiel.json"
+      ]
+    },
+    {
+      "book_id": "daniel",
+      "status": "available",
+      "matched": 357,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Daniel.json"
+      ]
+    },
+    {
+      "book_id": "hosea",
+      "status": "available",
+      "matched": 197,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Hosea.json"
+      ]
+    },
+    {
+      "book_id": "joel",
+      "status": "available",
+      "matched": 73,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Joel.json"
+      ]
+    },
+    {
+      "book_id": "amos",
+      "status": "available",
+      "matched": 146,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Amos.json"
+      ]
+    },
+    {
+      "book_id": "obadiah",
+      "status": "available",
+      "matched": 21,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Obadiah.json"
+      ]
+    },
+    {
+      "book_id": "jonah",
+      "status": "available",
+      "matched": 48,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Jonah.json"
+      ]
+    },
+    {
+      "book_id": "micah",
+      "status": "available",
+      "matched": 105,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Micah.json"
+      ]
+    },
+    {
+      "book_id": "nahum",
+      "status": "available",
+      "matched": 47,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Nahum.json"
+      ]
+    },
+    {
+      "book_id": "habakkuk",
+      "status": "available",
+      "matched": 56,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Habakkuk.json"
+      ]
+    },
+    {
+      "book_id": "zephaniah",
+      "status": "available",
+      "matched": 53,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Zephaniah.json"
+      ]
+    },
+    {
+      "book_id": "haggai",
+      "status": "available",
+      "matched": 38,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Haggai.json"
+      ]
+    },
+    {
+      "book_id": "zechariah",
+      "status": "available",
+      "matched": 211,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Zechariah.json"
+      ]
+    },
+    {
+      "book_id": "malachi",
+      "status": "available",
+      "matched": 55,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Malachi.json"
+      ]
+    },
+    {
+      "book_id": "1-esdras",
+      "status": "available",
+      "matched": 448,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "1 Esdras.json"
+      ]
+    },
+    {
+      "book_id": "2-esdras",
+      "status": "available",
+      "matched": 874,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "2 Esdras.json"
+      ]
+    },
+    {
+      "book_id": "tobit",
+      "status": "available",
+      "matched": 244,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Tobit.json"
+      ]
+    },
+    {
+      "book_id": "judith",
+      "status": "available",
+      "matched": 339,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Judith.json"
+      ]
+    },
+    {
+      "book_id": "the-rest-of-esther",
+      "status": "unavailable",
+      "matched": 0,
+      "kjv_only": 0,
+      "oustory_only": 105,
+      "source_files": []
+    },
+    {
+      "book_id": "the-wisdom-of-solomon",
+      "status": "available",
+      "matched": 436,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Wisdom of Solomon.json"
+      ]
+    },
+    {
+      "book_id": "ecclesiasticus",
+      "status": "available",
+      "matched": 1391,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Ecclesiasticus.json"
+      ]
+    },
+    {
+      "book_id": "baruch",
+      "status": "available",
+      "matched": 213,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Baruch.json",
+        "Letter of Jeremiah.json"
+      ]
+    },
+    {
+      "book_id": "the-song-of-the-three-holy-children",
+      "status": "available",
+      "matched": 67,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Prayer of Azariah.json"
+      ]
+    },
+    {
+      "book_id": "the-history-of-susanna",
+      "status": "available",
+      "matched": 64,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Susanna.json"
+      ]
+    },
+    {
+      "book_id": "bel-and-the-dragon",
+      "status": "available",
+      "matched": 42,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Bel and the Dragon.json"
+      ]
+    },
+    {
+      "book_id": "the-prayer-of-manasses",
+      "status": "available",
+      "matched": 1,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Prayer of Manasseh.json"
+      ]
+    },
+    {
+      "book_id": "1-maccabees",
+      "status": "available",
+      "matched": 924,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "1 Maccabees.json"
+      ]
+    },
+    {
+      "book_id": "2-maccabees",
+      "status": "available",
+      "matched": 555,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "2 Maccabees.json"
+      ]
+    },
+    {
+      "book_id": "matthew",
+      "status": "available",
+      "matched": 1071,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Matthew.json"
+      ]
+    },
+    {
+      "book_id": "mark",
+      "status": "available",
+      "matched": 678,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Mark.json"
+      ]
+    },
+    {
+      "book_id": "luke",
+      "status": "available",
+      "matched": 1150,
+      "kjv_only": 1,
+      "oustory_only": 0,
+      "source_files": [
+        "Luke.json"
+      ]
+    },
+    {
+      "book_id": "john",
+      "status": "available",
+      "matched": 879,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "John.json"
+      ]
+    },
+    {
+      "book_id": "acts",
+      "status": "available",
+      "matched": 1004,
+      "kjv_only": 3,
+      "oustory_only": 0,
+      "source_files": [
+        "Acts.json"
+      ]
+    },
+    {
+      "book_id": "romans",
+      "status": "available",
+      "matched": 430,
+      "kjv_only": 3,
+      "oustory_only": 3,
+      "source_files": [
+        "Romans.json"
+      ]
+    },
+    {
+      "book_id": "1-corinthians",
+      "status": "available",
+      "matched": 437,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "1 Corinthians.json"
+      ]
+    },
+    {
+      "book_id": "2-corinthians",
+      "status": "available",
+      "matched": 257,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "2 Corinthians.json"
+      ]
+    },
+    {
+      "book_id": "galatians",
+      "status": "available",
+      "matched": 149,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Galatians.json"
+      ]
+    },
+    {
+      "book_id": "ephesians",
+      "status": "available",
+      "matched": 155,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Ephesians.json"
+      ]
+    },
+    {
+      "book_id": "philippians",
+      "status": "available",
+      "matched": 104,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Philippians.json"
+      ]
+    },
+    {
+      "book_id": "colossians",
+      "status": "available",
+      "matched": 95,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Colossians.json"
+      ]
+    },
+    {
+      "book_id": "1-thessalonians",
+      "status": "available",
+      "matched": 89,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "1 Thessalonians.json"
+      ]
+    },
+    {
+      "book_id": "2-thessalonians",
+      "status": "available",
+      "matched": 47,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "2 Thessalonians.json"
+      ]
+    },
+    {
+      "book_id": "1-timothy",
+      "status": "available",
+      "matched": 113,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "1 Timothy.json"
+      ]
+    },
+    {
+      "book_id": "2-timothy",
+      "status": "available",
+      "matched": 83,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "2 Timothy.json"
+      ]
+    },
+    {
+      "book_id": "titus",
+      "status": "available",
+      "matched": 46,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Titus.json"
+      ]
+    },
+    {
+      "book_id": "philemon",
+      "status": "available",
+      "matched": 25,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Philemon.json"
+      ]
+    },
+    {
+      "book_id": "hebrews",
+      "status": "available",
+      "matched": 303,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Hebrews.json"
+      ]
+    },
+    {
+      "book_id": "james",
+      "status": "available",
+      "matched": 108,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "James.json"
+      ]
+    },
+    {
+      "book_id": "1-peter",
+      "status": "available",
+      "matched": 105,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "1 Peter.json"
+      ]
+    },
+    {
+      "book_id": "2-peter",
+      "status": "available",
+      "matched": 61,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "2 Peter.json"
+      ]
+    },
+    {
+      "book_id": "1-john",
+      "status": "available",
+      "matched": 105,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "1 John.json"
+      ]
+    },
+    {
+      "book_id": "2-john",
+      "status": "available",
+      "matched": 13,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "2 John.json"
+      ]
+    },
+    {
+      "book_id": "3-john",
+      "status": "available",
+      "matched": 14,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "3 John.json"
+      ]
+    },
+    {
+      "book_id": "jude",
+      "status": "available",
+      "matched": 25,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Jude.json"
+      ]
+    },
+    {
+      "book_id": "revelation",
+      "status": "available",
+      "matched": 404,
+      "kjv_only": 0,
+      "oustory_only": 0,
+      "source_files": [
+        "Revelation.json"
+      ]
+    }
+  ]
+}
