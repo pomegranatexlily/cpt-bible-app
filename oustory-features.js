@@ -80,6 +80,7 @@
   }
   function show(view){
     if(view==="bible"){showBible();byId("reader").focus();return}
+    window.OustoryAudio?.stop(); // Never leave unseen audio playing behind another app screen.
     if(view==="more"){
       const menu=byId("oustory-menu");
       if(menu)menu.showModal();
