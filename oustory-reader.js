@@ -71,6 +71,14 @@
     const title = book().title + ' ' + chapter().number;
     $('#reference').textContent = title;
     $('#chapter-title').textContent = title;
+    let disclosure=$('#reader-source-disclosure');
+    if(!disclosure){
+      disclosure=make('p',undefined,'reader-source-disclosure');
+      disclosure.id='reader-source-disclosure';
+      $('#chapter-title').after(disclosure);
+    }
+    disclosure.hidden=!book().sourceStatus;
+    disclosure.textContent=book().sourceStatus ? 'Editable source-based reading text. This book has not yet received final CPT–APE authorial approval; compare the editorial apparatus before treating contested wording as settled.' : '';
     $('#previous').disabled = bi === 0 && ci === 0;
     $('#next').disabled = bi === books.length - 1 && ci === book().chapters.length - 1;
   }
