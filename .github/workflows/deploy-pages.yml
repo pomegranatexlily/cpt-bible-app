@@ -39,7 +39,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p _site
-          cp index.html manifest.webmanifest oustory-branding.css oustory-branding.js oustory-features.css oustory-features.js oustory-calendar.css oustory-calendar.js oustory-audio.js cpt-index.js oustory-reader.js _site/
+          cp index.html manifest.webmanifest oustory-branding.css oustory-branding.js oustory-features.css oustory-features.js oustory-calendar.css oustory-calendar.js oustory-audio.js oustory-search.js cpt-index.js oustory-reader.js _site/
           cp -R assets _site/assets
           cp -R data _site/data
           cp -R calendar _site/calendar
@@ -52,6 +52,7 @@ jobs:
           test -f _site/assets/covenant-bible-gold-192.png
           test -f _site/assets/covenant-bible-gold-512.png
           test -f _site/oustory-reader.js
+          test -f _site/oustory-search.js
           test -f _site/oustory-audio.js
           test -f _site/oustory-features.js
           test -f _site/oustory-features.css
@@ -60,6 +61,10 @@ jobs:
           test -f _site/calendar/archive.json
           test -f _site/data/editorial-notes.json
           test "$(find _site/data -maxdepth 1 -name '*.json' | wc -l)" -eq 82
+      - name: Generate version-matched full-text index
+        run: |
+          python3 scripts/build_search_index.py --output _site/data/search-index.json
+          test -s _site/data/search-index.json
       - name: Upload app
         uses: actions/upload-pages-artifact@v4
         with:

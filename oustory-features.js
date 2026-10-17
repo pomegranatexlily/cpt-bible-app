@@ -49,7 +49,7 @@
   const labelOf=api=>api.books.find(x=>x.id===api.book)?.title||api.book;
   const notesByRef=new Map();
   const highlights=new Set(Array.isArray(read("oustory.highlights",[]))?read("oustory.highlights",[]):[]);
-  let api,root,verseDialog,currentView="bible",selected=null,savedTrigger;
+  let api,root,verseDialog,currentView="bible",selected=null;
   const textOf=v=>typeof v.text==="string"?v.text:(v.parts||[]).map(p=>p.text).join("");
   function addAction(parent,label,handler,primary=false){
     const b=el("button",label,"feature-action"+(primary?" primary":""));
@@ -139,8 +139,8 @@
     const last=read("cpt.reader.position",null);
     const cont=card(root,"Continue reading");
     const savedBook=api.books.find(b=>b.id===last?.book);
-    cont.append(el("p",savedBook?savedBook.title+" "+last.chapter:"Start with Genesis 1"));
-    addAction(actions(cont),"Open chapter",()=>jump(savedBook?.id||"genesis",savedBook?.chapters.some(c=>c.number===last?.chapter)?last.chapter:1),true);
+    cont.append(el("p",savedBook?savedBook.title+" "+last.chapter+(Number.isInteger(last?.verse)&&last.verse>1?":"+last.verse:""):"Start with Genesis 1"));
+    addAction(actions(cont),"Resume reading",()=>jump(savedBook?.id||"genesis",savedBook?.chapters.some(c=>c.number===last?.chapter)?last.chapter:1,Number.isInteger(last?.verse)?last.verse:undefined),true);
     const note=card(root,"Covenant Calendar");
     note.append(el("p","See your next Shabbat and the current lunar month. Switch between Early Start and Late Start without losing your date.","feature-status"));
     addAction(actions(note),"Feasts & lunar calendar",()=>show("calendar"),true);
@@ -166,7 +166,7 @@
     }
     const quick=card(root,"Your saved study");
     const savedButtons=actions(quick);
-    addAction(savedButtons,"Saved chapters",()=>{savedTrigger?.click()});
+    addAction(savedButtons,"Saved chapters",()=>window.OustoryReader?.openSaved());
     addAction(savedButtons,"Highlighted verses",()=>showHighlights());
     const topics=card(root,"Covenant topics");
     topics.append(el("p","Starting passages for each category; a full tagged knowledge graph is a later phase."));
@@ -247,6 +247,10 @@
     const a=actions(verseDialog);
     const k=refKey(record.book,record.chapter,record.verse);
     addAction(a,"Copy verse",copyVerse);
+    addAction(a,"Save verse",()=>{
+      const stored=window.OustoryReader?.saveVerse(record.id,record.chapter,record.verse);
+      byId("verse-feedback").textContent=stored?"Verse saved on this device.":"Verse could not be saved.";
+    });
     addAction(a,highlights.has(k)?"Remove highlight":"Highlight verse",()=>{
       if(highlights.has(k))highlights.delete(k);else highlights.add(k);
       save("oustory.highlights",[...highlights]);
@@ -301,7 +305,6 @@
   }
   function nav(){
     const oldDock=document.querySelector(".bottom-dock");
-    savedTrigger=oldDock?.querySelector('[data-panel="saved-panel"]');
     if(!oldDock)throw new Error("Oustory navigation missing");
     oldDock.replaceChildren();
     const items=[

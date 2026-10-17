@@ -12,7 +12,7 @@
   const books = Array.isArray(window.CPT_BOOKS) ? window.CPT_BOOKS : [];
   const cache = new Map();
   const inflight = new Map();
-  let bi = 0, ci = 0, renderToken = 0, searchToken = 0, touch = null;
+  let bi = 0, ci = 0, renderToken = 0, touch = null, scrollSaveTimer = null;
   function read(key, fallback) {
     try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; }
   }
@@ -93,7 +93,7 @@
       $('#scripture').append(btn);
     }
   }
-  async function render() {
+  async function render(targetVerse = 1) {
     if (!chapter()) return;
     const token = ++renderToken, selectedId = book().id, selectedChapter = chapter().number;
     window.OustoryAudio?.loading();
@@ -130,7 +130,11 @@
       window.OustoryFeatures?.refreshNotes();
       $('#save-place').disabled = false;
       $('#reader').scrollTop = 0;
-      write('cpt.reader.position', {book:selectedId, chapter:selectedChapter});
+      // Carry a specific resume verse across restarts; never rewrite the
+      // source verse numbering or invent an omitted source position.
+      const actualVerse = Number.isInteger(Number(targetVerse)) &&
+        verses.some(v => v.number === Number(targetVerse)) ? Number(targetVerse) : verses[0].number;
+      write('cpt.reader.position', {book:selectedId, chapter:selectedChapter, verse:actualVerse});
     } catch (error) {
       if (token !== renderToken) return;
       showMessage(error.message || 'Unable to read this chapter.', true);
@@ -152,10 +156,13 @@
     if (c < 0) return false;
     bi = b; ci = c;
     window.OustoryFeatures?.showBible();
-    const waitFor = render();
+    const waitFor = render(verseNumber == null ? 1 : verseNumber);
     closePanels();
     await waitFor;
-    if (verseNumber != null) document.getElementById('verse-' + verseNumber)?.scrollIntoView({block:'center'});
+    if (verseNumber != null) {
+      const el = document.getElementById('verse-' + verseNumber);
+      el?.scrollIntoView({block:'start'});
+    }
     return true;
   }
   function library(selected = null) {
@@ -183,40 +190,12 @@
       }
     }
   }
-  async function search() {
-    const token = ++searchToken;
-    const q = $('#search-input').value.trim().toLocaleLowerCase();
-    const result = $('#search-results');
-    result.replaceChildren();
-    if (!q) { $('#search-status').textContent = 'Enter a word or phrase.'; return; }
-    let total = 0, failure = 0;
-    $('#search-status').textContent = 'Searching the 80-book reading edition…';
-    for (const meta of books) {
-      if (token !== searchToken) return;
-      let data;
-      try { data = await loadBook(meta.id); }
-      catch { failure++; continue; }
-      if (token !== searchToken) return;
-      for (const c of data.chapters) for (const v of c.verses) {
-        const text = verseText(v);
-        if (!text.toLocaleLowerCase().includes(q)) continue;
-        total++;
-        if (total > 100) continue;
-        const node = make('button', meta.title + ' ' + c.number + ':' + v.number, 'list-button');
-        node.append(make('small', text.length > 180 ? text.slice(0,180) + '…' : text));
-        node.onclick = () => go(meta.id, c.number, v.number);
-        result.append(node);
-      }
-      $('#search-status').textContent = 'Searching… ' + total + ' matches';
-    }
-    $('#search-status').textContent = total + ' matching verses' + (total > 100 ? ' · Showing first 100' : '') + (failure ? ' · ' + failure + ' books could not load' : '');
-  }
   function savedList() {
     const list = $('#saved-list'); list.replaceChildren();
     if (!saved.length) { list.append(make('p', 'No saved places yet.', 'sheet-copy')); return; }
     saved.forEach((s,i) => {
       const row = make('div', undefined, 'saved-row'), btn = make('button', s.label, 'list-button'), remove = make('button', '×', 'icon-button');
-      btn.onclick = async () => { if (!await go(s.book, s.chapter)) $('#save-status').textContent = 'This chapter is not in the current collection.'; };
+      btn.onclick = async () => { if (!await go(s.book, s.chapter, s.verse)) $('#save-status').textContent = 'This saved location is unavailable in the current edition.'; };
       remove.setAttribute('aria-label', 'Remove ' + s.label);
       remove.onclick = () => { saved.splice(i,1); write('cpt.reader.saved', saved); savedList(); };
       row.append(btn,remove); list.append(row);
@@ -225,7 +204,7 @@
   document.querySelectorAll('[data-panel]').forEach(node => node.onclick = () => {
     const id = node.dataset.panel;
     if (id === 'books-panel') library();
-    if (id === 'search-panel') { ++searchToken; $('#search-results').replaceChildren(); $('#search-status').textContent = 'Search the 80-book reading edition.'; }
+    if (id === 'search-panel') window.OustorySearch?.opened();
     if (id === 'saved-panel') savedList();
     document.getElementById(id).showModal();
   });
@@ -233,20 +212,65 @@
   $('#read-button').onclick = () => { closePanels(); $('#reader').focus(); };
   $('#previous').onclick = () => move(-1);
   $('#next').onclick = () => move(1);
+  function openSaved() {
+    closePanels();
+    savedList();
+    $('#saved-panel').showModal();
+  }
+  function saveBookmark(record) {
+    if (!record || !books.some(b => b.id === record.book &&
+         b.chapters.some(c => c.number === record.chapter))) return false;
+    const verse = Number(record.verse);
+    const safeVerse = Number.isInteger(verse) && verse > 0 ? verse : null;
+    const exists = saved.some(item =>
+      item.book === record.book && item.chapter === record.chapter &&
+      (item.verse ?? null) === safeVerse);
+    if (!exists) {
+      saved.push({book:record.book,chapter:record.chapter,
+        ...(safeVerse ? {verse:safeVerse} : {}),label:record.label});
+    }
+    const persisted = write('cpt.reader.saved', saved);
+    $('#save-status').textContent = persisted ?
+      (exists ? 'Already in your saved places.' : 'Saved to this device.') :
+      'Saved for this session only; device storage is unavailable.';
+    savedList();
+    return persisted;
+  }
+  function saveVerse(bookId, chapterNumber, verseNumber) {
+    const meta=books.find(b => b.id===bookId);
+    const chapterMeta=meta?.chapters.find(c => c.number===Number(chapterNumber));
+    if (!chapterMeta || !Number.isInteger(verseNumber) || verseNumber < 1 ||
+        verseNumber < (chapterMeta.firstVerse ?? 1) ||
+        verseNumber > (chapterMeta.lastVerse ?? chapterMeta.verseCount)) return false;
+    return saveBookmark({book:bookId,chapter:Number(chapterNumber),
+      verse:verseNumber,label:meta.title+' '+chapterNumber+':'+verseNumber});
+  }
   $('#save-place').onclick = () => {
     if (!chapter()) return;
-    const exists = saved.some(s => s.book === book().id && s.chapter === chapter().number);
-    if (!exists) saved.push({book:book().id, chapter:chapter().number, label:book().title+' '+chapter().number});
-    $('#save-status').textContent = write('cpt.reader.saved', saved) ? (exists ? 'This chapter is already saved.' : 'Chapter saved.') : 'Saved for this session; browser storage unavailable.';
-    savedList();
+    saveBookmark({book:book().id,chapter:chapter().number,label:book().title+' '+chapter().number});
   };
+  function storeVisibleVerse() {
+    if (document.body.classList.contains('feature-mode') || !chapter()) return;
+    const reader=$('#reader'), top=reader.getBoundingClientRect().top + 15;
+    // Scroll across long inline verse spans, not chapter-sized text blocks.
+    const entries=[...$('#scripture').querySelectorAll('.verse-entry')];
+    const visible=entries.find(e => e.getBoundingClientRect().bottom > top);
+    if (!visible) return;
+    const verse=Number(visible.dataset.verse);
+    if (!Number.isInteger(verse)) return;
+    write('cpt.reader.position',{book:book().id,chapter:chapter().number,verse});
+  }
+  $('#reader').addEventListener('scroll', () => {
+    if (document.body.classList.contains('feature-mode')) return;
+    clearTimeout(scrollSaveTimer);
+    scrollSaveTimer=setTimeout(storeVisibleVerse,180);
+  }, {passive:true});
   for (const [id,key] of [['text-size','size'],['line-spacing','spacing'],['appearance','appearance']])
     $('#'+id).addEventListener('input', event => {
       prefs[key] = key === 'size' ? Number(event.target.value) : event.target.value;
       apply(); write('cpt.reader.settings', prefs);
     });
-  let searchTimer;
-  $('#search-input').oninput = () => { ++searchToken; clearTimeout(searchTimer); searchTimer = setTimeout(search, 230); };
+  window.OustorySearch?.init({books,go});
   $('#reader').addEventListener('touchstart', e => {
     touch = e.touches.length === 1 ? {x:e.touches[0].clientX, y:e.touches[0].clientY, time:Date.now()} : null;
   }, {passive:true});
@@ -265,8 +289,16 @@
   apply();
   if (books.length) {
     const last=read('cpt.reader.position',null);
-    if (!last || !books.some(b => b.id === last.book && b.chapters.some(c => c.number === last.chapter))) render();
-    else go(last.book,last.chapter);
+    const lastIndex=books.findIndex(b => b.id === last?.book &&
+      b.chapters.some(c => c.number === last.chapter));
+    // Initialize the saved chapter behind Home. Do not call go() until
+    // OustoryFeatures.init has mounted its navigation/root (returning
+    // readers previously hit root.hidden on an undefined feature root).
+    if (lastIndex >= 0) {
+      bi=lastIndex;
+      ci=books[bi].chapters.findIndex(c => c.number === last.chapter);
+    }
+    render(lastIndex >= 0 && Number.isInteger(last?.verse) ? last.verse : 1);
   } else showMessage('No verified manuscript index was loaded.', true);
   (async () => {
     try { const fonts = await document.fonts.load('400 16px "Schibsted Grotesk"');
@@ -274,5 +306,6 @@
     } catch { $('#font-status').textContent = 'Using system font fallback.'; }
   })();
   window.OustoryAudio?.init();
+  window.OustoryReader={openSaved,saveVerse,getPosition:()=>read('cpt.reader.position',null)};
   window.OustoryFeatures?.init({go,loadBook,books});
 })();

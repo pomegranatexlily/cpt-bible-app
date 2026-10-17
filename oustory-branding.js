@@ -1,7 +1,6 @@
 (() => {
   const settingsButton = document.querySelector('button[data-panel="settings-panel"]');
   if (!settingsButton || document.getElementById('oustory-menu')) return;
-  const originalSettingsButton = settingsButton;
   const opener = settingsButton.cloneNode(true);
   opener.removeAttribute('data-panel');
   opener.setAttribute('aria-label', 'Open Oustory menu');
@@ -36,11 +35,11 @@
   brand.append(icon, identity);
   menu.append(heading, brand);
   const actions = [
-    ['Read the Bible', () => { menu.close(); document.getElementById('reader').focus(); }],
+    ['Read the Bible', () => window.OustoryFeatures?.show('bible')],
     ['Books & chapters', () => document.querySelector('button[data-panel="books-panel"]').click()],
     ['Search Scripture', () => document.querySelector('button[data-panel="search-panel"]').click()],
-    ['Saved places', () => document.querySelector('button[data-panel="saved-panel"]').click()],
-    ['Reading settings', () => originalSettingsButton.click()],
+    ['Saved places', () => window.OustoryReader?.openSaved()],
+    ['Reading settings', () => document.getElementById('settings-panel')?.showModal()],
     ['About this edition', () => document.querySelector('button[data-panel="edition-panel"]').click()]
   ];
   actions.forEach(([label, action]) => {

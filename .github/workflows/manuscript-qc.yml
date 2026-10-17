@@ -14,3 +14,5 @@ jobs:
       - uses: actions/checkout@v4
       - name: Verify source manuscript integrity and JavaScript
         run: python3 scripts/check_content.py
+      - name: Check Release 1 search index and source alignment
+        run: python3 scripts/test_release1.py
