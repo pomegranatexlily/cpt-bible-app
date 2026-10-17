@@ -31,3 +31,11 @@ Repository: pomegranatexlily/cpt-bible-app
 4. Change the local saved data; import the backup; verify restoration after app reload.
 5. Confirm search/comparison/calendar inform the reader if unvisited network-dependent resources are unavailable.
 6. Turn on VoiceOver and verify book/chapter picker, verse-action dialogue, downloadable actions, status changes, and keyboard navigation.
+
+## Calendar feed resilience — October 17 hotfix
+
+The 2026-10-17 production screenshot showed Oustory's month stuck at Loading with a live feed error even while the separate Shabbat Calendar repository built successfully. The previous browser test intercepted the calendar URL with a passing fixture and therefore did not exercise a live-source outage.
+
+The calendar now retrieves the published Shabbat Calendar feed first, then reuses the most recently successfully fetched and schema-validated feed, or finally falls back to `calendar/published.json`. This fallback is staged at deployment by running the **same** Shabbat Calendar repository's generator and arithmetic tests, recording its upstream Git revision and generation timestamp. No independent lunar calendar, new month rule, or approved feast is introduced. The interface labels a snapshot when the live fetch fails; it remains planning data, not observed crescent verification. The service worker precaches the fallback so the calendar remains usable after installing/reopening offline.
+
+The regression explicitly interrupts the live calendar network request and checks that the real generated bundle renders in both year-start tracks, retains the selected day, and reopens in offline mode. The live feed remains the primary source whenever reachable; the bundled version is only as recent as its Oustory deployment, while a saved successful response can be newer.
