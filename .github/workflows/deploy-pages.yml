@@ -39,9 +39,10 @@ jobs:
         shell: bash
         run: |
           mkdir -p _site
-          cp index.html manifest.webmanifest oustory-branding.css oustory-branding.js oustory-features.css oustory-features.js oustory-audio.js cpt-index.js oustory-reader.js _site/
+          cp index.html manifest.webmanifest oustory-branding.css oustory-branding.js oustory-features.css oustory-features.js oustory-calendar.css oustory-calendar.js oustory-audio.js cpt-index.js oustory-reader.js _site/
           cp -R assets _site/assets
           cp -R data _site/data
+          cp -R calendar _site/calendar
           test -f _site/data/genesis.json
           test -f _site/data/isaiah.json
           test -f _site/data/the-rest-of-esther.json
@@ -54,6 +55,9 @@ jobs:
           test -f _site/oustory-audio.js
           test -f _site/oustory-features.js
           test -f _site/oustory-features.css
+          test -f _site/oustory-calendar.js
+          test -f _site/oustory-calendar.css
+          test -f _site/calendar/archive.json
           test -f _site/data/editorial-notes.json
           test "$(find _site/data -maxdepth 1 -name '*.json' | wc -l)" -eq 82
       - name: Upload app
