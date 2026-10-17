@@ -101,7 +101,7 @@ assert "window.OustoryAudio?.init" in (ROOT/"oustory-reader.js").read_text(encod
 
 notes=json.loads((DATA/"editorial-notes.json").read_text(encoding="utf8"))
 assert notes["verses_rewritten"] is False
-assert len(notes["notes"])>=18 and "Gentiles" in notes["watchlist_status"]
+assert len(notes["notes"])>=18 and "nations" in notes["watchlist_status"].lower()
 assert {x["status"] for x in notes["notes"]}=={"author-ruling","open-question","provisional","draft-note"}
 valid_titles={b["title"] for b in books}
 linked=set()
