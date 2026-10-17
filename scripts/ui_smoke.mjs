@@ -329,7 +329,8 @@ try{
   await page.locator("#book-list button").filter({hasText:/^3 Maccabees/}).click();
   await page.locator('#chapter-list button[aria-label="3 Maccabees, chapter 1, historical source draft"]').click();
   await page.locator("#chapter-title").getByText("3 Maccabees 1").waitFor();
-  await page.locator("#verse-1").waitFor();
+  await page.waitForFunction(() => document.querySelectorAll("#scripture .verse-number").length===29,
+    {timeout:15000});
   assert.match(await page.locator("#reader-source-disclosure").innerText(),/Supplemental Writings/);
   assert.equal(await page.locator("#save-place").isDisabled(),true,
     "Research drafts must not enter the canonical saved-place ledger");
