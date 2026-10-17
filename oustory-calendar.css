@@ -57,3 +57,11 @@
  .calendar-source-tab{font-size:12px}
 }
 @media(max-width:345px){.calendar-grid{padding:3px;gap:1px}.calendar-day{min-height:57px;padding-inline:2px}.calendar-legend{gap:6px}.calendar-dot{flex-basis:5px;width:5px;height:5px}}
+
+/* Projected two-track engine: every Gregorian cell shows its lunar day. */
+.calendar-day-lunar{font-size:10px;line-height:1;white-space:nowrap;color:var(--covenant-gold);letter-spacing:-.035em;font-weight:600}
+.calendar-lunar-context{font-weight:700;color:var(--covenant-gold);font-size:13px;line-height:1.5;margin:0 0 14px}
+.calendar-source-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+.calendar-source-tab{overflow-wrap:anywhere;line-height:1.3;min-height:52px}
+@media(max-width:520px){.calendar-day-lunar{font-size:9px}.calendar-day{gap:5px}.calendar-source-tab{padding:8px 6px}}
+@media(max-width:345px){.calendar-day-lunar{font-size:8px}}
