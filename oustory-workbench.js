@@ -50,7 +50,8 @@
     current=null;
     document.body.classList.remove("study-workbench-mode");
     root.hidden=true;
-    window.OustoryFeatures?.showBible();
+    if(origin==="study")window.OustoryFeatures?.show("study");
+    else window.OustoryFeatures?.showBible();
     const reader=byId("reader");
     reader.scrollTop=readerScroll;
     byId("verse-"+lastVerse)?.closest(".verse-entry")?.focus({preventScroll:true});
@@ -217,11 +218,96 @@
     window.OustoryResearch?.appendEvidence?.(notices,record);
     window.OustoryResearch?.appendProvenance?.(notices,record);
   }
+
+  function studyHeader(backLabel,backHandler,name,subtitle){
+    root.replaceChildren();
+    const header=el("header",undefined,"workbench-heading");
+    action(header,"‹  "+backLabel,backHandler,"workbench-back");
+    header.append(el("p","OUSTORY · SOURCE RESEARCH","workbench-eyebrow"));
+    header.append(el("h1",name,"workbench-title"),el("p",subtitle,"workbench-note"));
+    root.append(header);
+    return root;
+  }
+  function noteIndex(entries){
+    studyHeader("Back to Study",back,"Editorial notes","Filter by title, Scripture book, or review status. Founder rulings, drafts, and open questions remain separate.");
+    const controls=el("div",undefined,"workbench-index-controls");
+    const term=el("input");term.type="search";term.id="workbench-note-search";
+    term.placeholder="Search editorial notes";term.setAttribute("aria-label","Search editorial notes");
+    const status=el("select");status.id="workbench-note-filter";
+    status.setAttribute("aria-label","Editorial status");
+    const options=[["","All evidence statuses"],["author-ruling","Founder ruling"],
+      ["open-question","Open question"],["provisional","Provisional"],["draft-note","Draft"]];
+    for(const [value,label] of options){const x=el("option",label);x.value=value;status.append(x)}
+    const book=el("select");book.id="workbench-book-filter";book.setAttribute("aria-label","Scripture book");
+    const names=[...new Set(entries.flatMap(n=>(n.refs||[]).map(ref=>ref.replace(/\s+\d+:\d+$/,""))))].sort();
+    for(const name of ["All books",...names]){const x=el("option",name);x.value=name==="All books"?"":name;book.append(x)}
+    controls.append(term,status,book);root.append(controls);
+    const count=el("p",undefined,"workbench-status");
+    const list=el("div",undefined,"workbench-note-list");
+    root.append(count,list);
+    const display=()=>{
+      const q=term.value.trim().toLowerCase();
+      const matches=entries.filter(n=>
+        (!status.value||n.status===status.value)&&
+        (!book.value||(n.refs||[]).some(r=>r.startsWith(book.value+" ")))&&
+        (!q||[n.label,n.body,...(n.refs||[])].join(" ").toLowerCase().includes(q)));
+      count.textContent=matches.length+" editorial "+(matches.length===1?"note":"notes")+" found";
+      list.replaceChildren();
+      if(!matches.length)list.append(el("p","No matching notes. Try a different filter.","workbench-status"));
+      for(const n of matches){
+        const b=action(list,n.label,()=>noteDetail(n,entries),"workbench-index-row");
+        b.append(el("small",(n.refs||[]).join(", ")+" · "+
+          (n.status==="author-ruling"?"Founder ruling":n.status==="open-question"?"Open question":n.status==="provisional"?"Provisional interpretation":"Draft editorial note")));
+      }
+    };
+    term.oninput=display;status.onchange=display;book.onchange=display;
+    display();
+  }
+  function noteDetail(note,entries){
+    studyHeader("All editorial notes",()=>noteIndex(entries),note.label,
+      note.status==="author-ruling"?"Founder editorial ruling":
+      note.status==="open-question"?"Unresolved manuscript question":
+      note.status==="provisional"?"Provisional founder interpretation":"Draft editorial note");
+    root.append(el("p",note.body,"workbench-editorial-body"));
+    root.append(el("p","This note describes an editorial position. It does not change Oustory's source text or prove a manuscript variant.","workbench-note"));
+    const links=el("div",undefined,"workbench-note-list");root.append(links);
+    for(const ref of note.refs||[]){
+      const m=/^(.*)\s+(\d+):(\d+)$/.exec(ref);
+      const book=m&&api?.books?.find(x=>x.title===m[1]);
+      if(!book)continue;
+      action(links,"Read "+ref,()=>void previewVerse(note,entries,{
+        id:book.id,book:book.title,chapter:Number(m[2]),verse:Number(m[3])
+      }),"workbench-index-row");
+    }
+  }
+  async function previewVerse(note,entries,ref){
+    studyHeader("Back to editorial note",()=>noteDetail(note,entries),
+      ref.book+" "+ref.chapter+":"+ref.verse,"Passage from the current source-based Oustory working edition");
+    const placeholder=el("p","Loading Scripture passage…","workbench-status");root.append(placeholder);
+    try{
+      const src=await api.loadBook(ref.id);
+      if(!placeholder.isConnected)return;
+      const verse=src.chapters?.find(c=>c.number===ref.chapter)?.verses?.find(v=>v.number===ref.verse);
+      if(!verse){placeholder.textContent="This manuscript witness does not contain that verse coordinate.";return}
+      const text=typeof verse.text==="string"?verse.text:(verse.parts||[]).map(p=>p.text).join("");
+      placeholder.replaceWith(el("blockquote",text,"workbench-verse"));
+      root.append(el("p","Read-only source view. No alterations to manuscript, verse numbering, or personal study position.","workbench-note"));
+    }catch(e){if(placeholder.isConnected)placeholder.textContent="Passage unavailable: "+e.message}
+  }
+  function openEditorialIndex(entries){
+    if(!api||!Array.isArray(entries))return;
+    if(!current){readerScroll=byId("reader").scrollTop;origin="study"}
+    current={section:"index",record:null};request++;
+    root.hidden=false;document.body.classList.add("study-workbench-mode");
+    window.OustoryAudio?.stop();
+    noteIndex(entries);
+    byId("reader").scrollTop=0;
+  }
   function init(readerApi){
     api=readerApi;
     root=el("section",undefined,"workbench-root");root.id="workbench-root";
     root.hidden=true;root.setAttribute("aria-label","Verse study workspace");
     byId("reader").append(root);
   }
-  window.OustoryWorkbench={init,open,openChapter,back,validNotes,noteKey:NOTES_KEY};
+  window.OustoryWorkbench={init,open,openChapter,openEditorialIndex,back,validNotes,noteKey:NOTES_KEY};
 })();
