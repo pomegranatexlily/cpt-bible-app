@@ -158,21 +158,8 @@
   function renderStudy(){
     title("Study · covenant literacy","Read with the record","Scripture reading, founder corrections, draft terminology review, and openly unresolved textual research.");
     const editorial=card(root,"Why this rendering — editorial index");
-    editorial.append(el("p","The first indexed notes follow the October 16 founder rulings and doctrinal-drift draft. Drafts and unresolved variants remain labeled; source text is not silently rewritten."));
-    const list=el("div",undefined,"feature-list");editorial.append(list);
-    if(!notesByRef.size){list.append(el("p","Loading editorial index…","feature-status"));}
-    const added=new Set();
-    for(const [ref,n] of notesByRef){
-      if(added.has(n))continue;added.add(n);
-      const [book,chapVerse]=splitReference(ref);
-      const [ch,v]=chapVerse.split(":").map(Number);
-      const meta=api.books.find(b=>b.title===book);
-      if(!meta)continue;
-      const button=el("button",n.label);
-      button.append(el("small",ref+" · "+statusText(n.status)));
-      button.onclick=()=>jump(meta.id,ch,v);
-      list.append(button);
-    }
+    editorial.append(el("p","Browse source-linked editorial rulings, drafts and unresolved manuscript questions without leaving the Study screen cluttered with every note."));
+    addAction(actions(editorial),"Browse editorial notes",()=>window.OustoryWorkbench?.openEditorialIndex([...new Set(notesByRef.values())]),true);
     const research=card(root,"Research desk");
     const content=el("div",undefined,"research-study-content");research.append(content);
     window.OustoryResearch?.fillStudy(content,(id,ch,verse)=>jump(id,ch,verse));
