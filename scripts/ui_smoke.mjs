@@ -110,6 +110,21 @@ try{
   await page.locator(".calendar-detail-heading").getByText("October 19, 2026").waitFor();
   await page.locator(".calendar-detail-item").getByRole("heading",{name:"Shabbat"}).waitFor();
   assert.match(await page.locator(".calendar-lunar-context").innerText(),/Lunar Day 8/);
+  await page.locator(".covenant-study-heading").waitFor();
+  assert.equal(await page.locator(".calendar-study .covenant-study-reading").count(),3);
+  assert.match(await page.locator(".calendar-study").innerText(),/Exodus 20:8/);
+  await page.locator(".calendar-study .covenant-study-mark").first().click();
+  const earlyRead=await page.evaluate(()=>JSON.parse(localStorage.getItem("oustory.calendar.study.v1")));
+  assert.equal(earlyRead["earlier|2026-10-19|Exodus|20:8"],true,
+    "Study progress must be tied to civil date and Early Start track");
+  await page.locator('.calendar-source-tab[data-source="later"]').click();
+  await page.locator(".calendar-study .covenant-study-reading").first().waitFor();
+  assert.equal(await page.locator(".calendar-study .covenant-study-mark").first().getAttribute("aria-pressed"),"false",
+    "Late Start must not inherit Early Start reading progress");
+  await page.locator('.calendar-source-tab[data-source="earlier"]').click();
+  await page.waitForFunction(()=>document.querySelector(".calendar-study .covenant-study-mark")?.getAttribute("aria-pressed")==="true");
+  await page.locator(".calendar-verification summary").click();
+  await page.getByText(/Mathematical validation does not establish actual crescent sightings/).waitFor();
   await page.getByRole("button",{name:"Today",exact:true}).click();
   assert.equal(await page.locator(".calendar-month-heading").textContent(),"October 2026");
   await page.locator(".calendar-detail-heading").getByText("October 17, 2026").waitFor();
@@ -252,6 +267,14 @@ try{
   await page.getByRole("button",{name:"Resume reading"}).click();
   await page.locator("#verse-8").waitFor();
   assert.equal((await page.evaluate(()=>JSON.parse(localStorage.getItem("cpt.reader.position")))).verse,8);
+  // Home connects the next Sabbath to actual Oustory manuscript coordinates.
+  await page.locator("#nav-home").click();
+  await page.getByRole("heading",{name:"Next Shabbat · Scripture study"}).waitFor();
+  await page.locator(".calendar-study-home .covenant-study-reading").first().waitFor();
+  assert.match(await page.locator(".calendar-study-home").innerText(),/Exodus 20:8/);
+  await page.locator(".calendar-study-home .covenant-study-read").first().click();
+  await page.locator("#chapter-title").getByText("Exodus 20").waitFor();
+  await page.locator("#verse-8").waitFor();
   assert.deepEqual(errors,[],"No uncaught client errors");
   console.log("PASS Release 1 UI: native audio, saved verse, Study/More navigation, fast search, exact verse resume, calendar, all 80 books.");
 }finally{await browser.close()}
