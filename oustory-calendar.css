@@ -1,0 +1,13 @@
+/* Archived, source-separated feast calendar. */
+.calendar-actions{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:15px}
+.calendar-actions .feature-action{font-size:12px}
+.calendar-warning{border-left:3px solid var(--covenant-gold)}
+.calendar-conflict{margin-top:14px!important;line-height:1.6}
+.calendar-section-title{font:500 23px Georgia,serif;margin:18px 0 8px;overflow-wrap:anywhere}
+.calendar-entry-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,245px),1fr));gap:10px;margin:12px 0}
+.calendar-entry{margin:10px 0!important}
+.calendar-entry h3{margin-bottom:7px}
+.calendar-entry .calendar-date{font-size:15px;color:var(--text);font-weight:600;margin:5px 0}
+.calendar-entry .calendar-feasts{color:var(--text);font-weight:600}
+.calendar-filter{display:flex;gap:12px;align-items:center;font-size:13px;margin:13px 0;color:var(--muted)}
+.calendar-filter select{padding:8px 10px;border-radius:9px;background:var(--control);color:var(--text);border:1px solid var(--line);max-width:240px}
