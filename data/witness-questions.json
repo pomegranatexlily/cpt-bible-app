@@ -1,0 +1,194 @@
+{
+  "schema_version": 1,
+  "status": "DRAFT RESEARCH QUEUE — NOT A COMPLETED MANUSCRIPT COLLATION",
+  "source": "Doctrinal-Drift Editorial Notes draft 2026-10-16",
+  "source_kind": "working editorial agenda, not primary manuscript evidence",
+  "witnesses_independently_verified": false,
+  "policy": "Evaluate actual manuscript age, attestation, context, linguistic coherence, and significant alternatives case-by-case; do not default to the Masoretic Text or to an interpretation just because it is printed in KJV.",
+  "questions": [
+    {
+      "refs": [
+        "1 John 5:7",
+        "1 John 5:8"
+      ],
+      "label": "Comma Johanneum",
+      "kind": "witness-variant",
+      "focus": "Investigate the heavenly-witnesses clause in Greek and Latin manuscript traditions.",
+      "page": 6,
+      "id": "W01",
+      "status": "source_review_pending",
+      "independent_witness_citations": []
+    },
+    {
+      "refs": [
+        "John 1:18"
+      ],
+      "label": "Unique Son / God reading",
+      "kind": "witness-variant",
+      "focus": "Collate Greek witnesses for Son and God variants before settling main-text wording.",
+      "page": 8,
+      "id": "W02",
+      "status": "source_review_pending",
+      "independent_witness_citations": []
+    },
+    {
+      "refs": [
+        "1 Timothy 3:16"
+      ],
+      "label": "Manifest in the flesh",
+      "kind": "witness-variant",
+      "focus": "Compare Greek readings around theos / hos using dated actual manuscript witnesses.",
+      "page": 12,
+      "id": "W03",
+      "status": "source_review_pending",
+      "independent_witness_citations": []
+    },
+    {
+      "refs": [
+        "Psalms 22:16"
+      ],
+      "label": "Like a lion / pierced",
+      "kind": "witness-variant",
+      "focus": "Founder left the reading unresolved; evaluate early Hebrew textual forms and ancient versions individually, with no Masoretic default.",
+      "page": 17,
+      "id": "W04",
+      "status": "source_review_pending",
+      "independent_witness_citations": []
+    },
+    {
+      "refs": [
+        "Zechariah 12:10"
+      ],
+      "label": "Me / him and pierced figure",
+      "kind": "witness-and-syntax",
+      "focus": "Keep the wording and identity questions separate; do not equate this figure automatically with Isaiah 53.",
+      "page": 18,
+      "id": "W05",
+      "status": "source_review_pending",
+      "independent_witness_citations": []
+    },
+    {
+      "refs": [
+        "Mark 16:9",
+        "Mark 16:20"
+      ],
+      "label": "Long ending of Mark",
+      "kind": "witness-variant",
+      "focus": "The draft discusses the varying attestation of 16:9–20; independently establish witness dates and wording before adjudicating.",
+      "page": 33,
+      "id": "W06",
+      "status": "source_review_pending",
+      "independent_witness_citations": []
+    },
+    {
+      "refs": [
+        "John 7:53",
+        "John 8:11"
+      ],
+      "label": "Pericope adulterae",
+      "kind": "witness-variant",
+      "focus": "Investigate earliest extant Greek copies and variant placement; show the present printed text with a provisional warning.",
+      "page": 34,
+      "id": "W07",
+      "status": "source_review_pending",
+      "independent_witness_citations": []
+    },
+    {
+      "refs": [
+        "Luke 22:43",
+        "Luke 22:44"
+      ],
+      "label": "Agony in the garden",
+      "kind": "witness-variant",
+      "focus": "Check extant witnesses and the textual status of the two verses.",
+      "page": 34,
+      "id": "W08",
+      "status": "source_review_pending",
+      "independent_witness_citations": []
+    },
+    {
+      "refs": [
+        "Luke 23:34"
+      ],
+      "label": "Father forgive them",
+      "kind": "witness-variant",
+      "focus": "Review early evidence for the clause and separately distinguish theological interpretation.",
+      "page": 34,
+      "id": "W09",
+      "status": "source_review_pending",
+      "independent_witness_citations": []
+    },
+    {
+      "refs": [
+        "Acts 20:28"
+      ],
+      "label": "Assembly purchased with blood",
+      "kind": "witness-and-translation",
+      "focus": "Review text variants, ownership grammar and how the subject is rendered.",
+      "page": 13,
+      "id": "W10",
+      "status": "source_review_pending",
+      "independent_witness_citations": []
+    },
+    {
+      "refs": [
+        "Romans 9:5"
+      ],
+      "label": "Punctuation and doxology",
+      "kind": "punctuation-interpretation",
+      "focus": "Separate editorial punctuation from manuscript characters and examine Greek syntax.",
+      "page": 13,
+      "id": "W11",
+      "status": "source_review_pending",
+      "independent_witness_citations": []
+    },
+    {
+      "refs": [
+        "Hebrews 1:8"
+      ],
+      "label": "Royal address in Psalm 45",
+      "kind": "translation-interpretation",
+      "focus": "Founder favors a royal address; clarify semantic options and retained printed wording, not a fabricated Greek variant.",
+      "page": 12,
+      "id": "W12",
+      "status": "source_review_pending",
+      "independent_witness_citations": []
+    },
+    {
+      "refs": [
+        "Isaiah 7:14"
+      ],
+      "label": "Almah / parthenos",
+      "kind": "cross-language-translation",
+      "focus": "Distinguish Hebrew lexeme, Greek translation and later reception; treat this as a translation issue unless specific witnesses are collated.",
+      "page": 15,
+      "id": "W13",
+      "status": "source_review_pending",
+      "independent_witness_citations": []
+    },
+    {
+      "refs": [
+        "Acts 12:4"
+      ],
+      "label": "Passover and Easter",
+      "kind": "translation-interpretation",
+      "focus": "Examine Greek pascha and English translation choices, rather than misclassifying the English word as a manuscript variant.",
+      "page": 33,
+      "id": "W14",
+      "status": "source_review_pending",
+      "independent_witness_citations": []
+    },
+    {
+      "refs": [
+        "Matthew 28:19"
+      ],
+      "label": "Singular name and commissioning",
+      "kind": "interpretation-and-source-check",
+      "focus": "Distinguish received Greek witness from the founder's editorial interpretation and separately audit citations alleging shorter forms.",
+      "page": 6,
+      "id": "W15",
+      "status": "source_review_pending",
+      "independent_witness_citations": []
+    }
+  ]
+}
