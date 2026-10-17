@@ -1,0 +1,41 @@
+name: Oustory Mobile UI Smoke
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'oustory-reader.js'
+      - 'oustory-features.js'
+      - 'oustory-features.css'
+      - 'oustory-branding.js'
+      - 'data/editorial-notes.json'
+      - 'scripts/ui_smoke.mjs'
+      - '.github/workflows/ui-smoke.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  mobile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install headless Chromium
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Run isolated local site
+        run: python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/oustory-site.log 2>&1 &
+      - name: Check all mobile navigation and verse details
+        run: node scripts/ui_smoke.mjs
+      - name: Save mobile preview screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: oustory-mobile-screenshots
+          path: out/ui-smoke/
+          if-no-files-found: warn
+          retention-days: 14
