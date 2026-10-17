@@ -322,7 +322,7 @@ try{
   await page.locator("#verse-1").click();
   await page.getByRole("button",{name:"Interlinear",exact:true}).click();
   await page.locator("#workbench-root:not([hidden])").waitFor();
-  await page.getByRole("button",{name:"Bible",exact:true}).click();
+  await page.locator("#read-button").click();
   assert.equal(await page.locator("#workbench-root").isHidden(),true,
     "Bible footer must dismiss Interlinear overlay");
   await page.locator("#reference").click();
