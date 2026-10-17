@@ -13,10 +13,10 @@ try{
  await page.locator("#nav-more").click();
  await page.getByRole("button",{name:"Offline reading & backup"}).click();
  await page.locator("#release4-panel[open]").waitFor();
- await page.locator("#release4-offline-status").getByText(/of 80 books downloaded/).waitFor({timeout:15000});
+ await page.waitForFunction(()=>/of 80 books downloaded/.test(document.querySelector("#release4-offline-status")?.textContent||""),{timeout:15000});
  assert.equal(await page.locator("#release4-title").textContent(),"Offline & saved data");
  await page.locator("#release4-download").click();
- await page.locator("#release4-offline-status").getByText("All 80 books are stored for offline reading.").waitFor({timeout:120000});
+ await page.waitForFunction(()=>document.querySelector("#release4-offline-status")?.textContent==="All 80 books are stored for offline reading.",{timeout:120000});
  const actualCount=await page.evaluate(async()=>{
   const cache=await caches.open("oustory-books-r4");
   return (await cache.keys()).filter(r=>/\/data\/[a-z0-9-]+\.json$/.test(new URL(r.url).pathname)).length;
@@ -68,7 +68,7 @@ try{
  await page.locator("#release4-file").setInputFiles({
   name:"broken.json",mimeType:"application/json",buffer:Buffer.from('{"format":"oustory-saved-study","version":1,"data":{"oustory.calendar.track":"unapproved"}}')
  });
- await page.locator("#release4-backup-status").getByText(/Import rejected/).waitFor();
+ await page.waitForFunction(()=>/Import rejected/.test(document.querySelector("#release4-backup-status")?.textContent||""));
  assert.equal(await page.evaluate(()=>localStorage.getItem("oustory.calendar.track")),"later",
   "Invalid backup must not change existing saved data");
  await page.locator("#release4-close").click();
