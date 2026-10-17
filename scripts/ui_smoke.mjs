@@ -1,0 +1,44 @@
+/* Headless mobile smoke: verify the released app UI, not just source syntax. */
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import {chromium} from "playwright";
+
+const browser=await chromium.launch({headless:true});
+const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
+const errors=[];
+page.on("pageerror",e=>errors.push(e.message));
+page.on("console",m=>{if(m.type()==="error")errors.push(m.text())});
+fs.mkdirSync("out/ui-smoke",{recursive:true});
+try{
+  await page.goto("http://127.0.0.1:8765/",{waitUntil:"domcontentloaded"});
+  await page.locator("#nav-home").waitFor({timeout:20000});
+  assert.equal(await page.locator("#nav-home").getAttribute("aria-current"),"page");
+  await page.locator(".feature-title").getByText("The nation's record").waitFor();
+  await page.locator(".feature-verse").waitFor();
+  await page.screenshot({path:"out/ui-smoke/home-mobile.png",fullPage:false});
+  await page.locator("#read-button").click();
+  await page.waitForFunction(()=>document.querySelectorAll(".verse-entry").length>=20,{timeout:20000});
+  assert.ok((await page.locator("#scripture").innerText()).length>250);
+  await page.locator(".verse-entry").first().click();
+  await page.locator("#verse-panel[open]").waitFor();
+  assert.ok((await page.locator("#verse-panel .verse-text").innerText()).length>10);
+  await page.locator("#verse-panel .icon-button").click();
+  await page.screenshot({path:"out/ui-smoke/bible-mobile.png",fullPage:false});
+  await page.locator("#nav-study").click();
+  await page.getByText("Why this rendering — editorial index").waitFor();
+  await page.getByText("Covenant topics").waitFor();
+  await page.screenshot({path:"out/ui-smoke/study-mobile.png",fullPage:false});
+  await page.locator("#nav-discover").click();
+  await page.getByText("Torah Foundations").waitFor();
+  await page.screenshot({path:"out/ui-smoke/discover-mobile.png",fullPage:false});
+  await page.locator("#nav-more").click();
+  await page.locator("#oustory-menu[open]").waitFor();
+  await page.locator("#oustory-menu button[aria-label='Close menu']").click();
+  await page.locator("#reference").click();
+  await page.locator("#books-panel[open]").waitFor();
+  const count=await page.locator("#book-list button").count();
+  assert.equal(count,80,"All 80 book choices should be present");
+  await page.locator("#books-panel [data-close]").click();
+  assert.deepEqual(errors,[],"No uncaught client errors");
+  console.log("PASS mobile UI: Home, Bible, verse actions, Study notes/topics, Discover plans, More, 80-book picker.");
+}finally{await browser.close()}
