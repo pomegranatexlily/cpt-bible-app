@@ -18,6 +18,7 @@ try{
   await page.locator("#verse-panel[open]").waitFor();
   const quote=await page.locator("#verse-panel .verse-text").innerText();
   assert.ok(quote.length>15);
+  await page.locator("#verse-panel .verse-more summary").click();
   await page.getByRole("button",{name:"Create verse image"}).click();
   const dialog=page.locator("#oustory-share-card-dialog[open]");
   await dialog.waitFor();
