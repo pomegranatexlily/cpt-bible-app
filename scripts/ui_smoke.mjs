@@ -41,7 +41,7 @@ try{
   await page.screenshot({path:"out/ui-smoke/home-mobile.png",fullPage:false});
   await page.getByRole("button",{name:"Feasts & lunar calendar"}).click();
   await page.getByText("Covenant calendar",{exact:true}).waitFor();
-  await page.getByText("Feast of Trumpets",{exact:true}).waitFor();
+  await page.getByRole("heading",{name:"Feast of Trumpets",exact:true}).waitFor();
   await page.getByText(/Aug 22, 2025/).waitFor();
   await page.getByRole("button",{name:"2025 Lunar · 11 months"}).click();
   await page.getByText("7th Month").waitFor();
