@@ -193,7 +193,7 @@ try{
   await page.locator("#nav-more").click();
   await page.locator("#oustory-menu[open]").waitFor();
   await page.getByRole("button",{name:"Read the Bible"}).click();
-  assert.equal(await page.locator("#nav-bible").getAttribute("aria-current"),"page");
+  assert.equal(await page.locator("#read-button").getAttribute("aria-current"),"page");
   await page.locator("#nav-more").click();
   await page.locator("#oustory-menu[open]").waitFor();
   await page.getByRole("button",{name:"Reading settings"}).click();
