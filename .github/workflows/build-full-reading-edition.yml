@@ -8,6 +8,7 @@ on:
       - '.github/workflows/build-full-reading-edition.yml'
       - 'engine/ingest.py'
       - 'engine/ingest_additions.py'
+      - 'engine/modern_usfm.py'
       - 'canon/books.json'
       - 'scripts/build_full_reading_edition.py'
 
@@ -34,6 +35,17 @@ jobs:
         run: python -u engine/ingest.py --mode all_remaining --workers 8 --out out
       - name: Import all fourteen author-directed additional titles
         run: python -u engine/ingest_additions.py
+      - name: Acquire modern public-domain additional-book WEB source
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import urllib.request
+          url="https://ebible.org/Scriptures/eng-web_usfm.zip"
+          r=urllib.request.Request(url,headers={"User-Agent":"CPT-APE-source-review/1.0"})
+          data=urllib.request.urlopen(r,timeout=90).read(25000001)
+          if len(data)>25000000 or len(data)<100000:raise ValueError("Invalid modern WEB archive")
+          Path("out/modern-web-usfm.zip").write_bytes(data)
+          PY
       - name: Build readable 80-book edition preserving Genesis through Isaiah
         run: python -u scripts/build_full_reading_edition.py
       - name: Fail closed on book, chapter, verse, source and JavaScript integrity
@@ -45,8 +57,9 @@ jobs:
           m=json.load(open('data/manifest.json'))
           print(f"### Oustory 80-book editable reading edition")
           print(f"\nBooks: {m['books']}; chapters: {m['chapters']}; source verses: {m['verses']}")
-          print(f"\nHistorical additions: {m['historic_additional_books']}; modernized historical source verses: {m['historical_verses_orthographically_modernized']}")
+          print(f"\nHistorical additions: {m['historic_additional_books']}; modernized historical source verses: {m['historical_verses_with_readability_adaptation']}")
           print(f"\nDocumented missing witness verse positions: {len(m['missing_source_positions'])}")
+          print(f"\nModern WEB verse selections: {m['historical_verses_using_modern_WEB_witness']}; historical fallbacks: {m['historical_1611_fallback_verses']}")
           print("\nNOT AUTHOR APPROVED. Genesis-Isaiah is preserved; newly generated source texts stay open for editorial revision. Colors for the added books are deferred.")
           PY
       - name: Commit all 57 new data books and the complete index
