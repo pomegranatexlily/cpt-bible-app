@@ -1,0 +1,44 @@
+/* Release 6: single-purpose research views; no desktop-style toolbars. */
+body.study-workbench-mode .reading-column,
+body.study-workbench-mode .feature-root,
+body.study-workbench-mode .chapter-navigation,
+body.study-workbench-mode .bottom-dock{display:none!important}
+.workbench-root{width:min(100%,760px);min-height:100%;margin:auto;padding:calc(12px + env(safe-area-inset-top,0px)) 20px calc(46px + env(safe-area-inset-bottom,0px))}
+.workbench-heading{display:flex;flex-direction:column;align-items:flex-start;gap:8px;margin:0 0 18px}
+.workbench-back{background:transparent;border:0;padding:9px 0;min-height:44px;color:var(--text);font-size:15px;font-weight:650}
+.workbench-eyebrow{font-size:10px;letter-spacing:.12em;color:var(--covenant-gold);margin:5px 0 0}
+.workbench-title{font-family:Georgia,serif;font-size:clamp(27px,6vw,35px);line-height:1.2;font-weight:500;margin:0}
+.workbench-reference{margin:0;color:var(--muted);font-size:14px}
+.workbench-verse{font-family:Georgia,serif;font-size:20px;line-height:1.6;border:0;border-left:3px solid var(--note-border);margin:0 0 17px;padding:10px 0 10px 15px}
+.workbench-switcher{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;padding:4px;margin:12px 0 20px;border-radius:14px;background:var(--control)}
+.workbench-tab{background:transparent;color:var(--muted);padding:12px 5px;min-height:44px;border:0;border-radius:10px;font-size:14px;font-weight:600}
+.workbench-tab[aria-current=page]{background:var(--sheet);color:var(--text);box-shadow:0 2px 9px rgb(0 0 0 / 12%)}
+.workbench-body{display:grid;align-content:start;gap:12px;padding:0 0 40px}
+.workbench-note{font-size:13px;line-height:1.6;color:var(--muted);margin:2px 0}
+.workbench-section-title{font-family:Georgia,serif;font-size:22px;margin:8px 0 0;font-weight:500}
+.workbench-status{font-size:13px;color:var(--muted);line-height:1.6}
+.workbench-control-label{display:flex;flex-direction:column;gap:7px;font-size:12px;color:var(--muted)}
+.workbench-edition{width:100%;font-size:15px;min-height:46px;border-radius:12px;border:1px solid var(--line);background:var(--sheet);color:var(--text);padding:10px 14px}
+.workbench-body .research-columns{display:grid;grid-template-columns:1fr;gap:8px}
+.workbench-body .research-column{min-width:0}
+.workbench-body .research-pair{margin:8px 0;border:1px solid var(--line);border-radius:14px;padding:10px}
+.workbench-body .research-verse-text{font-size:17px;line-height:1.55}
+.workbench-body .research-source-warning{font-size:13px;line-height:1.6}
+.workbench-body textarea{display:block;width:100%;min-height:155px;border:1px solid var(--line);border-radius:14px;background:var(--sheet);color:var(--text);padding:15px;font-family:inherit;font-size:16px;line-height:1.6;resize:vertical}
+.workbench-actions{display:flex;flex-wrap:wrap;gap:10px}
+.workbench-action{border:1px solid var(--line);border-radius:12px;padding:10px 17px;min-height:46px;background:var(--control);font-weight:600;font-size:14px;color:var(--text)}
+.workbench-primary{background:var(--covenant-gold);color:#141210;border-color:var(--covenant-gold)}
+.workbench-research-link{text-align:left}
+.workbench-original-words{display:grid;list-style:none;padding:0;gap:8px}
+.workbench-original-word{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;padding:12px;border:1px solid var(--line);border-radius:13px}
+.workbench-original-word strong{font-size:21px}
+.workbench-original-word small{grid-column:1/-1;color:var(--muted)}
+#verse-panel .verse-quick-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+#verse-panel .verse-quick-actions .feature-action{min-width:0;padding:9px 5px;border-radius:12px;min-height:48px;font-size:13px}
+#verse-panel details.verse-more{border-top:1px solid var(--line);margin-top:12px;padding-top:12px}
+#verse-panel details.verse-more summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-size:14px;font-weight:600}
+#verse-panel .verse-more .feature-actions{margin-top:5px;margin-bottom:0}
+#verse-panel .verse-more .feature-action{border-color:var(--line)}
+#verse-panel .verse-more .feature-card{padding:14px;margin-top:10px}
+@media(min-width:620px){.workbench-body .research-columns{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:360px){.workbench-root{padding-inline:14px}#verse-panel .verse-quick-actions{gap:5px}}
