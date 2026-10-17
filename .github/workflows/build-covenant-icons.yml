@@ -1,9 +1,9 @@
-name: Build approved Covenant Bible gold icons
+name: Build Oustory poster icon assets
 on:
   push:
     branches: [main]
     paths:
-      - 'assets/covenant-bible-gold-source.webp'
+      - 'assets/oustory-poster-source.webp'
       - 'scripts/build_covenant_icons.py'
       - '.github/workflows/build-covenant-icons.yml'
   workflow_dispatch:
@@ -33,8 +33,8 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add assets/covenant-bible-gold-180.png assets/covenant-bible-gold-192.png assets/covenant-bible-gold-256.png assets/covenant-bible-gold-512.png
+          git add assets/oustory-poster-icon-180.png assets/oustory-poster-icon-192.png assets/oustory-poster-icon-256.png assets/oustory-poster-icon-512.png
           if ! git diff --cached --quiet; then
-            git commit -m 'assets: install approved gold Covenant Bible app icons'
+            git commit -m 'assets: install Oustory founder-poster app icons'
             git push origin HEAD:main
           fi
