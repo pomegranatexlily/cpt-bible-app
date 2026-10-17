@@ -134,6 +134,10 @@ assert '<link rel="stylesheet" href="oustory-calendar.css">' in html
 assert 'window.OustoryCalendar?.render' in features
 assert "Feasts & lunar calendar" in features
 assert "OustoryCalendar" in (ROOT/"oustory-calendar.js").read_text(encoding="utf8")
+assert "calendar-grid" in (ROOT/"oustory-calendar.js").read_text(encoding="utf8")
+assert "grid-template-columns:repeat(7" in (ROOT/"oustory-calendar.css").read_text(encoding="utf8")
+subprocess.run(["node",str(ROOT/"scripts/calendar_unit.mjs")],check=True,cwd=ROOT)
+
 assert "Number.isInteger(v.number)" in reader
 assert "window.OustoryFeatures?.init" in reader and "window.OustoryFeatures?.annotateVerse" in reader
 assert "'speaker-' + color" in reader
