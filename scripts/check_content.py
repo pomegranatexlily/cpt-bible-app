@@ -83,6 +83,8 @@ assert "S<span>Books" not in html and "><span>Books</span>" in html
 assert '<script src="cpt-index.js"></script>' in html
 assert '<script src="oustory-reader.js"></script>' in html
 assert '<script src="oustory-audio.js"></script>' in html
+assert '<script src="oustory-search.js"></script>' in html
+assert html.index('<script src="oustory-search.js"></script>') < html.index('<script src="oustory-reader.js"></script>')
 assert 'href="assets/covenant-bible-gold-180.png"' in html
 assert 'href="assets/covenant-bible-gold-192.png"' in html
 pwa=json.loads((ROOT/"manifest.webmanifest").read_text(encoding="utf8"))
@@ -140,8 +142,10 @@ subprocess.run(["node",str(ROOT/"scripts/calendar_unit.mjs")],check=True,cwd=ROO
 
 assert "Number.isInteger(v.number)" in reader
 assert "window.OustoryFeatures?.init" in reader and "window.OustoryFeatures?.annotateVerse" in reader
+assert "window.OustorySearch?.init" in reader
+assert "window.OustoryReader={openSaved,saveVerse" in reader
 assert "'speaker-' + color" in reader
-for source in ("cpt-index.js","oustory-reader.js","oustory-features.js","oustory-calendar.js","oustory-audio.js","oustory-branding.js"):
+for source in ("cpt-index.js","oustory-reader.js","oustory-search.js","oustory-features.js","oustory-calendar.js","oustory-audio.js","oustory-branding.js"):
     subprocess.run(["node","--check",str(ROOT/source)],check=True,capture_output=True)
 inline=re.findall(r"<script(?:\s[^>]*)?>(.*?)</script>",html,flags=re.S)
 with tempfile.TemporaryDirectory() as temp:
