@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source": "CPT–APE founder October 16 rulings and 38-page Doctrinal-Drift Editorial Notes draft",
-  "status": "partial apparatus with founder correction; source draft remains under review",
+  "status": "partial apparatus; founder lexical/referent clarification added, 63-note draft not fully ratified",
   "source_verification": "notes paraphrase editorial positions; separate from actual verse witness",
   "notes": [
     {
@@ -156,10 +156,10 @@
       ],
       "label": "Nations and Gentiles: determine the referent by context",
       "status": "author-ruling",
-      "source": "Founder correction 2026-10-17 supersedes blanket term-substitution instruction in the October 16 draft, pages 27 and 36.",
-      "body": "Founder correction: 'Gentiles' often renders Greek ethnos/ethnē, literally a nation or nations/peoples. The lexical meaning alone does not prove the persons are non-Israelites. Luke 7:5 speaks of Israel as 'our nation'; Matthew 28:19 has 'all nations'; Acts 4:27 distinguishes the nations from 'the people of Israel' in its immediate context; Romans 11:13 addresses a Gentile/nations audience. Identify the referent passage by passage using speaker, addressee, grammar, setting and surrounding contrasts. Sometimes non-Israelites are meant, and sometimes an Israelite nation or a broader set is meant. Do not automatically substitute 'nations' for every English Gentiles, do not automatically assume non-Israelite referents, and do not silently edit source Scripture. Document each proposed rendering and the contextual reason before approval."
+      "source": "Founder clarification October 17, 2026, read alongside the October 16 Doctrinal-Drift Editorial Notes draft, especially pp.27 and 36; the draft itself already notes that Israel may be called a nation.",
+      "body": "Founder clarification: English 'Gentiles' often translates Greek ethnos (singular, 'nation/people') or ethnē (plural, 'nations/peoples'). That is the lexical starting point, not a built-in declaration that everyone so called is a non-Israelite. Israel itself may be called a nation (Luke 7:5); Acts 4:27 contrasts nations with the people of Israel, showing a non-Israelite referent in that context. Matthew 28:19 says 'all nations', and Romans 11:13 addresses a nations/Gentile audience. Prefer rendering the underlying word transparently as nation(s) or people(s) where grammar supports it, but decide whom it identifies passage by passage from speaker, audience and surrounding contrasts. Never automatically claim that every reference is about non-Israelites, or that every reference refers to Israelites. No unreviewed mass-edit of Scripture or invented source wording."
     }
   ],
-  "watchlist_status": "Original document calls it 25-rule watchlist, but lists 27 term groups (pp.36-38). Gentiles rule corrected 2026-10-17; remaining source-proposed substitutions are NOT globally approved.",
+  "watchlist_status": "The draft is labeled a 25-rule watchlist but lists 27 term groups (pp.36–38). Founder clarified 2026-10-17 that nations does not inherently mean non-Israelites; remaining source-proposed substitutions are unratified.",
   "verses_rewritten": false
 }
