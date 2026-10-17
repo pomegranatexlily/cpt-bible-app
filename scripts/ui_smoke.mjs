@@ -156,11 +156,19 @@ try{
   await page.locator(".verse-entry").first().click();
   await page.locator("#verse-panel[open]").waitFor();
   assert.ok((await page.locator("#verse-panel .verse-text").innerText()).length>10);
+  await page.getByRole("button",{name:"Save verse"}).click();
+  const savedVerses=await page.evaluate(()=>JSON.parse(localStorage.getItem("cpt.reader.saved")));
+  assert.ok(savedVerses.some(x=>x.book==="genesis"&&x.chapter===2&&x.verse===1),
+    "Save Verse must preserve chapter and source verse");
   await page.locator("#verse-panel .icon-button").click();
   await page.screenshot({path:"out/ui-smoke/bible-mobile.png",fullPage:false});
   await page.locator("#nav-study").click();
   await page.getByText("Why this rendering — editorial index").waitFor();
   await page.getByText("Covenant topics").waitFor();
+  await page.getByRole("button",{name:"Saved chapters"}).click();
+  await page.locator("#saved-panel[open]").waitFor();
+  await page.locator("#saved-list button.list-button").getByText("Genesis 2:1").waitFor();
+  await page.locator("#saved-panel [data-close]").click();
   await page.screenshot({path:"out/ui-smoke/study-mobile.png",fullPage:false});
   await page.getByText("The name in the commission").click();
   await page.locator("#verse-19").waitFor();
@@ -177,12 +185,53 @@ try{
   await page.locator("#oustory-menu[open]").waitFor();
   assert.match(await page.locator(".oustory-menu-brand img").getAttribute("src"),/covenant-bible-gold-512\.png/);
   await page.locator(".oustory-menu-brand img").evaluate(img=>img.decode());
-  await page.locator("#oustory-menu button[aria-label='Close menu']").click();
+  await page.getByRole("button",{name:"Saved places",exact:true}).click();
+  await page.locator("#saved-panel[open]").waitFor();
+  await page.locator("#saved-list button.list-button").getByText("Genesis 2:1").waitFor();
+  await page.locator("#saved-panel [data-close]").click();
+  await page.locator("#nav-more").click();
+  await page.locator("#oustory-menu[open]").waitFor();
+  await page.getByRole("button",{name:"Read the Bible"}).click();
+  assert.equal(await page.locator("#nav-bible").getAttribute("aria-current"),"page");
+  await page.locator("#nav-more").click();
+  await page.locator("#oustory-menu[open]").waitFor();
+  await page.getByRole("button",{name:"Reading settings"}).click();
+  await page.locator("#settings-panel[open]").waitFor();
+  await page.locator("#settings-panel [data-close]").click();
+  // Lazy index: exactly one index request, not 80 sequential chapter-book requests.
+  const indexRequests=[];
+  const sourceRequests=[];
+  page.on("request",request=>{
+    if(request.url().endsWith("/data/search-index.json"))indexRequests.push(request.url());
+    else if(/\/data\/[^/]+\.json(?:\?|$)/.test(request.url()))sourceRequests.push(request.url());
+  });
+  await page.getByRole("button",{name:"Search translation"}).click();
+  await page.locator("#search-panel[open]").waitFor();
+  const beforeSources=sourceRequests.length;
+  await page.locator("#search-input").fill("beginning");
+  await page.waitForFunction(()=>/matching verses/i.test(document.querySelector("#search-status")?.textContent||""),{timeout:20000});
+  assert.ok(await page.locator("#search-results button").count()>0);
+  assert.equal(indexRequests.length,1,"Search must fetch one shared index");
+  assert.equal(sourceRequests.length,beforeSources,"Search must not fetch full 80-book JSON");
+  await page.locator("#search-input").fill("Genesis 1:1");
+  await page.locator("#search-results button").getByText("Open Genesis 1:1").waitFor();
+  await page.locator("#search-results button").first().click();
+  await page.locator("#verse-1").waitFor();
+  assert.equal(await page.locator("#chapter-title").textContent(),"Genesis 1");
   await page.locator("#reference").click();
   await page.locator("#books-panel[open]").waitFor();
   const count=await page.locator("#book-list button").count();
   assert.equal(count,80,"All 80 book choices should be present");
   await page.locator("#books-panel [data-close]").click();
+  // Legacy chapter-only positions and new exact-verse positions must resume.
+  await page.evaluate(()=>localStorage.setItem("cpt.reader.position",
+    JSON.stringify({book:"genesis",chapter:2,verse:8})));
+  await page.reload({waitUntil:"domcontentloaded"});
+  await page.locator("#nav-home").waitFor();
+  await page.getByText("Genesis 2:8").waitFor();
+  await page.getByRole("button",{name:"Resume reading"}).click();
+  await page.locator("#verse-8").waitFor();
+  assert.equal((await page.evaluate(()=>JSON.parse(localStorage.getItem("cpt.reader.position")))).verse,8);
   assert.deepEqual(errors,[],"No uncaught client errors");
-  console.log("PASS mobile UI: native audio play/pause/stop/rate/navigation, Home, Bible, verse actions, Study grounded Matthew 28 note, Discover plans, More, 80-book picker.");
+  console.log("PASS Release 1 UI: native audio, saved verse, Study/More navigation, fast search, exact verse resume, calendar, all 80 books.");
 }finally{await browser.close()}
