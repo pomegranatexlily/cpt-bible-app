@@ -275,7 +275,9 @@ try{
   await page.locator("#reference").click();
   await page.locator("#books-panel[open]").waitFor();
   const count=await page.locator("#book-list button").count();
-  assert.equal(count,80,"All 80 book choices should be present");
+  assert.equal(count,99,"80 primary choices and 19 separate supplemental choices must appear");
+  assert.equal(await page.locator("#book-list .chapter-picker-title").first().textContent(),"Primary Canon — 80 Books");
+  assert.equal(await page.locator("#book-list .chapter-picker-title").last().textContent(),"Supplemental Writings — 19 Books");
   await page.locator("#books-panel [data-close]").click();
   // Legacy chapter-only positions and new exact-verse positions must resume.
   await page.evaluate(()=>localStorage.setItem("cpt.reader.position",
@@ -308,7 +310,34 @@ try{
     "Psalms 2 chapter comparison must contain historical verse pairs");
   assert.ok(!/unavailable|loading both/i.test(await page.locator("#workbench-body").innerText()),
     "Psalms 2 witness must not show a 404 or stale loading message");
-  await page.getByRole("button",{name:/Back to Scripture/}).click();
+  // Regression: a different book must dismiss a stale Compare / Interlinear overlay.
+  await page.locator("#reference").click();
+  await page.locator("#books-panel[open]").waitFor();
+  await page.locator("#book-list button").filter({hasText:/^Exodus$/}).click();
+  await page.locator('#chapter-list button[aria-label="Exodus, chapter 1"]').click();
+  await page.locator("#chapter-title").getByText("Exodus 1").waitFor();
+  assert.equal(await page.locator("#workbench-root").isHidden(),true,
+    "Book navigation must close Compare overlay");
+  assert.equal(await page.locator("body").evaluate(x=>x.classList.contains("study-workbench-mode")),false);
+  await page.locator("#verse-1").click();
+  await page.getByRole("button",{name:"Interlinear",exact:true}).click();
+  await page.locator("#workbench-root:not([hidden])").waitFor();
+  await page.getByRole("button",{name:"Bible",exact:true}).click();
+  assert.equal(await page.locator("#workbench-root").isHidden(),true,
+    "Bible footer must dismiss Interlinear overlay");
+  await page.locator("#reference").click();
+  await page.locator("#book-list button").filter({hasText:/^3 Maccabees/}).click();
+  await page.locator('#chapter-list button[aria-label="3 Maccabees, chapter 1, historical source draft"]').click();
+  await page.locator("#chapter-title").getByText("3 Maccabees 1").waitFor();
+  await page.locator("#verse-1").waitFor();
+  assert.match(await page.locator("#reader-source-disclosure").innerText(),/Supplemental Writings/);
+  assert.equal(await page.locator("#save-place").isDisabled(),true,
+    "Research drafts must not enter the canonical saved-place ledger");
+  await page.locator("#reference").click();
+  await page.locator("#book-list button").filter({hasText:/^Genesis$/}).click();
+  await page.locator('#chapter-list button[aria-label="Genesis, chapter 1"]').click();
+  await page.locator("#chapter-title").getByText("Genesis 1").waitFor();
+  assert.equal(await page.locator("#workbench-root").isHidden(),true);
   assert.deepEqual(errors,[],"No uncaught client errors");
   console.log("PASS Release 1 UI: native audio, saved verse, Study/More navigation, fast search, exact verse resume, calendar, all 80 books.");
 }finally{await browser.close()}
