@@ -28,7 +28,7 @@ for meta in books:
     assert 'text' not in v,'duplicated verse text'
     text=''.join(x['text'] for x in v['parts'])
     for part in v['parts']:
-     assert part['color'] in {'black','blue','green','purple'} and part['text']
+     assert part['color'] in {'black','blue','green','purple'} and isinstance(part['text'],str)
      if part['color']!='black':colored+=1
    else:text=v['text']
    assert isinstance(text,str) and text.strip(),f"empty verse {meta['title']} {chap['number']}:{k}"
@@ -40,8 +40,14 @@ assert colored>500,'speaker-color import missing'
 assert books[-1]['chapters'][-1]['number']==66
 html=(ROOT/'index.html').read_text()
 assert 'S<span>Books' not in html and '><span>Books</span>' in html, 'Books button markup regressed'
-assert '<script src="cpt-index.js"></script>' in html and 'function loadBook(b)' in html
-assert 'speech-blue' in html and 'speech-purple' in html
+assert '<script src="cpt-index.js"></script>' in html
+assert '<script src="oustory-reader.js"></script>' in html
+reader=(ROOT/'oustory-reader.js').read_text()
+assert 'async function loadBook(id)' in reader
+assert 'speaker-blue' in reader and 'speaker-purple' in reader and 'speaker-green' in reader
+assert '.scripture .speaker-blue' in html and '.scripture .speaker-purple' in html
+for source in ('cpt-index.js','oustory-reader.js'):
+ subprocess.run(['node','--check',str(ROOT/source)],check=True,capture_output=True)
 inline=re.findall(r'<script(?:\s[^>]*)?>(.*?)</script>',html,flags=re.S)
 with tempfile.TemporaryDirectory() as temp:
  for i,s in enumerate(inline):
