@@ -196,6 +196,7 @@
       prominent.append(el("p",correction.review));
       container.append(prominent);
       const details=el("details",undefined,"research-terms");
+      details.dataset.researchSection="terminology";
       details.append(el("summary","View all "+terms.terms.length+" terminology review entries"));
       const list=el("div",undefined,"feature-list");
       for(const t of terms.terms){
@@ -209,6 +210,7 @@
       }
       details.append(list);container.append(details);
       const unresolved=el("details",undefined,"research-terms");
+      unresolved.dataset.researchSection="witness-questions";
       unresolved.append(el("summary","View "+questions.questions.length+" textual research questions"));
       for(const q of questions.questions){
         const item=el("div",undefined,"research-term");
