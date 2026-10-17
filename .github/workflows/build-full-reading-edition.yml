@@ -1,0 +1,62 @@
+name: Build 80-book Oustory reading edition
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/build-full-reading-edition.yml'
+      - 'engine/ingest.py'
+      - 'engine/ingest_additions.py'
+      - 'canon/books.json'
+      - 'scripts/build_full_reading_edition.py'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: oustory-complete-reading-edition
+  cancel-in-progress: false
+
+jobs:
+  assemble:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Check out the Oustory source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Import 43 conventional remaining books from pinned public-domain witness
+        run: python -u engine/ingest.py --mode all_remaining --workers 8 --out out
+      - name: Import all fourteen author-directed additional titles
+        run: python -u engine/ingest_additions.py
+      - name: Build readable 80-book edition preserving Genesis through Isaiah
+        run: python -u scripts/build_full_reading_edition.py
+      - name: Fail closed on book, chapter, verse, source and JavaScript integrity
+        run: python -u scripts/check_content.py
+      - name: Publish source and modernization evidence
+        run: |
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          m=json.load(open('data/manifest.json'))
+          print(f"### Oustory 80-book editable reading edition")
+          print(f"\nBooks: {m['books']}; chapters: {m['chapters']}; source verses: {m['verses']}")
+          print(f"\nHistorical additions: {m['historic_additional_books']}; modernized historical source verses: {m['historical_verses_orthographically_modernized']}")
+          print(f"\nDocumented missing witness verse positions: {len(m['missing_source_positions'])}")
+          print("\nNOT AUTHOR APPROVED. Genesis-Isaiah is preserved; newly generated source texts stay open for editorial revision. Colors for the added books are deferred.")
+          PY
+      - name: Commit all 57 new data books and the complete index
+        run: |
+          git config user.name 'CPT-APE Source Builder'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/ cpt-index.js
+          if git diff --cached --quiet; then
+            echo 'Edition data already matches pinned witnesses.'
+          else
+            git commit -m 'data: integrate 80-book provisional modern-English reading edition'
+            git push origin HEAD:main
+          fi
