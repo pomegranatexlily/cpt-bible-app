@@ -1,6 +1,6 @@
 "use strict";
-// Oustory CPT–APE reader. Source: verified 527-page Isaiah-complete master.
-// Each of the 23 books loads only when opened (or when a search needs it).
+// Oustory CPT–APE reader: 80-title editable working edition.
+// Earlier Genesis–Isaiah wording is retained; newly imported books are provisional.
 (() => {
   const $ = selector => document.querySelector(selector);
   const make = (tag, text, cls) => {
@@ -102,19 +102,22 @@
       if (chapterData.intro) fragment.append(make('p', chapterData.intro, 'psalm-intro'));
       const paragraph = make('p');
       for (const v of verses) {
+        const wrapper = window.OustoryFeatures?.annotateVerse({book:book().title,id:selectedId,chapter:selectedChapter,verse:v.number,text:verseText(v)}) || make("span");
         const number = make('span', String(v.number), 'verse-number');
         number.id = 'verse-' + v.number;
-        paragraph.append(number);
-        if (typeof v.text === 'string') paragraph.append(document.createTextNode(v.text));
+        wrapper.append(number);
+        if (typeof v.text === 'string') wrapper.append(document.createTextNode(v.text));
         else for (const part of v.parts) {
           const color = ['blue', 'green', 'purple'].includes(part.color) ? part.color : 'black';
-          if (color === 'black') paragraph.append(document.createTextNode(part.text));
-          else paragraph.append(make('span', part.text, 'speaker-' + color));
+          if (color === 'black') wrapper.append(document.createTextNode(part.text));
+          else wrapper.append(make('span', part.text, 'speaker-' + color));
         }
-        paragraph.append(document.createTextNode(' '));
+        wrapper.append(document.createTextNode(' '));
+        paragraph.append(wrapper);
       }
       fragment.append(paragraph);
       container.replaceChildren(fragment);
+      window.OustoryFeatures?.refreshNotes();
       $('#save-place').disabled = false;
       $('#reader').scrollTop = 0;
       write('cpt.reader.position', {book:selectedId, chapter:selectedChapter});
@@ -128,7 +131,9 @@
     let b = bi, c = ci + direction;
     if (c < 0) { if (--b < 0) return; c = books[b].chapters.length - 1; }
     else if (c >= book().chapters.length) { if (++b >= books.length) return; c = 0; }
-    bi = b; ci = c; render();
+    bi = b; ci = c;
+    window.OustoryFeatures?.showBible();
+    render();
   }
   async function go(id, chapterNumber, verseNumber) {
     const b = books.findIndex(x => x.id === id);
@@ -136,6 +141,7 @@
     const c = books[b].chapters.findIndex(x => x.number === Number(chapterNumber));
     if (c < 0) return false;
     bi = b; ci = c;
+    window.OustoryFeatures?.showBible();
     const waitFor = render();
     closePanels();
     await waitFor;
@@ -209,7 +215,7 @@
   document.querySelectorAll('[data-panel]').forEach(node => node.onclick = () => {
     const id = node.dataset.panel;
     if (id === 'books-panel') library();
-    if (id === 'search-panel') { ++searchToken; $('#search-results').replaceChildren(); $('#search-status').textContent = 'Search Genesis through Isaiah.'; }
+    if (id === 'search-panel') { ++searchToken; $('#search-results').replaceChildren(); $('#search-status').textContent = 'Search the 80-book reading edition.'; }
     if (id === 'saved-panel') savedList();
     document.getElementById(id).showModal();
   });
@@ -257,4 +263,5 @@
       $('#font-status').textContent = fonts.length ? 'Schibsted Grotesk loaded.' : 'Using system font fallback.';
     } catch { $('#font-status').textContent = 'Using system font fallback.'; }
   })();
+  window.OustoryFeatures?.init({go,loadBook,books});
 })();
