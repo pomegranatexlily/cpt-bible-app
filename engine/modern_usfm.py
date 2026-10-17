@@ -52,7 +52,11 @@ def parse_usfm(body: str)->dict[str,dict[str,str]]:
         nonlocal pieces
         if chapter is not None and verse is not None:
             text=plain(" ".join(pieces))
-            if not text:raise ValueError(f"Modern USFM empty text at {chapter}:{verse}")
+            if not text:
+                # An empty marker or edition-specific omission is not wording.
+                # Let the separate 1611 ledger provide the explicit fallback.
+                pieces=[]
+                return
             book=chapters.setdefault(str(chapter),{})
             if str(verse) in book:raise ValueError(f"Repeated modern USFM reference {chapter}:{verse}")
             book[str(verse)]=text
