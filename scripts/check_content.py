@@ -142,6 +142,8 @@ assert sum(1 for e in calendar["sources"][0]["entries"] if e["subject"]=="Weekly
 assert sum(1 for e in calendar["sources"][0]["entries"] if e["subject"]=="New Moon")==11
 assert all(e["start"]<=e["end"] for e in calendar["sources"][0]["entries"])
 assert '<script src="oustory-calendar.js"></script>' in html
+assert '<script src="oustory-calendar-study.js"></script>' in html
+assert html.index('<script src="oustory-calendar-study.js"></script>') < html.index('<script src="oustory-calendar.js"></script>')
 assert '<link rel="stylesheet" href="oustory-calendar.css">' in html
 assert 'window.OustoryCalendar?.render' in features
 assert "Feasts & lunar calendar" in features
@@ -155,7 +157,7 @@ assert "window.OustoryFeatures?.init" in reader and "window.OustoryFeatures?.ann
 assert "window.OustorySearch?.init" in reader
 assert "window.OustoryReader={openSaved,saveVerse" in reader
 assert "'speaker-' + color" in reader
-for source in ("cpt-index.js","oustory-reader.js","oustory-search.js","oustory-research.js","oustory-features.js","oustory-calendar.js","oustory-audio.js","oustory-branding.js"):
+for source in ("cpt-index.js","oustory-reader.js","oustory-search.js","oustory-research.js","oustory-features.js","oustory-calendar.js","oustory-calendar-study.js","oustory-audio.js","oustory-branding.js"):
     subprocess.run(["node","--check",str(ROOT/source)],check=True,capture_output=True)
 inline=re.findall(r"<script(?:\s[^>]*)?>(.*?)</script>",html,flags=re.S)
 with tempfile.TemporaryDirectory() as temp:
