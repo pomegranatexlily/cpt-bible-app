@@ -44,12 +44,17 @@
       Number.isInteger(r.chapter)&&Number.isInteger(r.verse)&&
       typeof r.text==="string";
   }
-  function back(){
-    if(!current)return;
+  // Navigation from the footer or book picker must always close a stale
+  // Compare/Interlinear overlay without taking the reader back to its old verse.
+  function dismiss(){
     request++;
     current=null;
     document.body.classList.remove("study-workbench-mode");
-    root.hidden=true;
+    if(root)root.hidden=true;
+  }
+  function back(){
+    if(!current)return;
+    dismiss();
     if(origin==="study")window.OustoryFeatures?.show("study");
     else window.OustoryFeatures?.showBible();
     const reader=byId("reader");
@@ -309,5 +314,5 @@
     root.hidden=true;root.setAttribute("aria-label","Verse study workspace");
     byId("reader").append(root);
   }
-  window.OustoryWorkbench={init,open,openChapter,openEditorialIndex,back,validNotes,noteKey:NOTES_KEY};
+  window.OustoryWorkbench={init,open,openChapter,openEditorialIndex,back,dismiss,validNotes,noteKey:NOTES_KEY};
 })();
