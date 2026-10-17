@@ -94,11 +94,15 @@
     if(view==="home")void renderHome();
     else if(view==="study")renderStudy();
     else if(view==="discover")renderDiscover();
-    else if(view==="calendar")window.OustoryCalendar?.render(root,()=>show("home"));
+    else if(view==="calendar")window.OustoryCalendar?.render(root,()=>show("home"),jumpByTitle);
   }
   async function jump(id,ch,v){
     showBible();
     await api.go(id,ch,v);
+  }
+  function jumpByTitle(bookTitle,chapter,verse){
+    const meta=api.books.find(b=>b.title===bookTitle);
+    if(meta)void jump(meta.id,chapter,verse);
   }
   async function getVerse(id,ch,v){
     const data=await api.loadBook(id);
@@ -145,6 +149,11 @@
     note.append(el("p","See your next Shabbat and the current lunar month. Switch between Early Start and Late Start without losing your date.","feature-status"));
     addAction(actions(note),"Feasts & lunar calendar",()=>show("calendar"),true);
     addAction(actions(note),"Explore covenant study",()=>show("study"));
+    const sabbathReadings=card(root,"Next Shabbat · Scripture study");
+    const sabbathContent=el("div",undefined,"calendar-study-home");
+    sabbathReadings.append(sabbathContent);
+    void window.OustoryCalendarStudy?.renderNext(sabbathContent,jumpByTitle,
+      ()=>show("calendar"),window.OustoryCalendar?.rememberedTrack()||"earlier");
   }
   function renderStudy(){
     title("Study · covenant literacy","Read with the record","Scripture reading, founder corrections, draft terminology review, and openly unresolved textual research.");
@@ -167,6 +176,15 @@
     const research=card(root,"Research desk");
     const content=el("div",undefined,"research-study-content");research.append(content);
     window.OustoryResearch?.fillStudy(content,(id,ch,verse)=>jump(id,ch,verse));
+    const lunarStudy=card(root,"Sabbath and New Moon study");
+    const lunarContent=el("div",undefined,"calendar-study-discover");
+    lunarStudy.append(lunarContent);
+    void window.OustoryCalendarStudy?.renderNext(lunarContent,jumpByTitle,
+      ()=>show("calendar"),window.OustoryCalendar?.rememberedTrack()||"earlier");
+    const calendarNotes=card(root,"Calendar questions still open");
+    const calendarNotesContent=el("div",undefined,"calendar-study-open-questions");
+    calendarNotes.append(calendarNotesContent);
+    void window.OustoryCalendarStudy?.renderOpenQuestions(calendarNotesContent,jumpByTitle);
     const quick=card(root,"Your saved study");
     const savedButtons=actions(quick);
     addAction(savedButtons,"Saved chapters",()=>window.OustoryReader?.openSaved());
@@ -188,6 +206,11 @@
     const calendar=card(root,"Your Shabbat calendar");
     calendar.append(el("p","Open the current month to see the next Shabbat, New Moons, and both religious year-start options."));
     addAction(actions(calendar),"Open covenant calendar",()=>show("calendar"));
+    const study=card(root,"Next lunar Shabbat reading");
+    const preview=el("div",undefined,"calendar-study-next");
+    study.append(preview);
+    void window.OustoryCalendarStudy?.renderNext(preview,jumpByTitle,
+      ()=>show("calendar"),window.OustoryCalendar?.rememberedTrack()||"earlier");
     const progress=read("oustory.plan.progress",{});
     for(const p of PLANS){
       const c=card(root,p.title);
