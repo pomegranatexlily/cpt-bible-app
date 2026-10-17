@@ -186,22 +186,22 @@ try{
   await page.locator(".verse-entry").first().click();
   await page.locator("#verse-panel[open]").waitFor();
   assert.ok((await page.locator("#verse-panel .verse-text").innerText()).length>10);
+  await page.locator("#verse-panel .verse-more summary").click();
   await page.getByRole("button",{name:"Save verse"}).click();
   const savedVerses=await page.evaluate(()=>JSON.parse(localStorage.getItem("cpt.reader.saved")));
   assert.ok(savedVerses.some(x=>x.book==="genesis"&&x.chapter===2&&x.verse===1),
     "Save Verse must preserve chapter and source verse");
-  await page.getByRole("button",{name:"Compare 1611",exact:true}).click();
-  await page.locator("#verse-panel .research-pair").waitFor();
-  assert.match(await page.locator("#verse-panel .research-column-title").first().innerText(),/Oustory working text/);
-  assert.match(await page.locator("#verse-panel .research-column-title").last().innerText(),/1611 printed English KJV/);
-  assert.ok(await page.locator("#verse-panel .research-word-diff").count()>0,"English word differences should be highlighted");
-  await page.locator("#verse-panel .icon-button").click();
-  await page.getByRole("button",{name:"Compare 1611 KJV"}).click();
-  await page.locator("#research-chapter-dialog[open]").waitFor();
-  await page.waitForFunction(()=>document.querySelectorAll("#research-chapter-dialog .research-pair").length>3);
-  assert.ok(await page.locator("#research-chapter-dialog .research-word-diff").count()>0);
+  await page.getByRole("button",{name:"Compare",exact:true}).click();
+  await page.locator("#workbench-body .research-pair").waitFor();
+  assert.match(await page.locator("#workbench-body .research-column-title").first().innerText(),/Oustory working text/);
+  assert.match(await page.locator("#workbench-body .research-column-title").last().innerText(),/1611 printed English KJV/);
+  assert.ok(await page.locator("#workbench-body .research-word-diff").count()>0,"Historic English differences should be highlighted");
+  await page.getByRole("button",{name:/Back to Scripture/}).click();
+  await page.getByRole("button",{name:"Compare versions"}).click();
+  await page.locator("#workbench-body .research-pair").first().waitFor();
+  assert.ok(await page.locator("#workbench-body .research-word-diff").count()>0);
   await page.screenshot({path:"out/ui-smoke/research-compare-mobile.png",fullPage:false});
-  await page.locator("#research-chapter-dialog .research-close").click();
+  await page.getByRole("button",{name:/Back to Scripture/}).click();
   await page.screenshot({path:"out/ui-smoke/bible-mobile.png",fullPage:false});
   await page.locator("#nav-study").click();
   await page.getByText("Why this rendering — editorial index").waitFor();
@@ -219,15 +219,20 @@ try{
   await page.locator("#saved-list button.list-button").getByText("Genesis 2:1").waitFor();
   await page.locator("#saved-panel [data-close]").click();
   await page.screenshot({path:"out/ui-smoke/study-mobile.png",fullPage:false});
-  await page.getByText("The name in the commission").click();
-  await page.locator("#verse-19").waitFor();
-  await page.locator("#verse-19").click();
-  await page.locator("#verse-panel[open]").waitFor();
-  assert.match(await page.locator("#verse-panel .note-text").innerText(),/Yahawah alone/);
-  assert.match(await page.locator("#verse-panel .feature-note-type").innerText(),/Founder editorial ruling/i);
-  await page.locator("#verse-panel .icon-button").click();
-  await page.locator("#nav-study").click();
-  await page.locator("#nav-discover").click();
+  await page.getByRole("button",{name:"Browse editorial notes"}).click();
+  await page.locator("#workbench-note-search").waitFor();
+  await page.locator("#workbench-note-search").fill("name in the commission");
+  await page.getByRole("button",{name:/The name in the commission/}).click();
+  assert.match(await page.locator(".workbench-editorial-body").innerText(),/Yahawah alone/);
+  assert.match(await page.locator(".workbench-heading").innerText(),/Founder editorial ruling/);
+  await page.getByRole("button",{name:"Read Matthew 28:19"}).click();
+  await page.locator(".workbench-verse").waitFor();
+  assert.ok((await page.locator(".workbench-verse").innerText()).length>20);
+  await page.getByRole("button",{name:/Back to editorial note/}).click();
+  await page.getByRole("button",{name:/All editorial notes/}).click();
+  await page.getByRole("button",{name:/Back to Study/}).click();
+  await page.getByRole("heading",{name:"Research desk"}).waitFor();
+    await page.locator("#nav-discover").click();
   await page.getByText("Torah Foundations").waitFor();
   await page.screenshot({path:"out/ui-smoke/discover-mobile.png",fullPage:false});
   await page.locator("#nav-more").click();
@@ -298,12 +303,12 @@ try{
   await page.locator("#search-results button").first().click();
   await page.locator("#chapter-title").getByText("Psalms 2").waitFor();
   await page.locator("#research-compare-chapter").click();
-  await page.locator("#research-chapter-dialog .research-pair").first().waitFor({timeout:15000});
-  assert.ok(await page.locator("#research-chapter-dialog .research-pair").count()>=10,
+  await page.locator("#workbench-body .research-pair").first().waitFor({timeout:15000});
+  assert.ok(await page.locator("#workbench-body .research-pair").count()>=10,
     "Psalms 2 chapter comparison must contain historical verse pairs");
-  assert.ok(!/unavailable|loading both/i.test(await page.locator("#research-chapter-dialog").innerText()),
+  assert.ok(!/unavailable|loading both/i.test(await page.locator("#workbench-body").innerText()),
     "Psalms 2 witness must not show a 404 or stale loading message");
-  await page.locator("#research-chapter-dialog .research-close").click();
+  await page.getByRole("button",{name:/Back to Scripture/}).click();
   assert.deepEqual(errors,[],"No uncaught client errors");
   console.log("PASS Release 1 UI: native audio, saved verse, Study/More navigation, fast search, exact verse resume, calendar, all 80 books.");
 }finally{await browser.close()}

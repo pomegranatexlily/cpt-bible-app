@@ -158,21 +158,8 @@
   function renderStudy(){
     title("Study · covenant literacy","Read with the record","Scripture reading, founder corrections, draft terminology review, and openly unresolved textual research.");
     const editorial=card(root,"Why this rendering — editorial index");
-    editorial.append(el("p","The first indexed notes follow the October 16 founder rulings and doctrinal-drift draft. Drafts and unresolved variants remain labeled; source text is not silently rewritten."));
-    const list=el("div",undefined,"feature-list");editorial.append(list);
-    if(!notesByRef.size){list.append(el("p","Loading editorial index…","feature-status"));}
-    const added=new Set();
-    for(const [ref,n] of notesByRef){
-      if(added.has(n))continue;added.add(n);
-      const [book,chapVerse]=splitReference(ref);
-      const [ch,v]=chapVerse.split(":").map(Number);
-      const meta=api.books.find(b=>b.title===book);
-      if(!meta)continue;
-      const button=el("button",n.label);
-      button.append(el("small",ref+" · "+statusText(n.status)));
-      button.onclick=()=>jump(meta.id,ch,v);
-      list.append(button);
-    }
+    editorial.append(el("p","Browse source-linked editorial rulings, drafts and unresolved manuscript questions without leaving the Study screen cluttered with every note."));
+    addAction(actions(editorial),"Browse editorial notes",()=>window.OustoryWorkbench?.openEditorialIndex([...new Set(notesByRef.values())]),true);
     const research=card(root,"Research desk");
     const content=el("div",undefined,"research-study-content");research.append(content);
     window.OustoryResearch?.fillStudy(content,(id,ch,verse)=>jump(id,ch,verse));
@@ -262,19 +249,38 @@
     verseDialog.setAttribute("aria-labelledby","verse-title");
     document.body.append(verseDialog);
   }
+  function appendVerseEvidence(target,record){
+    const k=refKey(record.book,record.chapter,record.verse);
+    const entry=notesByRef.get(k);
+    const note=card(target,entry?"Why this rendering":"Editorial note status");
+    if(entry){
+      note.append(el("p",statusText(entry.status),"feature-note-type"));
+      note.append(el("p",entry.body,"note-text"));
+    }else{
+      note.append(el("p","No verse-specific editorial ruling is indexed at this coordinate. This is not evidence that the passage is finalized.","feature-status"));
+    }
+    note.append(el("p","An editorial interpretation is not independent manuscript evidence. Source text remains unchanged.","feature-status"));
+  }
   function openVerse(record){
     selected=record;
     verseDialog.replaceChildren();
     const header=el("div",undefined,"sheet-header");
-    const h=el("h2",record.book+" "+record.chapter+":"+record.verse);h.id="verse-title";
-    const close=el("button","×","icon-button");close.setAttribute("aria-label","Close verse details");
-    close.onclick=()=>verseDialog.close();header.append(h,close);verseDialog.append(header);
-    verseDialog.append(el("p",record.text,"verse-text"));
-    const a=actions(verseDialog);
     const k=refKey(record.book,record.chapter,record.verse);
+    const h=el("h2",k);h.id="verse-title";
+    const close=el("button","×","icon-button");close.type="button";
+    close.setAttribute("aria-label","Close verse details");
+    close.onclick=()=>verseDialog.close();
+    header.append(h,close);verseDialog.append(header);
+    verseDialog.append(el("p",record.text,"verse-text"));
+    const quick=el("div",undefined,"verse-quick-actions");
+    verseDialog.append(quick);
+    addAction(quick,"Compare",()=>window.OustoryWorkbench?.open(record,"compare"));
+    addAction(quick,"Interlinear",()=>window.OustoryWorkbench?.open(record,"interlinear"));
+    addAction(quick,"Notes",()=>window.OustoryWorkbench?.open(record,"notes"));
+    const more=el("details",undefined,"verse-more");
+    more.append(el("summary","More verse actions & editorial research"));
+    const a=actions(more);
     addAction(a,"Copy verse",copyVerse);
-    const comparison=el("div",undefined,"research-verse-panel");
-    addAction(a,"Compare 1611",()=>window.OustoryResearch?.compareVerse(record,comparison));
     addAction(a,"Save verse",()=>{
       const stored=window.OustoryReader?.saveVerse(record.id,record.chapter,record.verse);
       byId("verse-feedback").textContent=stored?"Verse saved on this device.":"Verse could not be saved.";
@@ -285,6 +291,7 @@
       const span=byId("verse-"+record.verse)?.closest(".verse-entry");
       span?.classList.toggle("is-highlighted",highlights.has(k));
       openVerse(record);
+      verseDialog.querySelector(".verse-more").open=true;
     });
     addAction(a,"Create verse image",()=>window.OustoryShareCard?.open(record));
     addAction(a,"Share verse",async()=>{
@@ -292,19 +299,10 @@
       try{await navigator.share({title:k,text:record.text+"\n— "+k})}
       catch(e){if(e.name!=="AbortError")byId("verse-feedback").textContent="Sharing unavailable."}
     });
-    const feedback=el("p","","feature-status");feedback.id="verse-feedback";verseDialog.append(feedback);
-    verseDialog.append(comparison);
-    const entry=notesByRef.get(k);
-    const note=card(verseDialog,entry?"Why this rendering":"Translation provenance");
-    if(entry){
-      note.append(el("p",statusText(entry.status),"feature-note-type"));
-      note.append(el("p",entry.body,"note-text"));
-    }else{
-      note.append(el("p","No verse-specific editorial note is indexed here yet. The first 23 books retain the earlier master wording; the other 57 books use public-domain sources with disclosed provisional adaptations."));
-    }
-    note.append(el("p","An editorial note explains a position; it does not certify a manuscript variant or assert the currently displayed verse has already been revised.","feature-status"));
-    window.OustoryResearch?.appendEvidence(note,record);
-    window.OustoryResearch?.appendProvenance(note,record);
+    addAction(a,"Editorial research",()=>window.OustoryWorkbench?.open(record,"editorial"));
+    const feedback=el("p","","feature-status");feedback.id="verse-feedback";
+    feedback.setAttribute("role","status");
+    more.append(feedback);verseDialog.append(more);
     verseDialog.showModal();
   }
   function annotateVerse(info){
@@ -357,6 +355,7 @@
     byId("reader").append(root);
     makeDialog();
     nav();
+    window.OustoryWorkbench?.init(readerApi);
     fetch("data/editorial-notes.json").then(r=>{
       if(!r.ok)throw new Error("Editorial index unavailable");
       return r.json()
@@ -368,5 +367,5 @@
     }).catch(()=>{if(currentView==="study")renderStudy();});
     show("home");
   }
-  window.OustoryFeatures={init,showBible,show,annotateVerse,refreshNotes,openVerse};
+  window.OustoryFeatures={init,showBible,show,annotateVerse,refreshNotes,openVerse,appendVerseEvidence};
 })();
