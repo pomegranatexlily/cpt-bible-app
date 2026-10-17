@@ -2,7 +2,7 @@
 /* Release 2 research: printed-English 1611 witness comparison, separate from
    ancient-language manuscript analysis and founder-approved translation. */
 (() => {
-  let api=null, manifest=null, pendingManifest=null, terms=null, questions=null, editorialPending=null;
+  let api=null, manifest=null, pendingManifest=null, terms=null, questions=null, editorialPending=null, sourceManifest=null, sourcePending=null;
   const cache=new Map(), inFlight=new Map();
   const el=(tag,text,cls)=>{
     const x=document.createElement(tag);
@@ -136,6 +136,33 @@
       dialog.append(el("p","Source revision: "+witness.source_revision+" · original coordinate alignment, no shifted verse numbering.","feature-status"));
     }catch(e){if(dialog.open)dialog.append(el("p","Comparison unavailable: "+e.message,"feature-status"))}
   }
+  async function appendProvenance(target,record){
+    if(!sourcePending)sourcePending=fetchJson("data/manifest.json").then(m=>{
+      if(!Array.isArray(m.new_book_provenance)||!m.source_pdf_sha256)throw Error("Invalid manuscript record");
+      sourceManifest=m;return m;
+    }).catch(e=>{sourcePending=null;throw e});
+    try{
+      const m=await sourcePending;
+      if(!target.isConnected)return;
+      const card=el("section",undefined,"research-question-card");
+      card.append(el("h3","Working-text source record"));
+      const source=m.new_book_provenance.find(x=>x.id===record.id);
+      if(source){
+        card.append(el("p","Provisional Oustory reading edition · "+(source.source_type||"source-based witness")+
+          ". This verse has not received final authorial approval.","feature-status"));
+        if(source.source_url && /^https:\/\/raw\.githubusercontent\.com\//.test(source.source_url)){
+          const link=el("a","Open pinned source file");
+          link.href=source.source_url;link.target="_blank";link.rel="noopener noreferrer";
+          card.append(link);
+        }
+        if(source.source_sha256)card.append(el("p","Source SHA-256: "+source.source_sha256,"feature-status"));
+      }else{
+        card.append(el("p","Earlier Genesis–Isaiah master-based text; published master source SHA-256: "+m.source_pdf_sha256+
+          ". This checksum identifies an input edition, not a collated manuscript variant.","feature-status"));
+      }
+      target.append(card);
+    }catch{if(target.isConnected)target.append(el("p","Working-text source details temporarily unavailable.","feature-status"))}
+  }
   async function appendEvidence(target,record){
     try{
       await loadEditorial();
@@ -214,5 +241,5 @@
       title.after(b);
     }
   }
-  window.OustoryResearch={init,compareVerse,compareChapter,fillStudy,appendEvidence};
+  window.OustoryResearch={init,compareVerse,compareChapter,fillStudy,appendEvidence,appendProvenance};
 })();
