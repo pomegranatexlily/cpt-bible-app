@@ -9,7 +9,7 @@ manifest=json.loads((DATA/"manifest.json").read_text(encoding="utf8"))
 assert manifest["source_pdf_sha256"]=="61e62dd0060e1a7a2d904fcc69b58c5f9e268c7a5fc0431bd05f2826841c7aa5"
 assert manifest["no_authorial_approval_claimed"] is True
 assert manifest["status"]=="COMPLETE_80_BOOK_EDITABLE_READING_EDITION_NOT_FINAL_TRANSLATION"
-assert manifest["historical_modernization_status"]=="PROVISIONAL_NOT_FINAL_TRANSLATION"
+assert manifest["historical_modernization_status"]=="PROVISIONAL_MODERN_WITNESS_SELECTION_NOT_FINAL_TRANSLATION"
 assert (manifest["books"],manifest["chapters"],manifest["verses"])==(80,1362,36801)
 assert (manifest["verified_seed_books"],manifest["candidate_source_books"],manifest["historic_additional_books"])==(23,57,14)
 
@@ -74,7 +74,10 @@ for i,meta in enumerate(books):
 assert actual_missing==expected_missing,"Missing positions not represented"
 assert (total_ch,total_v)==(1362,36801)
 assert seed_colored>500,"Previously approved master colors lost"
-assert manifest["historical_verses_orthographically_modernized"]==5703
+assert manifest["historical_verses_with_readability_adaptation"]==5703
+assert manifest["historical_verses_using_modern_WEB_witness"]>=3500
+assert (manifest["historical_verses_using_modern_WEB_witness"]+manifest["historical_1611_fallback_verses"])==5703
+assert len(manifest["web_modern_archive_sha256"])==64
 html=(ROOT/"index.html").read_text(encoding="utf8")
 assert "S<span>Books" not in html and "><span>Books</span>" in html
 assert '<script src="cpt-index.js"></script>' in html
