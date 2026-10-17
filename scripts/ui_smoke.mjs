@@ -102,6 +102,9 @@ try{
   assert.equal(await grid.locator(".calendar-weekday").count(),7);
   assert.ok((await grid.locator(".calendar-day").count())%7===0);
   assert.match(await page.locator(".calendar-next").innerText(),/October 19, 2026/);
+  assert.equal(await page.getByText(/Xalendaria|2025 Lunar|\.csv/i).count(),0,
+    "Historic filenames and source choices must not appear in the calendar UI");
+  await page.screenshot({path:"out/ui-smoke/current-october-mobile.png",fullPage:false});
   await page.locator(".calendar-next").click();
   await page.locator(".calendar-detail-heading").getByText("October 19, 2026").waitFor();
   await page.locator(".calendar-detail-item").getByRole("heading",{name:"Shabbat"}).waitFor();
