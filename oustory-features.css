@@ -39,3 +39,7 @@ body.feature-mode .reading-column{display:none}
 .verse-entry.has-editorial-note .verse-number{color:var(--covenant-gold)}
 .verse-entry .note-mark{font-size:.62em;vertical-align:super;color:var(--covenant-gold);font-weight:700;margin:0 .08em}
 @media(max-width:390px){.feature-root{padding-inline:15px}.feature-card{padding:17px}.feature-grid{gap:8px}.bottom-dock .dock-button{font-size:9px}.bottom-dock .nav-symbol{font-size:19px}}
+
+/* Scripture is a reading surface, not UI chrome. */
+.scripture{font-family:Georgia,"Times New Roman",serif;letter-spacing:-.012em}
+.reader-source-disclosure{font-size:12px;line-height:1.55;color:var(--muted);margin:-8px 0 25px;padding:10px 13px;border-left:2px solid var(--note-border);background:var(--selected)}
