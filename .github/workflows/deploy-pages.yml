@@ -27,7 +27,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: main
-      - name: Verify Genesis–Isaiah reader data and JavaScript
+      - name: Verify complete 80-book reader data and JavaScript
         run: python3 scripts/check_content.py
       - name: Configure Pages
         uses: actions/configure-pages@v5
@@ -42,8 +42,11 @@ jobs:
           cp -R data _site/data
           test -f _site/data/genesis.json
           test -f _site/data/isaiah.json
+          test -f _site/data/the-rest-of-esther.json
+          test -f _site/data/2-maccabees.json
+          test -f _site/data/revelation.json
           test -f _site/oustory-reader.js
-          test "$(find _site/data -maxdepth 1 -name '*.json' | wc -l)" -eq 24
+          test "$(find _site/data -maxdepth 1 -name '*.json' | wc -l)" -eq 81
       - name: Upload app
         uses: actions/upload-pages-artifact@v4
         with:
