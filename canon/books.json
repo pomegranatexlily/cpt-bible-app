@@ -1,0 +1,613 @@
+{
+  "schema_version": 1,
+  "edition": "Covenant People's Translation: After Passover Edition",
+  "ordering_status": "working_sequence_1611_placement_pending_final_authorial_confirmation",
+  "authorial_canon_directive": "canon/CPT_APE_Canon_2026-10-11.md",
+  "current_verified_checkpoint": "Isaiah 66:24",
+  "next_target": "Jeremiah 1:1",
+  "completed_titles": [
+    "Genesis",
+    "Exodus",
+    "Leviticus",
+    "Numbers",
+    "Deuteronomy",
+    "Joshua",
+    "Judges",
+    "Ruth",
+    "1 Samuel",
+    "2 Samuel",
+    "1 Kings",
+    "2 Kings",
+    "1 Chronicles",
+    "2 Chronicles",
+    "Ezra",
+    "Nehemiah",
+    "Esther",
+    "Job",
+    "Psalms",
+    "Proverbs",
+    "Ecclesiastes",
+    "Song of Solomon",
+    "Isaiah"
+  ],
+  "additional_titles": [
+    "1 Esdras",
+    "2 Esdras",
+    "Tobit",
+    "Judith",
+    "The Rest of Esther",
+    "The Wisdom of Solomon",
+    "Ecclesiasticus",
+    "Baruch",
+    "The Song of the Three Holy Children",
+    "The History of Susanna",
+    "Bel and the Dragon",
+    "The Prayer of Manasses",
+    "1 Maccabees",
+    "2 Maccabees"
+  ],
+  "source_revision": "68669ba3be9719ae4d1135b19d9e0b6587b7c356",
+  "source_repository": "TehShrike/world-english-bible",
+  "books": [
+    {
+      "index": 1,
+      "title": "Genesis",
+      "source_key": "genesis",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": true
+    },
+    {
+      "index": 2,
+      "title": "Exodus",
+      "source_key": "exodus",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": true
+    },
+    {
+      "index": 3,
+      "title": "Leviticus",
+      "source_key": "leviticus",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": true
+    },
+    {
+      "index": 4,
+      "title": "Numbers",
+      "source_key": "numbers",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": true
+    },
+    {
+      "index": 5,
+      "title": "Deuteronomy",
+      "source_key": "deuteronomy",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": true
+    },
+    {
+      "index": 6,
+      "title": "Joshua",
+      "source_key": "joshua",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": true
+    },
+    {
+      "index": 7,
+      "title": "Judges",
+      "source_key": "judges",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": true
+    },
+    {
+      "index": 8,
+      "title": "Ruth",
+      "source_key": "ruth",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": true
+    },
+    {
+      "index": 9,
+      "title": "1 Samuel",
+      "source_key": "1samuel",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": true
+    },
+    {
+      "index": 10,
+      "title": "2 Samuel",
+      "source_key": "2samuel",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": true
+    },
+    {
+      "index": 11,
+      "title": "1 Kings",
+      "source_key": "1kings",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": true
+    },
+    {
+      "index": 12,
+      "title": "2 Kings",
+      "source_key": "2kings",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": true
+    },
+    {
+      "index": 13,
+      "title": "1 Chronicles",
+      "source_key": "1chronicles",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": true
+    },
+    {
+      "index": 14,
+      "title": "2 Chronicles",
+      "source_key": "2chronicles",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": true
+    },
+    {
+      "index": 15,
+      "title": "Ezra",
+      "source_key": "ezra",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": true
+    },
+    {
+      "index": 16,
+      "title": "Nehemiah",
+      "source_key": "nehemiah",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": true
+    },
+    {
+      "index": 17,
+      "title": "Esther",
+      "source_key": "esther",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": true
+    },
+    {
+      "index": 18,
+      "title": "Job",
+      "source_key": "job",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": true
+    },
+    {
+      "index": 19,
+      "title": "Psalms",
+      "source_key": "psalms",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": true
+    },
+    {
+      "index": 20,
+      "title": "Proverbs",
+      "source_key": "proverbs",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": true
+    },
+    {
+      "index": 21,
+      "title": "Ecclesiastes",
+      "source_key": "ecclesiastes",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": true
+    },
+    {
+      "index": 22,
+      "title": "Song of Solomon",
+      "source_key": "songofsolomon",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": true
+    },
+    {
+      "index": 23,
+      "title": "Isaiah",
+      "source_key": "isaiah",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": true
+    },
+    {
+      "index": 24,
+      "title": "Jeremiah",
+      "source_key": "jeremiah",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 25,
+      "title": "Lamentations",
+      "source_key": "lamentations",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 26,
+      "title": "Ezekiel",
+      "source_key": "ezekiel",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 27,
+      "title": "Daniel",
+      "source_key": "daniel",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 28,
+      "title": "Hosea",
+      "source_key": "hosea",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 29,
+      "title": "Joel",
+      "source_key": "joel",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 30,
+      "title": "Amos",
+      "source_key": "amos",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 31,
+      "title": "Obadiah",
+      "source_key": "obadiah",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 32,
+      "title": "Jonah",
+      "source_key": "jonah",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 33,
+      "title": "Micah",
+      "source_key": "micah",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 34,
+      "title": "Nahum",
+      "source_key": "nahum",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 35,
+      "title": "Habakkuk",
+      "source_key": "habakkuk",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 36,
+      "title": "Zephaniah",
+      "source_key": "zephaniah",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 37,
+      "title": "Haggai",
+      "source_key": "haggai",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 38,
+      "title": "Zechariah",
+      "source_key": "zechariah",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 39,
+      "title": "Malachi",
+      "source_key": "malachi",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 40,
+      "title": "1 Esdras",
+      "source_key": null,
+      "source_collection": "REQUIRES_APPROVED_WITNESS",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 41,
+      "title": "2 Esdras",
+      "source_key": null,
+      "source_collection": "REQUIRES_APPROVED_WITNESS",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 42,
+      "title": "Tobit",
+      "source_key": null,
+      "source_collection": "REQUIRES_APPROVED_WITNESS",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 43,
+      "title": "Judith",
+      "source_key": null,
+      "source_collection": "REQUIRES_APPROVED_WITNESS",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 44,
+      "title": "The Rest of Esther",
+      "source_key": null,
+      "source_collection": "REQUIRES_APPROVED_WITNESS",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 45,
+      "title": "The Wisdom of Solomon",
+      "source_key": null,
+      "source_collection": "REQUIRES_APPROVED_WITNESS",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 46,
+      "title": "Ecclesiasticus",
+      "source_key": null,
+      "source_collection": "REQUIRES_APPROVED_WITNESS",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 47,
+      "title": "Baruch",
+      "source_key": null,
+      "source_collection": "REQUIRES_APPROVED_WITNESS",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 48,
+      "title": "The Song of the Three Holy Children",
+      "source_key": null,
+      "source_collection": "REQUIRES_APPROVED_WITNESS",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 49,
+      "title": "The History of Susanna",
+      "source_key": null,
+      "source_collection": "REQUIRES_APPROVED_WITNESS",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 50,
+      "title": "Bel and the Dragon",
+      "source_key": null,
+      "source_collection": "REQUIRES_APPROVED_WITNESS",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 51,
+      "title": "The Prayer of Manasses",
+      "source_key": null,
+      "source_collection": "REQUIRES_APPROVED_WITNESS",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 52,
+      "title": "1 Maccabees",
+      "source_key": null,
+      "source_collection": "REQUIRES_APPROVED_WITNESS",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 53,
+      "title": "2 Maccabees",
+      "source_key": null,
+      "source_collection": "REQUIRES_APPROVED_WITNESS",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 54,
+      "title": "Matthew",
+      "source_key": "matthew",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 55,
+      "title": "Mark",
+      "source_key": "mark",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 56,
+      "title": "Luke",
+      "source_key": "luke",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 57,
+      "title": "John",
+      "source_key": "john",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 58,
+      "title": "Acts",
+      "source_key": "acts",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 59,
+      "title": "Romans",
+      "source_key": "romans",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 60,
+      "title": "1 Corinthians",
+      "source_key": "1corinthians",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 61,
+      "title": "2 Corinthians",
+      "source_key": "2corinthians",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 62,
+      "title": "Galatians",
+      "source_key": "galatians",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 63,
+      "title": "Ephesians",
+      "source_key": "ephesians",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 64,
+      "title": "Philippians",
+      "source_key": "philippians",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 65,
+      "title": "Colossians",
+      "source_key": "colossians",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 66,
+      "title": "1 Thessalonians",
+      "source_key": "1thessalonians",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 67,
+      "title": "2 Thessalonians",
+      "source_key": "2thessalonians",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 68,
+      "title": "1 Timothy",
+      "source_key": "1timothy",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 69,
+      "title": "2 Timothy",
+      "source_key": "2timothy",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 70,
+      "title": "Titus",
+      "source_key": "titus",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 71,
+      "title": "Philemon",
+      "source_key": "philemon",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 72,
+      "title": "Hebrews",
+      "source_key": "hebrews",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 73,
+      "title": "James",
+      "source_key": "james",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 74,
+      "title": "1 Peter",
+      "source_key": "1peter",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 75,
+      "title": "2 Peter",
+      "source_key": "2peter",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 76,
+      "title": "1 John",
+      "source_key": "1john",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 77,
+      "title": "2 John",
+      "source_key": "2john",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 78,
+      "title": "3 John",
+      "source_key": "3john",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 79,
+      "title": "Jude",
+      "source_key": "jude",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    },
+    {
+      "index": 80,
+      "title": "Revelation",
+      "source_key": "revelation",
+      "source_collection": "WEB_JSON",
+      "checkpoint_complete": false
+    }
+  ]
+}
