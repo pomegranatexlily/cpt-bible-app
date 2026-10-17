@@ -102,7 +102,7 @@ try{
   await page.locator(".feature-title").getByText("The nation's record").waitFor();
   await page.locator(".feature-verse").waitFor();
   const mark=page.locator(".oustory-home-identity img");
-  assert.match(await mark.getAttribute("src"),/covenant-bible-gold-512\.png/);
+  assert.match(await mark.getAttribute("src"),/oustory-poster-icon-512\.png/);
   await mark.evaluate(img=>img.decode());
   assert.equal(await mark.evaluate(img=>img.naturalWidth),512);
   await page.screenshot({path:"out/ui-smoke/home-mobile.png",fullPage:false});
@@ -237,7 +237,7 @@ try{
   await page.screenshot({path:"out/ui-smoke/discover-mobile.png",fullPage:false});
   await page.locator("#nav-more").click();
   await page.locator("#oustory-menu[open]").waitFor();
-  assert.match(await page.locator(".oustory-menu-brand img").getAttribute("src"),/covenant-bible-gold-512\.png/);
+  assert.match(await page.locator(".oustory-menu-brand img").getAttribute("src"),/oustory-poster-icon-512\.png/);
   await page.locator(".oustory-menu-brand img").evaluate(img=>img.decode());
   await page.getByRole("button",{name:"Saved places",exact:true}).click();
   await page.locator("#saved-panel[open]").waitFor();
