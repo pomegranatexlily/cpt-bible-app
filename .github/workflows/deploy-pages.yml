@@ -1,0 +1,46 @@
+name: Deploy Oustory Bible App
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  workflow_run:
+    workflows: [Install approved Covenant Bible icon and branding]
+    types: [completed]
+    branches: [main]
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: oustory-pages
+  cancel-in-progress: true
+jobs:
+  deploy:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out current app
+        uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Stage public app files only
+        shell: bash
+        run: |
+          mkdir -p _site
+          cp index.html manifest.webmanifest oustory-branding.css oustory-branding.js _site/
+          cp -R assets _site/assets
+          if [ -f cpt-data.js ]; then cp cpt-data.js _site/; fi
+          if [ -d data ]; then cp -R data _site/data; fi
+      - name: Upload app
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+      - name: Publish app
+        id: deployment
+        uses: actions/deploy-pages@v4
