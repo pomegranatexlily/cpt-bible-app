@@ -39,6 +39,16 @@ try{
   await mark.evaluate(img=>img.decode());
   assert.equal(await mark.evaluate(img=>img.naturalWidth),512);
   await page.screenshot({path:"out/ui-smoke/home-mobile.png",fullPage:false});
+  await page.getByRole("button",{name:"Feasts & lunar calendar"}).click();
+  await page.getByText("Covenant calendar",{exact:true}).waitFor();
+  await page.getByText("Feast of Trumpets",{exact:true}).waitFor();
+  await page.getByText(/Aug 22, 2025/).waitFor();
+  await page.getByRole("button",{name:"2025 Lunar · 11 months"}).click();
+  await page.getByText("7th Month").waitFor();
+  await page.getByText(/Trumpets \(September 22\)/).waitFor();
+  await page.getByRole("button",{name:"← Home"}).click();
+  await page.getByText("The nation's record").waitFor();
+  await page.screenshot({path:"out/ui-smoke/calendar-mobile.png",fullPage:false});
   await page.locator("#read-button").click();
   await page.waitForFunction(()=>document.querySelectorAll(".verse-entry").length>=20,{timeout:20000});
   assert.ok((await page.locator("#scripture").innerText()).length>250);
