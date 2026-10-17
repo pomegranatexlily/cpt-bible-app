@@ -286,6 +286,7 @@
       span?.classList.toggle("is-highlighted",highlights.has(k));
       openVerse(record);
     });
+    addAction(a,"Create verse image",()=>window.OustoryShareCard?.open(record));
     addAction(a,"Share verse",async()=>{
       if(!navigator.share){await copyVerse();return}
       try{await navigator.share({title:k,text:record.text+"\n— "+k})}

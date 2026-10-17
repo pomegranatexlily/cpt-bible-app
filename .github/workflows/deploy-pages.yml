@@ -36,6 +36,8 @@ jobs:
           node --check sw.js
           node --check oustory-release4.js
           node --check oustory-calendar.js
+          node --check oustory-share-card.js
+          node --check scripts/share_card_ui.mjs
           node --check scripts/release4_ui.mjs
       - name: Verify source-controlled calendar and offline static publication
         run: python3 scripts/test_published_calendar.py
@@ -64,7 +66,7 @@ jobs:
         run: |
           mkdir -p _site
           cp .nojekyll _site/.nojekyll
-          cp index.html manifest.webmanifest oustory-branding.css oustory-branding.js oustory-features.css oustory-features.js oustory-calendar.css oustory-calendar.js oustory-calendar-study.js oustory-audio.js oustory-search.js oustory-research.js oustory-research.css cpt-index.js oustory-reader.js oustory-release4.js oustory-release4.css sw.js _site/
+          cp index.html manifest.webmanifest oustory-branding.css oustory-branding.js oustory-features.css oustory-features.js oustory-calendar.css oustory-calendar.js oustory-calendar-study.js oustory-audio.js oustory-search.js oustory-research.js oustory-research.css cpt-index.js oustory-reader.js oustory-release4.js oustory-release4.css oustory-share-card.js oustory-share-card.css sw.js _site/
           cp -R assets _site/assets
           cp -R data _site/data
           cp -R calendar _site/calendar
@@ -79,6 +81,8 @@ jobs:
           test -f _site/sw.js
           test -f _site/oustory-release4.js
           test -f _site/oustory-release4.css
+          test -s _site/oustory-share-card.js
+          test -s _site/oustory-share-card.css
           test -f _site/oustory-reader.js
           test -f _site/oustory-search.js
           test -f _site/oustory-research.js

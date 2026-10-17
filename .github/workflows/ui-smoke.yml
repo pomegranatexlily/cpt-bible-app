@@ -20,6 +20,9 @@ on:
       - 'data/witness-questions.json'
       - 'scripts/build_search_index.py'
       - 'oustory-features.js'
+      - 'oustory-share-card.js'
+      - 'oustory-share-card.css'
+      - 'scripts/share_card_ui.mjs'
       - 'oustory-calendar.js'
       - 'calendar/published.json'
       - '.nojekyll'
@@ -78,6 +81,8 @@ jobs:
         run: |
           node --check sw.js
           node --check oustory-release4.js
+          node --check oustory-share-card.js
+          node --check scripts/share_card_ui.mjs
           node --check oustory-calendar.js
           node --check scripts/calendar_fallback_ui.mjs
           node --check scripts/release4_ui.mjs
@@ -89,6 +94,8 @@ jobs:
         run: node scripts/release4_ui.mjs
       - name: Test live-feed outage and verified offline calendar fallback
         run: node scripts/calendar_fallback_ui.mjs
+      - name: Verify client-side verse image sharing and save
+        run: node scripts/share_card_ui.mjs
       - name: Save mobile preview screenshots
         if: always()
         uses: actions/upload-artifact@v4
