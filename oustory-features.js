@@ -147,7 +147,7 @@
     addAction(actions(note),"Explore covenant study",()=>show("study"));
   }
   function renderStudy(){
-    title("Study · covenant literacy","Read with the record","Study topics and approved editorial decisions, connected directly to verses.");
+    title("Study · covenant literacy","Read with the record","Scripture reading, founder corrections, draft terminology review, and openly unresolved textual research.");
     const editorial=card(root,"Why this rendering — editorial index");
     editorial.append(el("p","The first indexed notes follow the October 16 founder rulings and doctrinal-drift draft. Drafts and unresolved variants remain labeled; source text is not silently rewritten."));
     const list=el("div",undefined,"feature-list");editorial.append(list);
@@ -280,6 +280,7 @@
     }
     note.append(el("p","An editorial note explains a position; it does not certify a manuscript variant or assert the currently displayed verse has already been revised.","feature-status"));
     window.OustoryResearch?.appendEvidence(note,record);
+    window.OustoryResearch?.appendProvenance(note,record);
     verseDialog.showModal();
   }
   function annotateVerse(info){
