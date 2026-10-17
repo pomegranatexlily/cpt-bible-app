@@ -10,6 +10,25 @@ page.on("pageerror",e=>errors.push(e.message));
 page.on("console",m=>{if(m.type()==="error")errors.push(m.text())});
 fs.mkdirSync("out/ui-smoke",{recursive:true});
 try{
+  // Browser audio is device-dependent. Mock the native API to test real
+  // button wiring/state, not the presence of an audio engine in CI.
+  await page.addInitScript(() => {
+    window.__oustorySpeech = {spoken:[], cancelled:0};
+    class MockUtterance { constructor(text){ this.text=text; this.rate=1; } }
+    Object.defineProperty(window,"SpeechSynthesisUtterance",
+      {configurable:true,value:MockUtterance});
+    Object.defineProperty(window,"speechSynthesis",{
+      configurable:true,
+      value:{
+        speak(utterance){
+          window.__oustorySpeech.spoken.push({text:utterance.text,rate:utterance.rate});
+          queueMicrotask(()=>utterance.onstart?.());
+        },
+        cancel(){window.__oustorySpeech.cancelled++},
+        getVoices(){return []}
+      }
+    });
+  });
   await page.goto("http://127.0.0.1:8765/",{waitUntil:"domcontentloaded"});
   await page.locator("#nav-home").waitFor({timeout:20000});
   assert.equal(await page.locator("#nav-home").getAttribute("aria-current"),"page");
@@ -19,6 +38,27 @@ try{
   await page.locator("#read-button").click();
   await page.waitForFunction(()=>document.querySelectorAll(".verse-entry").length>=20,{timeout:20000});
   assert.ok((await page.locator("#scripture").innerText()).length>250);
+  const audio=page.locator("#chapter-audio");
+  await audio.waitFor();
+  assert.equal(await audio.locator(".audio-play").getAttribute("aria-label"),"Play chapter");
+  assert.equal(await audio.locator(".audio-play").isDisabled(),false);
+  await audio.locator(".audio-play").click();
+  await page.waitForFunction(()=>window.__oustorySpeech?.spoken.length>=1);
+  assert.match((await page.evaluate(()=>window.__oustorySpeech.spoken[0].text)),/beginning/i);
+  assert.equal(await audio.locator(".audio-play").getAttribute("aria-label"),"Pause chapter");
+  await audio.locator("#audio-rate").selectOption("1.2");
+  await page.waitForFunction(()=>window.__oustorySpeech.spoken.some(u=>u.rate===1.2));
+  await audio.locator(".audio-play").click();
+  assert.equal(await audio.locator(".audio-play").getAttribute("aria-label"),"Resume chapter");
+  await audio.locator(".audio-play").click();
+  assert.equal(await audio.locator(".audio-play").getAttribute("aria-label"),"Pause chapter");
+  await audio.locator(".audio-stop").click();
+  assert.equal(await audio.locator(".audio-play").getAttribute("aria-label"),"Play chapter");
+  await audio.locator(".audio-play").click();
+  await page.locator("#next").click();
+  await page.locator("#chapter-title").getByText("Genesis 2").waitFor();
+  assert.equal(await audio.locator(".audio-play").getAttribute("aria-label"),"Play chapter");
+  await page.waitForFunction(()=>window.__oustorySpeech.cancelled>0);
   await page.locator(".verse-entry").first().click();
   await page.locator("#verse-panel[open]").waitFor();
   assert.ok((await page.locator("#verse-panel .verse-text").innerText()).length>10);
@@ -48,5 +88,5 @@ try{
   assert.equal(count,80,"All 80 book choices should be present");
   await page.locator("#books-panel [data-close]").click();
   assert.deepEqual(errors,[],"No uncaught client errors");
-  console.log("PASS mobile UI: Home, Bible, verse actions, Study grounded Matthew 28 note, Discover plans, More, 80-book picker.");
+  console.log("PASS mobile UI: native audio play/pause/stop/rate/navigation, Home, Bible, verse actions, Study grounded Matthew 28 note, Discover plans, More, 80-book picker.");
 }finally{await browser.close()}
