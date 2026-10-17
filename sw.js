@@ -1,6 +1,6 @@
 /* Oustory Release 4: first-party offline reading. No Scripture transformations. */
 "use strict";
-const SHELL="oustory-shell-r6-study-workbench-20261017-v1";
+const SHELL="oustory-shell-r6-new-icon-20261017-v2";
 const BOOKS="oustory-books-r4";
 const RUNTIME="oustory-runtime-r4";
 const APP=new URL(self.registration.scope);
@@ -14,8 +14,8 @@ const CORE=[
  "./oustory-share-card.js","./oustory-share-card.css",
  "./oustory-workbench.js","./oustory-workbench.css",
  "./data/interlinear/manifest.json",
- "./assets/covenant-bible-gold-192.png","./assets/covenant-bible-gold-512.png",
- "./assets/covenant-bible-gold-180.png","./data/genesis.json",
+ "./assets/oustory-poster-icon-192.png","./assets/oustory-poster-icon-512.png",
+ "./assets/oustory-poster-icon-180.png","./data/genesis.json",
  "./data/editorial-notes.json","./data/covenant-study.json",
  "./data/terminology-review.json","./data/witness-questions.json",
  "./calendar/archive.json","./calendar/published.json"
