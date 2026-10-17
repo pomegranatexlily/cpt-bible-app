@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source": "CPT–APE founder October 16 rulings and 38-page Doctrinal-Drift Editorial Notes draft",
-  "status": "partial apparatus; not all draft entries sealed",
+  "status": "partial apparatus with founder correction; source draft remains under review",
   "source_verification": "notes paraphrase editorial positions; separate from actual verse witness",
   "notes": [
     {
@@ -147,8 +147,20 @@
       "label": "Passover terminology",
       "status": "draft-note",
       "body": "The editorial draft distinguishes Greek pascha ('Passover') from the English term 'Easter.' Treat an English festival substitution as a translation question and preserve the underlying witness evidence."
+    },
+    {
+      "refs": [
+        "Luke 7:5",
+        "Acts 4:27",
+        "Matthew 28:19",
+        "Romans 11:13"
+      ],
+      "label": "Nations and Gentiles: determine the referent by context",
+      "status": "author-ruling",
+      "source": "Founder correction 2026-10-17 supersedes blanket term-substitution instruction in the October 16 draft, pages 27 and 36.",
+      "body": "Founder correction: 'Gentiles' often renders Greek ethnos/ethnē, literally a nation or nations/peoples. The lexical meaning alone does not prove the persons are non-Israelites. Luke 7:5 speaks of Israel as 'our nation'; Matthew 28:19 has 'all nations'; Acts 4:27 distinguishes the nations from 'the people of Israel' in its immediate context; Romans 11:13 addresses a Gentile/nations audience. Identify the referent passage by passage using speaker, addressee, grammar, setting and surrounding contrasts. Sometimes non-Israelites are meant, and sometimes an Israelite nation or a broader set is meant. Do not automatically substitute 'nations' for every English Gentiles, do not automatically assume non-Israelite referents, and do not silently edit source Scripture. Document each proposed rendering and the contextual reason before approval."
     }
   ],
-  "watchlist_status": "25-rule watchlist is source material, not yet a fully approved machine rule set",
+  "watchlist_status": "Original document calls it 25-rule watchlist, but lists 27 term groups (pp.36-38). Gentiles rule corrected 2026-10-17; remaining source-proposed substitutions are NOT globally approved.",
   "verses_rewritten": false
 }
