@@ -18,3 +18,5 @@ jobs:
         run: python3 scripts/test_release1.py
       - name: Validate Research Bible draft statuses and source coordinates
         run: python3 scripts/test_release2.py
+      - name: Validate Release 3 study Scripture coordinates
+        run: python3 scripts/test_release3.py

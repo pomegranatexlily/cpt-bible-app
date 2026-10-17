@@ -20,6 +20,12 @@
     ?location.origin+"/shabbat-calendar/calendar.json"
     :"https://pomegranatexlily.github.io/shabbat-calendar/calendar.json";
   let feedPromise=null;
+  const TRACK_KEY="oustory.calendar.track";
+  function rememberedTrack(){
+    try{return localStorage.getItem(TRACK_KEY)==="later"?"later":"earlier"}catch{return "earlier"}
+  }
+  function rememberTrack(track){try{localStorage.setItem(TRACK_KEY,track)}catch{}}
+
   function loadLive(){
     if(!feedPromise)feedPromise=fetch(LIVE_URL,{cache:"no-cache"}).then(r=>{
       if(!r.ok)throw new Error("Calendar feed unavailable");
@@ -107,7 +113,7 @@
     return map;
   }
 
-  function render(target,back){
+  function render(target,back,go){
     target.replaceChildren();
     target.append(make("p","Oustory · Covenant time","feature-eyebrow"),
       make("h1","Covenant Calendar","feature-title"),
@@ -152,10 +158,14 @@
     target.append(grid);
     const detail=make("section",undefined,"calendar-details");
     detail.setAttribute("aria-live","polite");target.append(detail);
+    const dayStudy=make("section",undefined,"calendar-study");target.append(dayStudy);
+    const verification=make("details",undefined,"calendar-verification");
+    verification.append(make("summary","Calendar verification and open decisions"));
+    target.append(verification);
     const footer=make("p","Calendar dates use supplied lunar month starts and modeled future months. Draft feasts are not approved dates. Sunset timing is not calculated.","feature-status calendar-footer");
     target.append(footer);
 
-    let data=null,source="earlier",year=0,month=0,selected=null,days=new Map();
+    let data=null,source=rememberedTrack(),year=0,month=0,selected=null,days=new Map();
     function active(){return data?.tracks[source]}
     function jump(day){
       const d=dateObj(day);year=d.getUTCFullYear();month=d.getUTCMonth();selected=day;update();
@@ -197,6 +207,32 @@
         list.append(item);
       }
       detail.append(list);
+      window.OustoryCalendarStudy?.renderForDay(dayStudy,source,selected,events,go);
+    }
+    function renderVerification(){
+      verification.replaceChildren(make("summary","Calendar verification and open decisions"));
+      const a=data?.verification;
+      if(!a||a.version!==1){
+        verification.append(make("p","Published calendar audit unavailable. No independently observed lunar or agricultural dates are implied.","feature-status"));
+        return;
+      }
+      verification.append(make("p","Arithmetic checked: "+a.checks?.lunar_months_checked+
+        " lunar month spans, "+a.checks?.year_span_classifications_checked+
+        " seasonal-year classifications across two tracks.","feature-status"));
+      verification.append(make("p","Mathematical validation does not establish actual crescent sightings, local sunset boundaries, Abib, or approved feast dates.","feature-status"));
+      const labels=[
+        ["local_crescent_visibility","Crescent visibility"],
+        ["Abib_or_agricultural_evidence","Abib / agriculture"],
+        ["annual_feast_rule_approval","Feast rules"],
+        ["intercalation_policy","Thirteenth-month policy"],
+        ["Shavuot_counting","Shavuot counting"],
+        ["local_sunset_boundaries","Sunset boundaries"],
+        ["makeup_rules","Makeup observances"]
+      ];
+      const list=make("ul");
+      for(const [key,label] of labels)
+        list.append(make("li",label+": "+String(a.unresolved?.[key]??"not verified").replaceAll("_"," ")));
+      verification.append(list);
     }
     function update(){
       if(!data)return;
@@ -241,6 +277,7 @@
       b.onclick=()=>{
         if(!data)return;
         source=b.dataset.source;
+        rememberTrack(source);
         // Changing religious years must NEVER move the Gregorian day.
         update();
       };
@@ -256,6 +293,7 @@
     loadLive().then(j=>{
       if(!target.isConnected||target.querySelector(".calendar-grid")!==grid)return;
       data=j;
+      renderVerification();
       const event=shabbatAfter(active(),todayIso());
       jump(event?.date||todayIso());
     }).catch(e=>{
@@ -265,5 +303,5 @@
       detail.replaceChildren(make("p","The lunar calendar could not be loaded.","feature-status"),retry);
     });
   }
-  window.OustoryCalendar={render,calendarCells,normalize,lunarFeasts,dailyIndex};
+  window.OustoryCalendar={render,loadLive,rememberedTrack,calendarCells,normalize,lunarFeasts,dailyIndex};
 })();

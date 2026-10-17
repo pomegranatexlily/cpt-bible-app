@@ -16,6 +16,9 @@ on:
       - 'scripts/build_search_index.py'
       - 'oustory-features.js'
       - 'oustory-calendar.js'
+      - 'oustory-calendar-study.js'
+      - 'data/covenant-study.json'
+      - 'scripts/test_release3.py'
       - 'oustory-calendar.css'
       - 'calendar/archive.json'
       - 'oustory-features.css'
@@ -55,6 +58,8 @@ jobs:
         run: python3 scripts/build_kjv_comparison.py --out data/compare
       - name: Verify Release 2 indexes and alignment
         run: python3 scripts/test_release2.py
+      - name: Validate study mapping against actual Oustory verses
+        run: python3 scripts/test_release3.py
       - name: Run isolated local site
         run: python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/oustory-site.log 2>&1 &
       - name: Check all mobile navigation and verse details

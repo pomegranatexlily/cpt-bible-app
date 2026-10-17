@@ -1,0 +1,410 @@
+{
+  "schema_version": 1,
+  "editorial_status": "suggested_study_readings_not_an_approved_ritual_lectionary",
+  "rules": {
+    "lunar_shabbat_days": [
+      8,
+      15,
+      22,
+      29
+    ],
+    "new_moon_day": 1,
+    "sources": "Oustory canonical Scripture coordinate references only, without supplied passage text",
+    "date_engine": "Shabbat Calendar two-track feed. This file does not calculate lunar dates.",
+    "feast_policy": "Feast reading suggestions are available only alongside draft calendar events, clearly unapproved.",
+    "shavuot_policy": "No date or feast event until the founder approves the counting method.",
+    "progress": "Local device only; keyed by exact Gregorian date, selected year-start track and passage"
+  },
+  "shabbat": [
+    {
+      "day": 8,
+      "topic": "Rest and the Sabbath command",
+      "readings": [
+        {
+          "book": "Exodus",
+          "chapter": 20,
+          "verse": 8,
+          "label": "Remember the Sabbath"
+        },
+        {
+          "book": "Genesis",
+          "chapter": 2,
+          "verse": 3,
+          "label": "The seventh day blessed"
+        },
+        {
+          "book": "Leviticus",
+          "chapter": 23,
+          "verse": 3,
+          "label": "The appointed rest"
+        }
+      ]
+    },
+    {
+      "day": 15,
+      "topic": "Keeping the Sabbath in the covenant",
+      "readings": [
+        {
+          "book": "Deuteronomy",
+          "chapter": 5,
+          "verse": 12,
+          "label": "Keep the Sabbath day"
+        },
+        {
+          "book": "Isaiah",
+          "chapter": 58,
+          "verse": 13,
+          "label": "The delight of the Sabbath"
+        },
+        {
+          "book": "Psalms",
+          "chapter": 92,
+          "verse": 1,
+          "label": "A song for the Sabbath"
+        }
+      ]
+    },
+    {
+      "day": 22,
+      "topic": "Preparation and faithful practice",
+      "readings": [
+        {
+          "book": "Exodus",
+          "chapter": 16,
+          "verse": 23,
+          "label": "Preparing before rest"
+        },
+        {
+          "book": "Isaiah",
+          "chapter": 56,
+          "verse": 6,
+          "label": "Holding fast to the covenant"
+        },
+        {
+          "book": "Nehemiah",
+          "chapter": 13,
+          "verse": 15,
+          "label": "Sabbath observance"
+        }
+      ]
+    },
+    {
+      "day": 29,
+      "topic": "The sign, remembrance, and worship",
+      "readings": [
+        {
+          "book": "Exodus",
+          "chapter": 31,
+          "verse": 13,
+          "label": "The Sabbath as a sign"
+        },
+        {
+          "book": "Ezekiel",
+          "chapter": 20,
+          "verse": 12,
+          "label": "The Sabbaths as a sign"
+        },
+        {
+          "book": "Isaiah",
+          "chapter": 66,
+          "verse": 23,
+          "label": "From New Moon to New Moon"
+        }
+      ]
+    }
+  ],
+  "new_moon": {
+    "topic": "Beginning a lunar month",
+    "readings": [
+      {
+        "book": "Numbers",
+        "chapter": 28,
+        "verse": 11,
+        "label": "Offerings at the beginning of months"
+      },
+      {
+        "book": "Isaiah",
+        "chapter": 66,
+        "verse": 23,
+        "label": "New Moons and Sabbaths"
+      },
+      {
+        "book": "Psalms",
+        "chapter": 81,
+        "verse": 3,
+        "label": "Sounding the trumpet"
+      }
+    ]
+  },
+  "preparation": {
+    "topic": "Preparation before the Sabbath",
+    "readings": [
+      {
+        "book": "Exodus",
+        "chapter": 16,
+        "verse": 23,
+        "label": "Preparation and rest"
+      },
+      {
+        "book": "Mark",
+        "chapter": 15,
+        "verse": 42,
+        "label": "The day of preparation"
+      }
+    ]
+  },
+  "feasts": [
+    {
+      "event": "Passover",
+      "topic": "Covenant and Passover",
+      "rule_status": "unapproved_draft",
+      "readings": [
+        {
+          "book": "Exodus",
+          "chapter": 12,
+          "verse": 2,
+          "label": "The first month"
+        },
+        {
+          "book": "Exodus",
+          "chapter": 12,
+          "verse": 14,
+          "label": "Memorial of Passover"
+        },
+        {
+          "book": "Numbers",
+          "chapter": 9,
+          "verse": 10,
+          "label": "A second-month provision"
+        }
+      ]
+    },
+    {
+      "event": "Unleavened Bread",
+      "topic": "Unleavened Bread",
+      "rule_status": "unapproved_draft",
+      "readings": [
+        {
+          "book": "Exodus",
+          "chapter": 12,
+          "verse": 15,
+          "label": "Seven days of unleavened bread"
+        },
+        {
+          "book": "Leviticus",
+          "chapter": 23,
+          "verse": 6,
+          "label": "The appointed feast"
+        }
+      ]
+    },
+    {
+      "event": "Firstfruits",
+      "topic": "Firstfruits and the harvest",
+      "rule_status": "unapproved_draft",
+      "readings": [
+        {
+          "book": "Leviticus",
+          "chapter": 23,
+          "verse": 10,
+          "label": "The first sheaf"
+        },
+        {
+          "book": "Deuteronomy",
+          "chapter": 26,
+          "verse": 1,
+          "label": "The first produce"
+        },
+        {
+          "book": "1 Corinthians",
+          "chapter": 15,
+          "verse": 20,
+          "label": "Firstfruits in the apostolic writings"
+        }
+      ]
+    },
+    {
+      "event": "Feast of Trumpets",
+      "topic": "The memorial of trumpet blowing",
+      "rule_status": "unapproved_draft",
+      "readings": [
+        {
+          "book": "Leviticus",
+          "chapter": 23,
+          "verse": 24,
+          "label": "The seventh-month remembrance"
+        },
+        {
+          "book": "Numbers",
+          "chapter": 29,
+          "verse": 1,
+          "label": "A day of blowing trumpets"
+        }
+      ]
+    },
+    {
+      "event": "Day of Atonement",
+      "topic": "Atonement and affliction",
+      "rule_status": "unapproved_draft",
+      "readings": [
+        {
+          "book": "Leviticus",
+          "chapter": 16,
+          "verse": 29,
+          "label": "The tenth day of the seventh month"
+        },
+        {
+          "book": "Leviticus",
+          "chapter": 23,
+          "verse": 27,
+          "label": "The day of atonement"
+        }
+      ]
+    },
+    {
+      "event": "Feast of Tabernacles",
+      "topic": "Dwelling in booths",
+      "rule_status": "unapproved_draft",
+      "readings": [
+        {
+          "book": "Leviticus",
+          "chapter": 23,
+          "verse": 34,
+          "label": "The feast of booths"
+        },
+        {
+          "book": "Deuteronomy",
+          "chapter": 16,
+          "verse": 13,
+          "label": "The ingathering"
+        },
+        {
+          "book": "Zechariah",
+          "chapter": 14,
+          "verse": 16,
+          "label": "Going up for the feast"
+        }
+      ]
+    },
+    {
+      "event": "Last Great Day",
+      "topic": "The solemn assembly and final day",
+      "rule_status": "unapproved_draft",
+      "readings": [
+        {
+          "book": "Leviticus",
+          "chapter": 23,
+          "verse": 36,
+          "label": "The eighth-day assembly"
+        },
+        {
+          "book": "John",
+          "chapter": 7,
+          "verse": 37,
+          "label": "The last great day"
+        }
+      ]
+    },
+    {
+      "event": "Hanukkah",
+      "topic": "Historical dedication",
+      "rule_status": "unapproved_draft",
+      "readings": [
+        {
+          "book": "1 Maccabees",
+          "chapter": 4,
+          "verse": 52,
+          "label": "Dedication of the altar"
+        },
+        {
+          "book": "John",
+          "chapter": 10,
+          "verse": 22,
+          "label": "The feast of dedication"
+        }
+      ]
+    },
+    {
+      "event": "Nicanor",
+      "topic": "Historical remembrance: Nicanor",
+      "rule_status": "unapproved_draft",
+      "readings": [
+        {
+          "book": "1 Maccabees",
+          "chapter": 7,
+          "verse": 49,
+          "label": "The day of Nicanor"
+        },
+        {
+          "book": "2 Maccabees",
+          "chapter": 15,
+          "verse": 36,
+          "label": "The memorial day"
+        }
+      ]
+    },
+    {
+      "event": "Purim",
+      "topic": "Historical remembrance: Purim",
+      "rule_status": "unapproved_draft",
+      "readings": [
+        {
+          "book": "Esther",
+          "chapter": 9,
+          "verse": 20,
+          "label": "The writing to the provinces"
+        },
+        {
+          "book": "Esther",
+          "chapter": 9,
+          "verse": 26,
+          "label": "Naming the days Purim"
+        }
+      ]
+    }
+  ],
+  "open_questions": {
+    "shavuot": {
+      "status": "date_not_approved",
+      "topic": "The counting toward Weeks",
+      "readings": [
+        {
+          "book": "Leviticus",
+          "chapter": 23,
+          "verse": 15,
+          "label": "Counting seven Sabbaths"
+        },
+        {
+          "book": "Deuteronomy",
+          "chapter": 16,
+          "verse": 9,
+          "label": "Counting seven weeks"
+        }
+      ]
+    },
+    "intercalation": {
+      "status": "agricultural_sighting_not_verified",
+      "topic": "The first month and seasons",
+      "readings": [
+        {
+          "book": "Genesis",
+          "chapter": 1,
+          "verse": 14,
+          "label": "Lights for seasons and days"
+        },
+        {
+          "book": "Exodus",
+          "chapter": 12,
+          "verse": 2,
+          "label": "The first month"
+        },
+        {
+          "book": "Deuteronomy",
+          "chapter": 16,
+          "verse": 1,
+          "label": "Observe the month of Abib"
+        }
+      ]
+    }
+  }
+}
