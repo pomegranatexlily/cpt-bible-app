@@ -28,6 +28,14 @@ try{
   await page.getByText("Why this rendering — editorial index").waitFor();
   await page.getByText("Covenant topics").waitFor();
   await page.screenshot({path:"out/ui-smoke/study-mobile.png",fullPage:false});
+  await page.getByText("The name in the commission").click();
+  await page.locator("#verse-19").waitFor();
+  await page.locator("#verse-19").click();
+  await page.locator("#verse-panel[open]").waitFor();
+  assert.match(await page.locator("#verse-panel .note-text").innerText(),/Yahawah alone/);
+  assert.match(await page.locator("#verse-panel .feature-note-type").innerText(),/Founder editorial ruling/);
+  await page.locator("#verse-panel .icon-button").click();
+  await page.locator("#nav-study").click();
   await page.locator("#nav-discover").click();
   await page.getByText("Torah Foundations").waitFor();
   await page.screenshot({path:"out/ui-smoke/discover-mobile.png",fullPage:false});
@@ -40,5 +48,5 @@ try{
   assert.equal(count,80,"All 80 book choices should be present");
   await page.locator("#books-panel [data-close]").click();
   assert.deepEqual(errors,[],"No uncaught client errors");
-  console.log("PASS mobile UI: Home, Bible, verse actions, Study notes/topics, Discover plans, More, 80-book picker.");
+  console.log("PASS mobile UI: Home, Bible, verse actions, Study grounded Matthew 28 note, Discover plans, More, 80-book picker.");
 }finally{await browser.close()}
