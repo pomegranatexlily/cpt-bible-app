@@ -86,7 +86,7 @@ assert '<script src="oustory-audio.js"></script>' in html
 audio=(ROOT/"oustory-audio.js").read_text(encoding="utf8")
 assert all(token in audio for token in ("SpeechSynthesisUtterance", "splitIntoChunks", "playPause", "setChapter", "Speech playback", "aria-label"))
 assert "#chapter-title" not in audio or "chapter-title" in audio
-assert ".chapter-audio" in stylesheet
+assert ".chapter-audio" in (ROOT/"oustory-features.css").read_text(encoding="utf8")
 assert "window.OustoryAudio?.setChapter" in reader and "window.OustoryAudio?.init" in reader
 
 notes=json.loads((DATA/"editorial-notes.json").read_text(encoding="utf8"))
