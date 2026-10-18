@@ -5,6 +5,11 @@ on:
     branches: [main]
     paths:
       - 'index.html'
+      - 'supplemental-books.js'
+      - 'data/supplemental/**'
+      - 'scripts/build_supplemental_enoch.py'
+      - 'scripts/test_supplemental_import.py'
+      - 'scripts/supplemental_ui.mjs'
       - 'sw.js'
       - 'oustory-release4.js'
       - 'oustory-release4.css'
