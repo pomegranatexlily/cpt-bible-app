@@ -66,3 +66,7 @@ body.feature-mode .reading-column{display:none}
 .oustory-home-identity strong,.oustory-home-identity span{display:block}
 .oustory-home-identity strong{font-family:Georgia,serif;font-size:18px;line-height:1.35;color:var(--text)}
 .oustory-home-identity span{margin-top:3px;font-size:11px;letter-spacing:.025em;color:var(--muted)}
+
+/* Supplemental historical English source sections: natural paragraphs, no artificial verse numbers. */
+#scripture .supplemental-paragraph{margin:0 0 1.15em;line-height:var(--leading,1.85);overflow-wrap:anywhere;white-space:normal}
+#scripture .supplemental-verse{display:inline}
