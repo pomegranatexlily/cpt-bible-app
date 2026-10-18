@@ -324,7 +324,7 @@
             for(const c of doc.chapters){
               const node=make('button',String(c.number));
               const section=Boolean(doc.navigation_label);
-              node.setAttribute('aria-label',b.title+', '+(section?'reading section ':'chapter ')+c.number+', historical source');
+              node.setAttribute('aria-label',b.title+', '+(section?'reading section ':'chapter ')+c.number+', historical source draft');
               node.onclick=()=>void readSupplement(b.id,c.number);
               chapters.append(node);
             }
