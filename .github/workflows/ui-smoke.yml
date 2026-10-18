@@ -5,6 +5,11 @@ on:
     branches: [main]
     paths:
       - 'index.html'
+      - 'supplemental-books.js'
+      - 'data/supplemental/**'
+      - 'scripts/build_supplemental_enoch.py'
+      - 'scripts/test_supplemental_import.py'
+      - 'scripts/supplemental_ui.mjs'
       - 'sw.js'
       - 'oustory-release4.js'
       - 'oustory-release4.css'
@@ -69,6 +74,10 @@ jobs:
         run: |
           npm install --no-save playwright@1.56.1
           npx playwright install --with-deps chromium
+      - name: Generate and verify complete supplemental 1 Enoch
+        run: |
+          python3 scripts/build_supplemental_enoch.py
+          python3 scripts/test_supplemental_import.py
       - name: Generate verified Scripture search index
         run: python3 scripts/build_search_index.py --output data/search-index.json
       - name: Generate historical English comparison source
@@ -104,6 +113,8 @@ jobs:
         run: node scripts/share_card_ui.mjs
       - name: Verify phone-first Compare, Interlinear, Notes and backup
         run: node scripts/workbench_ui.mjs
+      - name: Verify 8 complete supplemental books and Compare-to-reader navigation
+        run: node scripts/supplemental_ui.mjs
       - name: Save mobile preview screenshots
         if: always()
         uses: actions/upload-artifact@v4
