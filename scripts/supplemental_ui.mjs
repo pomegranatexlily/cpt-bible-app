@@ -49,7 +49,7 @@ try{
  await page.getByRole("button",{name:"Compare",exact:true}).click();
  await page.locator("#workbench-root:not([hidden])").waitFor();
  await page.locator("#reference").click();
- await page.locator("#book-list button").filter({hasText:/^4 Maccabees$/}).click();
+ await page.locator("#book-list button").filter({hasText:"4 Maccabees"}).last().click();
  await page.locator("#chapter-list button").last().waitFor({timeout:20000});
  assert.equal(await page.locator("#chapter-list button").count(),18);
  await page.locator("#chapter-list button").last().click();
