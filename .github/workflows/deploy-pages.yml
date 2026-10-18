@@ -49,12 +49,16 @@ jobs:
           python3 scripts/build_kjv_comparison.py --out data/compare
           python3 scripts/test_release2.py
           python3 scripts/test_published_research.py
+      - name: Fetch and verify 1 Enoch complete English public-domain witness
+        run: python3 scripts/build_supplemental_enoch.py
+      - name: Check all eight readable supplemental sources
+        run: python3 scripts/test_supplemental_import.py
       - name: Commit generated publication assets for both GitHub Pages modes
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/search-index.json data/compare/
+          git add data/search-index.json data/compare/ data/supplemental/1-enoch.json
           if ! git diff --cached --quiet; then
             git commit -m "Publish source-pinned 1611 comparison and 80-book search index"
             git push origin HEAD:main
@@ -108,6 +112,18 @@ jobs:
           test -f _site/calendar/archive.json
           test -f _site/data/editorial-notes.json
           test "$(find _site/data -maxdepth 1 -name '*.json' | wc -l)" -eq 86
+      - name: Verify supplemental sources are in Pages staging
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          for name in ('1-enoch','jasher','2-baruch','3-maccabees','4-maccabees','ethiopic-didascalia','abtilis','second-book-of-covenant'):
+            path=Path('_site/data/supplemental')/(name+'.json')
+            assert path.stat().st_size>20000,path
+            entry=json.loads(path.read_text())
+            assert entry['id']==name and entry['collection']=='SUPPLEMENTAL_WRITINGS'
+          print('PASS eight full English witness source files staged in hosted Oustory')
+          PY
       - name: Upload app
         uses: actions/upload-pages-artifact@v4
         with:
