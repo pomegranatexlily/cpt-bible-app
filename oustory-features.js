@@ -333,7 +333,6 @@
     feedback.setAttribute("aria-live","polite");
     verseDialog.append(feedback);
     addAction(quick,"Compare",()=>window.OustoryWorkbench?.open(record,"compare"));
-    addAction(quick,"Interlinear",()=>window.OustoryWorkbench?.open(record,"interlinear"));
     addAction(quick,"Notes",()=>window.OustoryWorkbench?.open(record,"notes"));
     const more=el("details",undefined,"verse-more");
     more.append(el("summary","More verse actions & editorial research"));
