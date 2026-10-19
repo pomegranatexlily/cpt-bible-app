@@ -75,6 +75,40 @@ try{
  await page.locator("#nav-study").click();
  await page.getByRole("button",{name:"Highlighted verses"}).click();
  await page.getByRole("button",{name:"Genesis 1:1"}).waitFor();
+ // Privacy page opens from the same first-party menu with no forced consent gate.
+ await page.locator("#nav-more").click();
+ await page.getByRole("button",{name:"Privacy & data"}).click();
+ await page.waitForURL("**/privacy.html");
+ await page.getByRole("heading",{name:"Privacy & data"}).waitFor();
+ assert.match(await page.locator("main").innerText(),/local storage/i);
+ await page.getByRole("link",{name:/Back to Oustory/}).click();
+ await page.locator("#nav-more").waitFor();
+
+ // Saved-data erasure is explicit, scoped to Oustory, and cannot delete
+ // unrelated origin keys or downloaded Scripture books.
+ await page.evaluate(()=>{
+  localStorage.setItem("cpt.reader.saved",JSON.stringify([{book:"genesis",chapter:1,verse:1,label:"Genesis 1:1"}]));
+  localStorage.setItem("oustory.personal-notes.v1",JSON.stringify({"genesis|1|1":"A private note"}));
+  localStorage.setItem("another-project.preference","keep this");
+ });
+ await page.locator("#nav-more").click();
+ await page.getByRole("button",{name:"Offline reading & backup"}).click();
+ await page.locator("#release4-panel[open]").waitFor();
+ page.once("dialog",dialog=>dialog.accept());
+ await page.locator("#release4-delete-saved").click();
+ await page.waitForLoadState("domcontentloaded");
+ await page.locator("#nav-more").waitFor();
+ const after=await page.evaluate(async()=>({
+  saved:localStorage.getItem("cpt.reader.saved"),
+  notes:localStorage.getItem("oustory.personal-notes.v1"),
+  unrelated:localStorage.getItem("another-project.preference"),
+  cachedBooks:(await (await caches.open("oustory-books-r4")).keys())
+    .filter(req=>/\\/data\\/[a-z0-9-]+\\.json$/.test(new URL(req.url).pathname)).length
+ }));
+ assert.equal(after.saved,null,"Saved reading places must be deleted");
+ assert.equal(after.notes,null,"Personal verse notes must be deleted");
+ assert.equal(after.unrelated,"keep this","Other app data must not be deleted");
+ assert.equal(after.cachedBooks,80,"Locally downloaded Scripture must not be erased with notes");
  assert.deepEqual(errors,[],"No browser JavaScript exceptions");
  console.log("PASS Release 4: 80 cached books, offline chapter navigation, backup round-trip, invalid import rejection, accessibility state.");
 }finally{await browser.close()}
