@@ -103,7 +103,7 @@ try{
   notes:localStorage.getItem("oustory.personal-notes.v1"),
   unrelated:localStorage.getItem("another-project.preference"),
   cachedBooks:(await (await caches.open("oustory-books-r4")).keys())
-    .filter(req=>/\\/data\\/[a-z0-9-]+\\.json$/.test(new URL(req.url).pathname)).length
+    .filter(req=>new URL(req.url).pathname.includes("/data/") && new URL(req.url).pathname.endsWith(".json")).length
  }));
  assert.equal(after.saved,null,"Saved reading places must be deleted");
  assert.equal(after.notes,null,"Personal verse notes must be deleted");
