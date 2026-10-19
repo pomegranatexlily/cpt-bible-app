@@ -12,6 +12,10 @@
     ["The Assembly","exodus",19,6,"A nation set apart for service"],
     ["The Return","isaiah",11,12,"The gathering of the scattered"]
   ];
+  // Use the reader's local calendar date, not UTC or a seven-day bucket.
+  const localDayIndex=(date=new Date())=>
+    Math.floor(Date.UTC(date.getFullYear(),date.getMonth(),date.getDate())/86400000);
+  const selectDailyTheme=(date=new Date())=>THEMES[localDayIndex(date)%THEMES.length];
   const TOPICS=[
     ["Covenant","jeremiah",31,31],["Kingdom","psalms",2,6],
     ["Nation","isaiah",49,3],["Law","deuteronomy",6,4],
@@ -50,6 +54,7 @@
   const notesByRef=new Map();
   const highlights=new Set(Array.isArray(read("oustory.highlights",[]))?read("oustory.highlights",[]):[]);
   let api,root,verseDialog,currentView="bible",selected=null;
+  let homeDayIndex=null,homeRenderId=0,dailyRefreshTimer=null;
   const textOf=v=>typeof v.text==="string"?v.text:(v.parts||[]).map(p=>p.text).join("");
   function addAction(parent,label,handler,primary=false){
     const b=el("button",label,"feature-action"+(primary?" primary":""));
@@ -113,9 +118,30 @@
     if(!verse)throw new Error("Verse unavailable in this source witness.");
     return textOf(verse);
   }
+  function refreshDailyHome(){
+    if(!root||currentView!=="home"||root.hidden||homeDayIndex===localDayIndex())return;
+    root.replaceChildren();
+    void renderHome();
+  }
+  function scheduleDailyRefresh(){
+    clearTimeout(dailyRefreshTimer);
+    const now=new Date();
+    const tomorrow=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1);
+    dailyRefreshTimer=setTimeout(()=>{
+      refreshDailyHome();
+      scheduleDailyRefresh();
+    },Math.max(1000,tomorrow.getTime()-now.getTime()+250));
+  }
+  function checkDailyOnReturn(){
+    refreshDailyHome();
+    scheduleDailyRefresh();
+  }
   async function renderHome(){
-    const seq=Math.floor(Date.now()/86400000);
-    const group=THEMES[Math.floor(seq/7)%THEMES.length];
+    const date=new Date();
+    const seq=localDayIndex(date);
+    const group=selectDailyTheme(date);
+    homeDayIndex=seq;
+    const renderId=++homeRenderId;
     const brand = el("div",undefined,"oustory-home-identity");
     const cover = el("img");cover.src = "assets/oustory-poster-icon-512.png";
     cover.alt = "Covenant Bible cover";cover.width = 58;cover.height = 58;
@@ -134,14 +160,17 @@
     noteBtn.hidden=true;
     try{
       const verse=await getVerse(group[1],group[2],group[3]);
-      if(currentView!=="home")return;
+      if(currentView!=="home"||renderId!==homeRenderId)return;
       display.textContent=verse;
       const meta=api.books.find(b=>b.id===group[1]);
       source.textContent=meta.title+" "+group[2]+":"+group[3]+
         " · "+(api.books.indexOf(meta)<23?"verified earlier edition":"provisional source reading");
       const n=notesByRef.get(refKey(meta.title,group[2],group[3]));
       if(n){noteBtn.hidden=false;noteBtn.onclick=()=>openVerse({book:meta.title,id:group[1],chapter:group[2],verse:group[3],text:verse})}
-    }catch(e){display.textContent="This daily reading could not be loaded.";source.textContent=e.message;}
+    }catch(e){
+      if(currentView!=="home"||renderId!==homeRenderId)return;
+      display.textContent="This daily reading could not be loaded.";source.textContent=e.message;
+    }
     const last=read("cpt.reader.position",null);
     const cont=card(root,"Continue reading");
     const savedBook=api.books.find(b=>b.id===last?.book);
@@ -426,6 +455,12 @@
       refreshNotes();
       if(currentView==="study")renderStudy();
     }).catch(()=>{if(currentView==="study")renderStudy();});
+    document.addEventListener("visibilitychange",()=>{
+      if(!document.hidden)checkDailyOnReturn();
+    });
+    window.addEventListener("focus",checkDailyOnReturn);
+    window.addEventListener("pageshow",checkDailyOnReturn);
+    scheduleDailyRefresh();
     show("home");
   }
   window.OustoryFeatures={init,showBible,show,annotateVerse,refreshNotes,openVerse,appendVerseEvidence};
