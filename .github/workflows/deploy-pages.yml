@@ -31,7 +31,7 @@ jobs:
           python scripts/build_covenant_icons.py
       - name: Verify complete 80-book reader data and JavaScript
         run: python3 scripts/check_content.py
-      - name: Validate Release 4 JavaScript syntax
+      - name: Verify privacy and browser security contract\n        run: node scripts/privacy_security_unit.mjs\n      - name: Validate Release 4 JavaScript syntax
         run: |
           node --check sw.js
           node --check oustory-release4.js
@@ -68,7 +68,7 @@ jobs:
         run: |
           mkdir -p _site
           cp .nojekyll _site/.nojekyll
-          cp index.html manifest.webmanifest oustory-branding.css oustory-branding.js oustory-features.css oustory-features.js oustory-calendar.css oustory-calendar.js oustory-calendar-study.js oustory-audio.js oustory-search.js oustory-research.js oustory-research.css cpt-index.js oustory-reader.js oustory-release4.js oustory-release4.css oustory-share-card.js oustory-share-card.css oustory-workbench.js oustory-workbench.css sw.js _site/
+          cp index.html privacy.html manifest.webmanifest oustory-branding.css oustory-branding.js oustory-features.css oustory-features.js oustory-calendar.css oustory-calendar.js oustory-calendar-study.js oustory-audio.js oustory-search.js oustory-research.js oustory-research.css cpt-index.js oustory-reader.js oustory-release4.js oustory-release4.css oustory-share-card.js oustory-share-card.css oustory-workbench.js oustory-workbench.css sw.js _site/
           cp -R assets _site/assets
           cp -R data _site/data
           rm -rf _site/data/supplemental
@@ -82,7 +82,7 @@ jobs:
           test -f _site/assets/oustory-poster-icon-180.png
           test -f _site/assets/oustory-poster-icon-192.png
           test -f _site/assets/oustory-poster-icon-512.png
-          test -f _site/sw.js
+          test -f _site/privacy.html\n          test -f _site/sw.js
           test -f _site/oustory-release4.js
           test -f _site/oustory-release4.css
           test -s _site/oustory-share-card.js
