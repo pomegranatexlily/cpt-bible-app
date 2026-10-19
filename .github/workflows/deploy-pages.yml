@@ -31,7 +31,9 @@ jobs:
           python scripts/build_covenant_icons.py
       - name: Verify complete 80-book reader data and JavaScript
         run: python3 scripts/check_content.py
-      - name: Verify privacy and browser security contract\n        run: node scripts/privacy_security_unit.mjs\n      - name: Validate Release 4 JavaScript syntax
+      - name: Verify privacy and browser security contract
+        run: node scripts/privacy_security_unit.mjs
+      - name: Validate Release 4 JavaScript syntax
         run: |
           node --check sw.js
           node --check oustory-release4.js
@@ -82,7 +84,8 @@ jobs:
           test -f _site/assets/oustory-poster-icon-180.png
           test -f _site/assets/oustory-poster-icon-192.png
           test -f _site/assets/oustory-poster-icon-512.png
-          test -f _site/privacy.html\n          test -f _site/sw.js
+          test -f _site/privacy.html
+          test -f _site/sw.js
           test -f _site/oustory-release4.js
           test -f _site/oustory-release4.css
           test -s _site/oustory-share-card.js
