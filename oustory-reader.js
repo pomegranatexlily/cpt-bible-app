@@ -445,8 +445,24 @@
     if (e.key==='ArrowLeft'||e.key==='ArrowRight') {e.preventDefault();move(e.key==='ArrowRight'?1:-1);}
   });
   apply();
+  // Shared verse coordinates take priority over this device's last position.
+  // Validate against the published index: never guess missing chapters or
+  // omitted source verse numbers, and never fetch arbitrary file paths.
+  const sharedParams=new URLSearchParams(location.search);
+  const sharedBook=sharedParams.get('book');
+  const chapterParam=sharedParams.get('chapter')||'';
+  const verseParam=sharedParams.get('verse')||'';
+  const sharedIndex=books.findIndex(b=>b.id===sharedBook);
+  const sharedChapter=/^[1-9]\d{0,3}$/.test(chapterParam)?Number(chapterParam):null;
+  const sharedVerse=/^[1-9]\d{0,3}$/.test(verseParam)?Number(verseParam):null;
+  const sharedMeta=books[sharedIndex]?.chapters.find(c=>c.number===sharedChapter);
+  const shared=(sharedMeta&&sharedVerse!==null&&
+    sharedVerse>=(sharedMeta.firstVerse??1)&&
+    sharedVerse<=(sharedMeta.lastVerse??sharedMeta.verseCount))?
+    {book:sharedBook,chapter:sharedChapter,verse:sharedVerse}:null;
+  let initialRender=null;
   if (books.length) {
-    const last=read('cpt.reader.position',null);
+    const last=shared||read('cpt.reader.position',null);
     const lastIndex=books.findIndex(b => b.id === last?.book &&
       b.chapters.some(c => c.number === last.chapter));
     // Initialize the saved chapter behind Home. Do not call go() until
@@ -456,7 +472,7 @@
       bi=lastIndex;
       ci=books[bi].chapters.findIndex(c => c.number === last.chapter);
     }
-    render(lastIndex >= 0 && Number.isInteger(last?.verse) ? last.verse : 1);
+    initialRender=render(lastIndex >= 0 && Number.isInteger(last?.verse) ? last.verse : 1);
   } else showMessage('No verified manuscript index was loaded.', true);
   (async () => {
     try { const fonts = await document.fonts.load('400 16px "Schibsted Grotesk"');
@@ -467,4 +483,13 @@
   window.OustoryAudio?.init();
   window.OustoryReader={openSaved,saveVerse,getPosition:()=>read('cpt.reader.position',null)};
   window.OustoryFeatures?.init({go,loadBook,books});
+  if(shared&&initialRender){
+    window.OustoryFeatures?.showBible();
+    void initialRender.then(()=>{
+      // The visible reading surface may still be laying out when the book
+      // loads; scroll on the next paint so the linked verse is actually shown.
+      requestAnimationFrame(()=>document.getElementById('verse-'+shared.verse)
+        ?.scrollIntoView({block:'center'}));
+    });
+  }
 })();
