@@ -13,17 +13,13 @@ try{
  await page.locator(".verse-entry").first().click();
  await page.locator("#verse-panel[open]").waitFor();
  const buttons=await page.locator("#verse-panel .verse-quick-actions button").allInnerTexts();
- assert.deepEqual(buttons,["Copy verse","Share verse","Compare","Interlinear","Notes"],"Copy and Share must be immediately available without hiding existing study actions");
+ assert.deepEqual(buttons,["Copy verse","Share verse","Compare","Notes"],"Only Copy, Share, Compare, and Notes appear in the verse popup");
  const more=page.locator("#verse-panel .verse-more");
  assert.equal(await more.getAttribute("open"),null,"Advanced tools should be folded by default");
- await page.getByRole("button",{name:"Interlinear",exact:true}).click();
+ await page.getByRole("button",{name:"Compare",exact:true}).click();
  await page.locator("#workbench-root:not([hidden])").waitFor();
  assert.equal(await page.locator(".bottom-dock").isVisible(),true,"Bible footer must stay reachable inside study");
  assert.equal(await page.locator(".chapter-navigation").isVisible(),false,"Chapter arrows stay hidden inside study");
- await page.waitForFunction(()=>/Verified Hebrew\/Greek word alignment has not been published/.test(document.querySelector("#workbench-body")?.textContent||""),null,{timeout:10000});
- assert.equal(await page.locator(".workbench-original-word").count(),0,
-   "No original-language words or Strong's numbers may be invented");
- await page.getByRole("button",{name:"Compare",exact:true}).click();
  await page.locator("#workbench-body .research-pair").waitFor();
  assert.match(await page.locator("#workbench-edition option").innerText(),/1611 King James Bible/);
  await page.getByRole("button",{name:"Notes",exact:true}).click();
@@ -72,5 +68,5 @@ try{
  await page.waitForFunction(()=>/Import rejected/.test(document.querySelector("#release4-backup-status")?.textContent||""));
  assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem("oustory.personal-notes.v1"))["genesis|1|1"]),memo);
  assert.deepEqual(errors,[]);
- console.log("PASS Release 6: three taps, clean compare/interlinear pages, no fake Hebrew, device notes, old-version backup roundtrip and invalid-note rejection.");
+ console.log("PASS Release 6: four verse actions without Interlinear, functional Compare and Notes, device notes, backup roundtrip and invalid-note rejection.");
 }finally{await browser.close()}
