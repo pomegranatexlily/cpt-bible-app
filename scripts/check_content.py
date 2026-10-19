@@ -116,7 +116,7 @@ features=(ROOT/"oustory-features.js").read_text(encoding="utf8")
 stylesheet=(ROOT/"oustory-features.css").read_text(encoding="utf8")
 assert all(s in features for s in ("Why this rendering","Home","Study","Discover","annotateVerse","openVerse","THEMES","TOPICS","PLANS"))
 assert "verse-entry" in stylesheet and "feature-mode" in stylesheet
-assert '<script src="oustory-features.js"></script>' in html
+assert re.search(r'<script src="oustory-features\\.js(?:\\?v=[a-zA-Z0-9_-]+)?"></script>',html), "Missing local verse UI script"
 assert '<script src="oustory-research.js"></script>' in html
 assert '<link rel="stylesheet" href="oustory-research.css">' in html
 term=json.loads((DATA/"terminology-review.json").read_text(encoding="utf8"))
@@ -127,7 +127,7 @@ questions=json.loads((DATA/"witness-questions.json").read_text(encoding="utf8"))
 assert questions["witnesses_independently_verified"] is False
 assert len(questions["questions"])==15
 assert all(not q["independent_witness_citations"] for q in questions["questions"])
-assert '<link rel="stylesheet" href="oustory-features.css">' in html
+assert re.search(r'<link rel="stylesheet" href="oustory-features\\.css(?:\\?v=[a-zA-Z0-9_-]+)?"',html), "Missing verse UI stylesheet"
 reader=(ROOT/"oustory-reader.js").read_text(encoding="utf8")
 calendar=json.loads((ROOT/"calendar/archive.json").read_text(encoding="utf8"))
 assert calendar["schema_version"]==1 and calendar["extrapolation_allowed"] is False
