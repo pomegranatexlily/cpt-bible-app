@@ -105,6 +105,11 @@ try{
       headers:{"Access-Control-Allow-Origin":"*"},body:JSON.stringify(sampleLive)}));
   await page.clock.install({time:new Date("2026-10-17T16:00:00Z")});
   await page.goto("http://127.0.0.1:8765/",{waitUntil:"domcontentloaded"});
+  // Cached PWAs previously served the old three-button verse sheet.
+  // Verify the HTML requests a newly versioned verse controller and CSS.
+  assert.match(await page.locator('script[src^="oustory-features.js"]').getAttribute("src"),/\?v=20261019-verse-actions-v2$/);
+  assert.match(await page.locator('link[href^="oustory-features.css"]').getAttribute("href"),/\?v=20261019-verse-actions-v2$/);
+
   await page.locator("#nav-home").waitFor({timeout:20000});
   assert.equal(await page.locator("#nav-home").getAttribute("aria-current"),"page");
   await page.locator(".feature-title").getByText("The nation's record").waitFor();
