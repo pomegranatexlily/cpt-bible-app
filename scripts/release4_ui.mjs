@@ -94,7 +94,7 @@ try{
  await page.locator("#nav-more").click();
  await page.getByRole("button",{name:"Offline reading & backup"}).click();
  await page.locator("#release4-panel[open]").waitFor();
- page.once("dialog",dialog=>dialog.accept());
+ // An earlier dialog listener already accepts confirmation for this test.
  await page.locator("#release4-delete-saved").click();
  await page.waitForLoadState("domcontentloaded");
  await page.locator("#nav-more").waitFor();
