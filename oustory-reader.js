@@ -453,8 +453,8 @@
   const chapterParam=sharedParams.get('chapter')||'';
   const verseParam=sharedParams.get('verse')||'';
   const sharedIndex=books.findIndex(b=>b.id===sharedBook);
-  const sharedChapter=/^[1-9]\\d{0,3}$/.test(chapterParam)?Number(chapterParam):null;
-  const sharedVerse=/^[1-9]\\d{0,3}$/.test(verseParam)?Number(verseParam):null;
+  const sharedChapter=/^[1-9]\d{0,3}$/.test(chapterParam)?Number(chapterParam):null;
+  const sharedVerse=/^[1-9]\d{0,3}$/.test(verseParam)?Number(verseParam):null;
   const sharedMeta=books[sharedIndex]?.chapters.find(c=>c.number===sharedChapter);
   const shared=(sharedMeta&&sharedVerse!==null&&
     sharedVerse>=(sharedMeta.firstVerse??1)&&
