@@ -108,7 +108,7 @@ try{
   // Cached PWAs previously served the old three-button verse sheet.
   // Verify the HTML requests a newly versioned verse controller and CSS.
   assert.match(await page.locator('script[src^="oustory-features.js"]').getAttribute("src"),/\?v=20261019-share-verse-link-v1$/);
-  assert.match(await page.locator('script[src^="oustory-reader.js"]').getAttribute("src"),/\?v=20261019-share-verse-link-v1$/);
+  assert.match(await page.locator('script[src^="oustory-reader.js"]').getAttribute("src"),/\?v=20261019-remove-supplemental-19$/);
   assert.equal(await page.locator('meta[property="og:image"]').getAttribute("content"),
     "https://pomegranatexlily.github.io/cpt-bible-app/assets/oustory-poster-icon-512.png");
   assert.equal(await page.locator('meta[name="twitter:card"]').getAttribute("content"),"summary");
@@ -336,9 +336,10 @@ try{
   await page.locator("#reference").click();
   await page.locator("#books-panel[open]").waitFor();
   const count=await page.locator("#book-list button").count();
-  assert.equal(count,99,"80 primary choices and 19 separate supplemental choices must appear");
+  assert.equal(count,80,"Only the original 80 books must appear");
   assert.equal(await page.locator("#book-list .chapter-picker-title").first().textContent(),"Primary Canon — 80 Books");
-  assert.equal(await page.locator("#book-list .chapter-picker-title").last().textContent(),"Supplemental Writings — 19 Books");
+  assert.equal(await page.locator("#book-list .chapter-picker-title").count(),1);
+  assert.equal(await page.locator("#book-list button").filter({hasText:/Enoch|Jasher|3 Maccabees/}).count(),0);
   await page.locator("#books-panel [data-close]").click();
   // Legacy chapter-only positions and new exact-verse positions must resume.
   await page.evaluate(()=>localStorage.setItem("cpt.reader.position",
@@ -386,16 +387,10 @@ try{
   await page.locator("#read-button").click();
   assert.equal(await page.locator("#workbench-root").isHidden(),true,
     "Bible footer must dismiss Notes overlay");
+  // Reader must still list only 80 after switching away from study tools.
   await page.locator("#reference").click();
-  await page.locator("#book-list button").filter({hasText:/^3 Maccabees/}).click();
-  await page.locator('#chapter-list button[aria-label="3 Maccabees, chapter 1, historical source draft"]').click();
-  await page.locator("#chapter-title").getByText("3 Maccabees 1").waitFor();
-  await page.waitForFunction(() => document.querySelectorAll("#scripture .verse-number").length===29,
-    {timeout:15000});
-  assert.match(await page.locator("#reader-source-disclosure").innerText(),/Supplemental Writings/);
-  assert.equal(await page.locator("#save-place").isDisabled(),true,
-    "Research drafts must not enter the canonical saved-place ledger");
-  await page.locator("#reference").click();
+  await page.locator("#books-panel[open]").waitFor();
+  assert.equal(await page.locator("#book-list button").count(),80);
   await page.locator("#book-list button").filter({hasText:/^Genesis$/}).click();
   await page.locator('#chapter-list button[aria-label="Genesis, chapter 1"]').click();
   await page.locator("#chapter-title").getByText("Genesis 1").waitFor();

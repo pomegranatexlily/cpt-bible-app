@@ -10,12 +10,9 @@
     return node;
   };
   const books = Array.isArray(window.CPT_BOOKS) ? window.CPT_BOOKS : [];
-  // Never insert Supplemental Writings into the 80-book primary canon.
-  const supplements = Array.isArray(window.CPT_SUPPLEMENTAL_BOOKS) ? window.CPT_SUPPLEMENTAL_BOOKS : [];
   const cache = new Map();
   const inflight = new Map();
   let bi = 0, ci = 0, renderToken = 0, touch = null, scrollSaveTimer = null;
-  let supplementActive = null;
   function read(key, fallback) {
     try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; }
   }
@@ -147,9 +144,7 @@
     }
   }
   function move(direction) {
-    if (supplementActive) { moveSupplement(direction); return; }
     if (!chapter()) return;
-    supplementActive = null;
     let b = bi, c = ci + direction;
     if (c < 0) { if (--b < 0) return; c = books[b].chapters.length - 1; }
     else if (c >= book().chapters.length) { if (++b >= books.length) return; c = 0; }
@@ -162,7 +157,6 @@
     if (b < 0) return false;
     const c = books[b].chapters.findIndex(x => x.number === Number(chapterNumber));
     if (c < 0) return false;
-    supplementActive = null;
     bi = b; ci = c;
     window.OustoryFeatures?.showBible();
     const waitFor = render(verseNumber == null ? 1 : verseNumber);
@@ -174,170 +168,31 @@
     }
     return true;
   }
-  const SUPPLEMENTAL_NOTICE = 'Supplemental Writings · complete historical English source witness where available. Not yet collated or modernized into CPT–APE house style; not part of the primary 80-book canon.';
-  let bookPickerRevision=0;
-
-  async function loadSupplement(id) {
-    const meta=supplements.find(b=>b.id===id&&b.readable_witness);
-    if(!meta)throw new Error('There is no complete readable English source for this writing yet.');
-    const key='supplement:'+id;
-    if(cache.has(key))return cache.get(key);
-    if(inflight.has(key))return inflight.get(key);
-    const pending=(async()=>{
-      const response=await fetch('data/supplemental/'+encodeURIComponent(id)+'.json');
-      if(!response.ok)throw new Error('Unable to load '+meta.title+' ('+response.status+').');
-      const doc=await response.json();
-      if(doc.id!==id||doc.collection!=='SUPPLEMENTAL_WRITINGS'||doc.author_approved!==false||
-         !Array.isArray(doc.chapters)||doc.chapters.length<1||
-         !doc.chapters.every((c,i)=>Number.isInteger(c.number)&&c.number===i+1&&
-           ((Array.isArray(c.verses)&&c.verses.length>0&&
-             c.verses.every((v,j)=>Number.isInteger(v.number)&&v.number>0&&
-               (j===0||v.number>c.verses[j-1].number)&&
-               typeof v.text==='string'&&v.text.trim().length>0))||
-            (c.reader_division_only===true&&c.original_chapter_number===null&&
-             Array.isArray(c.paragraphs)&&c.paragraphs.length>0&&
-             c.paragraphs.every(p=>typeof p==='string'&&p.trim().length>0))))) {
-        throw new Error('Supplemental text did not pass source integrity checks.');
-      }
-      cache.set(key,doc);
-      return doc;
-    })();
-    inflight.set(key,pending);
-    try{return await pending}finally{inflight.delete(key)}
-  }
-
-  function supplementLabel(doc, meta, number) {
-    return doc.navigation_label ? meta.title+' · Reading section '+number :
-      meta.title+' '+number;
-  }
-
-  async function readSupplement(id, chapterNumber) {
-    const meta=supplements.find(b=>b.id===id&&b.readable_witness);
-    if(!meta||!Number.isInteger(chapterNumber)||chapterNumber<1)return false;
-    const token=++renderToken;
-    closePanels();
-    window.OustoryFeatures?.showBible();
-    window.OustoryAudio?.stop();
-    supplementActive={meta,chapter:chapterNumber};
-    $('#empty-state').hidden=true;
-    $('#scripture').hidden=false;
-    $('#scripture').replaceChildren(make('p','Loading '+meta.title+'…','reader-notice'));
-    $('#scripture').setAttribute('aria-busy','true');
-    $('#save-place').disabled=true;
-    $('#reference').textContent=meta.title+' '+chapterNumber;
-    $('#chapter-title').textContent=meta.title+' '+chapterNumber;
-    let disclosure=$('#reader-source-disclosure');
-    if(!disclosure){
-      disclosure=make('p',undefined,'reader-source-disclosure');
-      disclosure.id='reader-source-disclosure';
-      $('#chapter-title').after(disclosure);
-    }
-    disclosure.hidden=false;
-    disclosure.textContent=SUPPLEMENTAL_NOTICE;
-    $('#previous').disabled=true;
-    $('#next').disabled=true;
-    try{
-      const doc=await loadSupplement(id);
-      if(token!==renderToken||supplementActive?.meta.id!==id)return false;
-      const chapter=doc.chapters.find(x=>x.number===chapterNumber);
-      if(!chapter)throw new Error('This reading section is unavailable.');
-      const title=supplementLabel(doc,meta,chapterNumber);
-      $('#reference').textContent=title;
-      $('#chapter-title').textContent=title;
-      const sourceNote=doc.source?.transcription_notice;
-      disclosure.textContent=SUPPLEMENTAL_NOTICE+(typeof sourceNote==='string'?' '+sourceNote:'');
-      const fragment=document.createDocumentFragment();
-      if(Array.isArray(chapter.verses)){
-        const paragraph=make('p');
-        for(const verse of chapter.verses){
-          const wrapper=make('span',undefined,'supplemental-verse');
-          const number=make('span',String(verse.number),'verse-number');
-          wrapper.append(number,document.createTextNode(verse.text+' '));
-          paragraph.append(wrapper);
-        }
-        fragment.append(paragraph);
-      }else{
-        fragment.append(make('p','Reader divisions are for navigation only; the original edition’s numbers and wording appear in the text.','reader-notice'));
-        for(const p of chapter.paragraphs)fragment.append(make('p',p,'supplemental-paragraph'));
-      }
-      $('#scripture').replaceChildren(fragment);
-      $('#reader').scrollTop=0;
-      $('#previous').disabled=chapterNumber===1;
-      $('#next').disabled=chapterNumber===doc.chapters.length;
-      $('#scripture').setAttribute('aria-busy','false');
-      return true;
-    }catch(error){
-      if(token!==renderToken)return false;
-      $('#scripture').replaceChildren(make('p',error.message||'Supplemental source unavailable.','reader-notice'));
-      $('#scripture').setAttribute('aria-busy','false');
-      return false;
-    }
-  }
-
-  function moveSupplement(direction) {
-    if (!supplementActive) return;
-    const {meta,chapter} = supplementActive;
-    const next = chapter+direction;
-    // Only the currently staged complete witness is readable here.
-    const doc = cache.get('supplement:'+meta.id);
-    if (!doc || next<1 || next>doc.chapters.length) return;
-    void readSupplement(meta.id,next);
-  }
-
-  function library(selected = null) {
-    const revision=++bookPickerRevision;
-    const list = $('#book-list'), chapters = $('#chapter-list');
+  function library(selected=null) {
+    const list=$('#book-list'), chapters=$('#chapter-list');
     list.replaceChildren(); chapters.replaceChildren();
-    $('#books-empty').hidden = books.length > 0;
-    if (selected === null) {
-      chapters.hidden = true;
+    $('#books-empty').hidden=books.length>0;
+    if(selected===null){
+      chapters.hidden=true;
       list.append(make('h3','Primary Canon — 80 Books','chapter-picker-title'));
-      books.forEach((b, index) => {
-        const node = make('button', b.title, 'list-button');
-        node.onclick = () => library(index);
+      books.forEach((entry,index)=>{
+        const node=make('button',entry.title,'list-button');
+        node.onclick=()=>library(index);
         list.append(node);
       });
-    } else {
-      chapters.hidden = false;
-      const back = make('button', '‹  All books', 'list-button');
-      back.onclick = () => library();
-      list.append(back);
-      if (typeof selected==='string' && selected.startsWith('supplement:')) {
-        const b=supplements.find(x=>x.id===selected.slice('supplement:'.length));
-        if (!b) {library();return}
-        list.append(make('h3',b.title+' — Supplemental Writings','chapter-picker-title'));
-        list.append(make('p',b.edition_status,'sheet-copy'));
-        if (b.readable_witness) {
-          list.append(make('p','Full historical English witness. Modernization and textual collation remain pending.','sheet-copy'));
-          chapters.append(make('p','Loading available chapters and reader sections…','sheet-copy'));
-          void loadSupplement(b.id).then(doc=>{
-            if(revision!==bookPickerRevision)return;
-            chapters.replaceChildren();
-            for(const c of doc.chapters){
-              const node=make('button',String(c.number));
-              const section=Boolean(doc.navigation_label);
-              node.setAttribute('aria-label',b.title+', '+(section?'reading section ':'chapter ')+c.number+', historical source draft');
-              node.onclick=()=>void readSupplement(b.id,c.number);
-              chapters.append(node);
-            }
-            if(doc.navigation_label)list.append(make('p','Reader section numbers are navigation only, not claimed as manuscript chapters or verses.','sheet-copy'));
-          }).catch(error=>{
-            if(revision!==bookPickerRevision)return;
-            chapters.replaceChildren(make('p',error.message||'Source unavailable.','reader-notice'));
-          });
-        } else {
-          list.append(make('p','This work is in the 19-book collection, but its complete reliable reading text is not ready for publication. No invented chapters or verses will be shown.','sheet-copy'));
-        }
-      } else {
-        list.append(make('h3', books[selected].title + ' — Chapters', 'chapter-picker-title'));
-        for (const c of books[selected].chapters) {
-          const node = make('button', String(c.number));
-          node.setAttribute('aria-label', books[selected].title + ', chapter ' + c.number);
-          node.setAttribute('aria-current', String(selected === bi && c.number === chapter()?.number));
-          node.onclick = () => { go(books[selected].id, c.number); };
-          chapters.append(node);
-        }
-      }
+      return;
+    }
+    if(!Number.isInteger(selected)||selected<0||selected>=books.length){library();return;}
+    chapters.hidden=false;
+    const back=make('button','‹  All books','list-button');
+    back.onclick=()=>library();
+    list.append(back,make('h3',books[selected].title+' — Chapters','chapter-picker-title'));
+    for(const c of books[selected].chapters){
+      const node=make('button',String(c.number));
+      node.setAttribute('aria-label',books[selected].title+', chapter '+c.number);
+      node.setAttribute('aria-current',String(selected===bi&&c.number===chapter()?.number));
+      node.onclick=()=>{go(books[selected].id,c.number);};
+      chapters.append(node);
     }
   }
   function savedList() {
@@ -360,8 +215,8 @@
   });
   document.querySelectorAll('[data-close]').forEach(node => node.onclick = () => node.closest('dialog').close());
   $('#read-button').onclick = () => { closePanels(); window.OustoryFeatures?.showBible(); $('#reader').focus(); };
-  $('#previous').onclick = () => supplementActive ? moveSupplement(-1) : move(-1);
-  $('#next').onclick = () => supplementActive ? moveSupplement(1) : move(1);
+  $('#previous').onclick = () => move(-1);
+  $('#next').onclick = () => move(1);
   function openSaved() {
     closePanels();
     savedList();
@@ -396,11 +251,11 @@
       verse:verseNumber,label:meta.title+' '+chapterNumber+':'+verseNumber});
   }
   $('#save-place').onclick = () => {
-    if (supplementActive || !chapter()) return;
+    if (!chapter()) return;
     saveBookmark({book:book().id,chapter:chapter().number,label:book().title+' '+chapter().number});
   };
   function storeVisibleVerse() {
-    if (document.body.classList.contains('feature-mode') || supplementActive || !chapter()) return;
+    if (document.body.classList.contains('feature-mode') || !chapter()) return;
     const reader=$('#reader'), top=reader.getBoundingClientRect().top + 15;
     // Scroll across long inline verse spans, not chapter-sized text blocks.
     const entries=[...$('#scripture').querySelectorAll('.verse-entry')];
@@ -411,7 +266,7 @@
     write('cpt.reader.position',{book:book().id,chapter:chapter().number,verse});
   }
   $('#reader').addEventListener('scroll', () => {
-    if (document.body.classList.contains('feature-mode') || supplementActive) return;
+    if (document.body.classList.contains('feature-mode')) return;
     clearTimeout(scrollSaveTimer);
     scrollSaveTimer=setTimeout(storeVisibleVerse,180);
   }, {passive:true});

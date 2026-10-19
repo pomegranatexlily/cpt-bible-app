@@ -1,6 +1,6 @@
 /* Oustory Release 4: first-party offline reading. No Scripture transformations. */
 "use strict";
-const SHELL="oustory-shell-r14-remove-supplemental-20261019";
+const SHELL="oustory-shell-r15-80-book-only-20261019";
 const BOOKS="oustory-books-r4";
 const RUNTIME="oustory-runtime-r4";
 const APP=new URL(self.registration.scope);
@@ -28,6 +28,14 @@ self.addEventListener("activate",event=>{
  event.waitUntil((async()=>{
   for(const key of await caches.keys()){
    if(key.startsWith("oustory-shell-")&&key!==SHELL)await caches.delete(key);
+  }
+  // Delete leftover supplemental documents from pre-existing offline caches.
+  const withdrawn=new URL("./data/supplemental/",APP).pathname;
+  for(const key of await caches.keys()){
+   const cache=await caches.open(key);
+   for(const req of await cache.keys()){
+    if(new URL(req.url).pathname.startsWith(withdrawn))await cache.delete(req);
+   }
   }
   await self.clients.claim();
  })());
@@ -89,6 +97,10 @@ self.addEventListener("fetch",event=>{
  if(request.method!=="GET")return;
  const url=new URL(request.url);
  if(url.origin!==APP.origin||!url.pathname.startsWith(APP.pathname))return;
+ if(url.pathname.startsWith(new URL("./data/supplemental/",APP).pathname)){
+  event.respondWith(new Response("Withdrawn source draft.",{status:404}));
+  return;
+ }
  if(request.mode==="navigate"){
   event.respondWith(fetch(request).then(response=>{
    if(response.ok){const copy=response.clone();event.waitUntil(caches.open(SHELL).then(cache=>cache.put(new URL("./",APP),copy)));}
