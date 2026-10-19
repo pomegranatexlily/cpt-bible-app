@@ -245,6 +245,18 @@
   function versePayload(record){
     return record.text+"\n— "+refKey(record.book,record.chapter,record.verse)+" (Oustory reading edition)";
   }
+  // Share a direct, bookmarkable coordinate using the app's real book ID.
+  // The receiving browser resolves this before restoring the last position.
+  function verseLink(record){
+    const url=new URL("./",location.href);
+    url.searchParams.set("book",record.id);
+    url.searchParams.set("chapter",String(record.chapter));
+    url.searchParams.set("verse",String(record.verse));
+    return url.href;
+  }
+  function sharePayload(record){
+    return versePayload(record)+"\n"+verseLink(record);
+  }
   function verseStatus(message){
     const feedback=byId("verse-feedback");
     if(feedback)feedback.textContent=message;
@@ -285,15 +297,15 @@
     const reference=refKey(record.book,record.chapter,record.verse);
     if(typeof navigator.share==="function"){
       try{
-        await navigator.share({title:reference,text:versePayload(record)});
+        await navigator.share({title:reference+" · Oustory",text:versePayload(record),url:verseLink(record)});
         verseStatus("Verse shared.");
         return;
       }catch(error){
         if(error?.name==="AbortError")return; // User dismissed the native sheet.
       }
     }
-    const copied=await writeClipboard(versePayload(record));
-    verseStatus(copied?"Share sheet unavailable. Verse copied—paste it into any app.":"Sharing is unavailable. Select the verse text above to copy manually.");
+    const copied=await writeClipboard(sharePayload(record));
+    verseStatus(copied?"Share sheet unavailable. Verse and link copied—paste them into any app.":"Sharing is unavailable. Copy the verse text above, then reopen the app link.");
   }
   function makeDialog(){
     verseDialog=el("dialog");verseDialog.id="verse-panel";
