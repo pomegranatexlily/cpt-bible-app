@@ -201,7 +201,7 @@ try{
   assert.equal(await verseTools.getByRole("button",{name:"Share verse"}).isVisible(),true);
   await verseTools.getByRole("button",{name:"Copy verse"}).click();
   const copied=await page.evaluate(()=>window.__verseActions.copied.at(-1));
-  assert.equal(copied,firstVerseText+"\\n— Genesis 2:1 (Oustory reading edition)");
+  assert.equal(copied,firstVerseText+"\n— Genesis 2:1 (Oustory reading edition)");
   assert.match(await page.locator("#verse-feedback").innerText(),/Verse copied/);
   await verseTools.getByRole("button",{name:"Share verse"}).click();
   const shared=await page.evaluate(()=>window.__verseActions.shared.at(-1));
