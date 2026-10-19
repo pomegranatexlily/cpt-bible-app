@@ -1,6 +1,6 @@
 /* Oustory Release 4: first-party offline reading. No Scripture transformations. */
 "use strict";
-const SHELL="oustory-shell-r9-verse-copy-share-20261019";
+const SHELL="oustory-shell-r10-fresh-verse-actions-20261019";
 const BOOKS="oustory-books-r4";
 const RUNTIME="oustory-runtime-r4";
 const APP=new URL(self.registration.scope);
@@ -94,6 +94,24 @@ self.addEventListener("fetch",event=>{
    if(response.ok){const copy=response.clone();event.waitUntil(caches.open(SHELL).then(cache=>cache.put(new URL("./",APP),copy)));}
    return response;
   }).catch(async()=>(await caches.match(new URL("./",APP)))||Response.error()));
+  return;
+ }
+ // Verse buttons are first-party UI code: prefer fresh assets online, but
+ // preserve the installed offline copy when the phone has no connection.
+ // Versioned ?v= URLs bypass an older cache-first service worker on first load.
+ if(url.pathname===new URL("./oustory-features.js",APP).pathname||
+    url.pathname===new URL("./oustory-features.css",APP).pathname){
+  event.respondWith((async()=>{
+   const canonical=new URL(url.pathname,APP.origin).href;
+   try{
+    const response=await fetch(request,{cache:"no-store"});
+    if(!response.ok)throw Error("Verse UI asset unavailable");
+    event.waitUntil(caches.open(SHELL).then(cache=>cache.put(canonical,response.clone())));
+    return response;
+   }catch{
+    return (await caches.match(canonical))||Response.error();
+   }
+  })());
   return;
  }
  if(CORE.includes(url.href)){
