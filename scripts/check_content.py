@@ -81,12 +81,18 @@ assert len(manifest["web_modern_archive_sha256"])==64
 html=(ROOT/"index.html").read_text(encoding="utf8")
 assert "S<span>Books" not in html and "><span>Books</span>" in html
 assert '<script src="cpt-index.js"></script>' in html
-assert '<script src="oustory-reader.js"></script>' in html
+assert re.search(r'<script src="oustory-reader\.js(?:\?v=[a-zA-Z0-9_-]+)?"></script>',html)
 assert '<script src="oustory-audio.js"></script>' in html
 assert '<script src="oustory-search.js"></script>' in html
-assert html.index('<script src="oustory-search.js"></script>') < html.index('<script src="oustory-reader.js"></script>')
+assert html.index('<script src="oustory-search.js"></script>') < html.index('<script src="oustory-reader.js')
 assert 'href="assets/oustory-poster-icon-180.png"' in html
 assert 'href="assets/oustory-poster-icon-192.png"' in html
+assert '<meta property="og:site_name" content="Oustory">' in html
+assert '<meta name="twitter:card" content="summary">' in html
+assert '<meta property="og:image" content="https://pomegranatexlily.github.io/cpt-bible-app/assets/oustory-poster-icon-512.png">' in html
+assert '<meta name="twitter:image" content="https://pomegranatexlily.github.io/cpt-bible-app/assets/oustory-poster-icon-512.png">' in html
+assert '<meta property="og:url"' not in html, "Shared verse link must not be canonicalized to the homepage"
+
 pwa=json.loads((ROOT/"manifest.webmanifest").read_text(encoding="utf8"))
 assert {i["src"] for i in pwa["icons"]} == {"assets/oustory-poster-icon-192.png","assets/oustory-poster-icon-512.png"}
 assert hashlib.sha256((ROOT/"assets/oustory-poster-source.webp").read_bytes()).hexdigest()=="e55361a901824981397afff10094992d182310762a9618e14532eae3bd893ace"
