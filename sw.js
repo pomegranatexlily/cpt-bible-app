@@ -1,6 +1,6 @@
 /* Oustory Release 4: first-party offline reading. No Scripture transformations. */
 "use strict";
-const SHELL="oustory-shell-r16-daily-verse-20261019";
+const SHELL="oustory-shell-r17-jeremiah-20261019";
 const BOOKS="oustory-books-r4";
 const RUNTIME="oustory-runtime-r4";
 const APP=new URL(self.registration.scope);
@@ -21,8 +21,22 @@ const CORE=[
  "./calendar/archive.json","./calendar/published.json"
 ].map(path=>new URL(path,APP).href);
 let activeDownload=null;
+// Refresh the corrected Jeremiah text for readers who installed older
+// offline books. Leave their existing copy intact if the network is unavailable.
+async function refreshCorrectedJeremiah(){
+ try{
+  const url=bookUrl("jeremiah");
+  const response=await fetch(url,{cache:"no-store"});
+  if(!response.ok||response.type!=="basic")return;
+  const data=await response.clone().json();
+  const verse=data?.chapters?.find(c=>c.number===31)?.verses?.find(v=>v.number===31);
+  if(data.id!=="jeremiah"||!verse?.text?.includes("house of Yahawadah."))return;
+  await (await caches.open(BOOKS)).put(url,response);
+ }catch{/* Retain the previously downloaded book when offline. */}
+}
 self.addEventListener("install",event=>{
- event.waitUntil(caches.open(SHELL).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting()));
+ event.waitUntil(caches.open(SHELL).then(cache=>cache.addAll(CORE))
+  .then(refreshCorrectedJeremiah).then(()=>self.skipWaiting()));
 });
 self.addEventListener("activate",event=>{
  event.waitUntil((async()=>{
