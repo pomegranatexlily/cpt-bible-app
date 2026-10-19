@@ -25,7 +25,9 @@ jobs:
             count=$((count + 1))
           done < <(git ls-files -z -- '*.js' '*.cjs' '*.mjs')
           echo "Parsed $count JavaScript files."
-      - name: Verify privacy & security release contract\n        run: node scripts/privacy_security_unit.mjs\n      - name: Verify Oustory daily verse rotation
+      - name: Verify privacy & security release contract
+        run: node scripts/privacy_security_unit.mjs
+      - name: Verify Oustory daily verse rotation
         run: node scripts/daily_verse_unit.mjs
       - name: Check JSON syntax and first-party browser script paths
         run: |
