@@ -107,7 +107,7 @@ try{
   await page.goto("http://127.0.0.1:8765/",{waitUntil:"domcontentloaded"});
   // Cached PWAs previously served the old three-button verse sheet.
   // Verify the HTML requests a newly versioned verse controller and CSS.
-  assert.match(await page.locator('script[src^="oustory-features.js"]').getAttribute("src"),/\?v=20261019-share-verse-link-v1$/);
+  assert.match(await page.locator('script[src^="oustory-features.js"]').getAttribute("src"),/^oustory-features\.js\?v=20261019-daily-verse-v1$/);
   assert.match(await page.locator('script[src^="oustory-reader.js"]').getAttribute("src"),/\?v=20261019-remove-supplemental-19$/);
   assert.equal(await page.locator('meta[property="og:image"]').getAttribute("content"),
     "https://pomegranatexlily.github.io/cpt-bible-app/assets/oustory-poster-icon-512.png");
@@ -120,6 +120,22 @@ try{
   assert.equal(await page.locator("#nav-home").getAttribute("aria-current"),"page");
   await page.locator(".feature-title").getByText("The nation's record").waitFor();
   await page.locator(".feature-verse").waitFor();
+  // A returning iPhone PWA must refresh its reading when the local day changes.
+  const dailyReference=page.locator(".feature-card").first().locator(".feature-status").first();
+  await page.waitForFunction(()=>/\d+:\d+/.test(
+    document.querySelector(".feature-card .feature-status")?.textContent||""));
+  const firstDayReference=await dailyReference.textContent();
+  await page.clock.setFixedTime(new Date("2026-10-18T16:00:00Z"));
+  await page.evaluate(()=>window.dispatchEvent(new Event("focus")));
+  await page.waitForFunction(previous=>{
+    const ref=document.querySelector(".feature-card .feature-status")?.textContent||"";
+    return /\d+:\d+/.test(ref)&&ref!==previous;
+  },firstDayReference);
+  await page.clock.setFixedTime(new Date("2026-10-17T16:00:00Z"));
+  await page.evaluate(()=>window.dispatchEvent(new Event("focus")));
+  await page.waitForFunction(expected=>
+    document.querySelector(".feature-card .feature-status")?.textContent===expected,
+    firstDayReference);
   const mark=page.locator(".oustory-home-identity img");
   assert.match(await mark.getAttribute("src"),/oustory-poster-icon-512\.png/);
   await mark.evaluate(img=>img.decode());
