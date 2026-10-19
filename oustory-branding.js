@@ -34,11 +34,82 @@
   identity.append(name, subtitle);
   brand.append(icon, identity);
   menu.append(heading, brand);
+  // Browsers decide whether installing a PWA can be automated. iOS Safari
+  // does not expose an Add to Home Screen API, so show accurate native steps.
+  let installEvent=null;
+  window.addEventListener('beforeinstallprompt',event=>{
+    event.preventDefault();
+    installEvent=event;
+  });
+  const installDialog=document.createElement('dialog');
+  installDialog.id='oustory-install-panel';
+  installDialog.setAttribute('aria-labelledby','oustory-install-title');
+  const installTitle=document.createElement('h2');
+  installTitle.id='oustory-install-title';
+  installTitle.textContent='Add Oustory to your Home Screen';
+  const explanation=document.createElement('p');
+  explanation.id='oustory-install-instructions';
+  const status=document.createElement('p');
+  status.id='oustory-install-status';
+  status.setAttribute('role','status');
+  status.setAttribute('aria-live','polite');
+  const installTools=document.createElement('div');
+  installTools.className='oustory-install-tools';
+  const linkCopy=document.createElement('button');
+  linkCopy.type='button';
+  linkCopy.className='feature-action';
+  linkCopy.textContent='Copy app link';
+  linkCopy.onclick=async()=>{
+    const appUrl=new URL('./',location.href).href;
+    try{
+      if(!navigator.clipboard?.writeText)throw Error('Clipboard unavailable');
+      await navigator.clipboard.writeText(appUrl);
+      status.textContent='Oustory link copied. Open it in Safari to add the app.';
+    }catch{
+      status.textContent='Copy is unavailable. Open this address in Safari: '+appUrl;
+    }
+  };
+  const dismiss=document.createElement('button');
+  dismiss.type='button';
+  dismiss.className='feature-action';
+  dismiss.textContent='Close';
+  dismiss.onclick=()=>installDialog.close();
+  installTools.append(linkCopy,dismiss);
+  installDialog.append(installTitle,explanation,status,installTools);
+  document.body.append(installDialog);
+  const installed=()=>window.matchMedia?.('(display-mode: standalone)')?.matches||navigator.standalone===true;
+  async function showInstall(){
+    if(installed()){
+      explanation.textContent='Oustory is already running as an installed app on this device.';
+      status.textContent='';
+      linkCopy.hidden=true;
+      installDialog.showModal();
+      return;
+    }
+    if(installEvent){
+      const prompt=installEvent;
+      installEvent=null;
+      try{
+        await prompt.prompt();
+        const choice=await prompt.userChoice;
+        if(choice?.outcome==='accepted')return;
+      }catch{ /* Use browser steps below if native installation is unavailable. */ }
+    }
+    linkCopy.hidden=false;
+    const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||
+      (navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+    explanation.textContent=isIOS?
+      'On iPhone: open Oustory in Safari, tap Safari’s Share icon, choose Add to Home Screen, then tap Add. If you are viewing Oustory inside ChatGPT or another app, open the link in Safari first.':
+      'Open Oustory in your browser, open its menu, and choose Install app or Add to Home Screen. Availability depends on the browser.';
+    status.textContent='';
+    installDialog.showModal();
+  }
   const actions = [
     ['Read the Bible', () => window.OustoryFeatures?.show('bible')],
     ['Books & chapters', () => document.querySelector('button[data-panel="books-panel"]').click()],
     ['Search Scripture', () => document.querySelector('button[data-panel="search-panel"]').click()],
     ['Saved places', () => window.OustoryReader?.openSaved()],
+    ['Add to Home Screen', showInstall],
     ['Reading settings', () => document.getElementById('settings-panel')?.showModal()],
     ['About this edition', () => document.querySelector('button[data-panel="edition-panel"]').click()]
   ];

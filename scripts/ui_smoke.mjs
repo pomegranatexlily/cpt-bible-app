@@ -107,8 +107,10 @@ try{
   await page.goto("http://127.0.0.1:8765/",{waitUntil:"domcontentloaded"});
   // Cached PWAs previously served the old three-button verse sheet.
   // Verify the HTML requests a newly versioned verse controller and CSS.
-  assert.match(await page.locator('script[src^="oustory-features.js"]').getAttribute("src"),/\?v=20261019-verse-actions-v2$/);
-  assert.match(await page.locator('link[href^="oustory-features.css"]').getAttribute("href"),/\?v=20261019-verse-actions-v2$/);
+  assert.match(await page.locator('script[src^="oustory-features.js"]').getAttribute("src"),/\?v=20261019-verse-actions-v3$/);
+  assert.match(await page.locator('link[href^="oustory-features.css"]').getAttribute("href"),/\?v=20261019-verse-actions-v3$/);
+  assert.match(await page.locator('script[src^="oustory-branding.js"]').getAttribute("src"),/\?v=20261019-install-menu-v1$/);
+  assert.match(await page.locator('link[href^="oustory-branding.css"]').getAttribute("href"),/\?v=20261019-install-menu-v1$/);
 
   await page.locator("#nav-home").waitFor({timeout:20000});
   assert.equal(await page.locator("#nav-home").getAttribute("aria-current"),"page");
@@ -202,6 +204,7 @@ try{
   // A tap exposes Copy and Share immediately, without opening More.
   const firstVerseText=await page.locator("#verse-panel .verse-text").innerText();
   const verseTools=page.locator("#verse-panel .verse-quick-actions");
+  assert.equal(await verseTools.getByRole("button",{name:"Interlinear",exact:true}).count(),0);
   assert.equal(await verseTools.getByRole("button",{name:"Copy verse"}).isVisible(),true);
   assert.equal(await verseTools.getByRole("button",{name:"Share verse"}).isVisible(),true);
   await verseTools.getByRole("button",{name:"Copy verse"}).click();
@@ -262,6 +265,16 @@ try{
     await page.locator("#nav-discover").click();
   await page.getByText("Torah Foundations").waitFor();
   await page.screenshot({path:"out/ui-smoke/discover-mobile.png",fullPage:false});
+  await page.locator("#nav-more").click();
+  await page.locator("#oustory-menu[open]").waitFor();
+  // Oustory provides install guidance inside its own app menu; Safari must
+  // still perform the native Add to Home Screen operation itself.
+  await page.getByRole("button",{name:"Add to Home Screen",exact:true}).click();
+  await page.locator("#oustory-install-panel[open]").waitFor();
+  assert.match(await page.locator("#oustory-install-instructions").innerText(),/Install app or Add to Home Screen/);
+  await page.locator("#oustory-install-panel").getByRole("button",{name:"Copy app link"}).click();
+  assert.equal((await page.evaluate(()=>window.__verseActions.copied.at(-1))),"http://127.0.0.1:8765/");
+  await page.locator("#oustory-install-panel").getByRole("button",{name:"Close",exact:true}).click();
   await page.locator("#nav-more").click();
   await page.locator("#oustory-menu[open]").waitFor();
   assert.match(await page.locator(".oustory-menu-brand img").getAttribute("src"),/oustory-poster-icon-512\.png/);
@@ -337,7 +350,7 @@ try{
     "Psalms 2 chapter comparison must contain historical verse pairs");
   assert.ok(!/unavailable|loading both/i.test(await page.locator("#workbench-body").innerText()),
     "Psalms 2 witness must not show a 404 or stale loading message");
-  // Regression: a different book must dismiss a stale Compare / Interlinear overlay.
+  // Regression: a different book must dismiss a stale Compare / Notes overlay.
   await page.locator("#reference").click();
   await page.locator("#books-panel[open]").waitFor();
   await page.locator("#book-list button").filter({hasText:/^Exodus$/}).click();
@@ -347,11 +360,11 @@ try{
     "Book navigation must close Compare overlay");
   assert.equal(await page.locator("body").evaluate(x=>x.classList.contains("study-workbench-mode")),false);
   await page.locator("#verse-1").click();
-  await page.getByRole("button",{name:"Interlinear",exact:true}).click();
+  await page.getByRole("button",{name:"Notes",exact:true}).click();
   await page.locator("#workbench-root:not([hidden])").waitFor();
   await page.locator("#read-button").click();
   assert.equal(await page.locator("#workbench-root").isHidden(),true,
-    "Bible footer must dismiss Interlinear overlay");
+    "Bible footer must dismiss Notes overlay");
   await page.locator("#reference").click();
   await page.locator("#book-list button").filter({hasText:/^3 Maccabees/}).click();
   await page.locator('#chapter-list button[aria-label="3 Maccabees, chapter 1, historical source draft"]').click();

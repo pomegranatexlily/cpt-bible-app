@@ -1,6 +1,6 @@
 /* Oustory Release 4: first-party offline reading. No Scripture transformations. */
 "use strict";
-const SHELL="oustory-shell-r10-fresh-verse-actions-20261019";
+const SHELL="oustory-shell-r12-install-menu-20261019";
 const BOOKS="oustory-books-r4";
 const RUNTIME="oustory-runtime-r4";
 const APP=new URL(self.registration.scope);
@@ -99,8 +99,8 @@ self.addEventListener("fetch",event=>{
  // Verse buttons are first-party UI code: prefer fresh assets online, but
  // preserve the installed offline copy when the phone has no connection.
  // Versioned ?v= URLs bypass an older cache-first service worker on first load.
- if(url.pathname===new URL("./oustory-features.js",APP).pathname||
-    url.pathname===new URL("./oustory-features.css",APP).pathname){
+ if(["oustory-features.js","oustory-features.css","oustory-branding.js","oustory-branding.css"]
+   .some(name=>url.pathname===new URL("./"+name,APP).pathname)){
   event.respondWith((async()=>{
    const canonical=new URL(url.pathname,APP.origin).href;
    try{
