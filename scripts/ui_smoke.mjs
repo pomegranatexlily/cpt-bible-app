@@ -107,7 +107,11 @@ try{
   await page.goto("http://127.0.0.1:8765/",{waitUntil:"domcontentloaded"});
   // Cached PWAs previously served the old three-button verse sheet.
   // Verify the HTML requests a newly versioned verse controller and CSS.
-  assert.match(await page.locator('script[src^="oustory-features.js"]').getAttribute("src"),/\?v=20261019-verse-actions-v3$/);
+  assert.match(await page.locator('script[src^="oustory-features.js"]').getAttribute("src"),/\?v=20261019-share-verse-link-v1$/);
+  assert.match(await page.locator('script[src^="oustory-reader.js"]').getAttribute("src"),/\?v=20261019-share-verse-link-v1$/);
+  assert.equal(await page.locator('meta[property="og:image"]').getAttribute("content"),
+    "https://pomegranatexlily.github.io/cpt-bible-app/assets/oustory-poster-icon-512.png");
+  assert.equal(await page.locator('meta[name="twitter:card"]').getAttribute("content"),"summary");
   assert.match(await page.locator('link[href^="oustory-features.css"]').getAttribute("href"),/\?v=20261019-verse-actions-v3$/);
   assert.match(await page.locator('script[src^="oustory-branding.js"]').getAttribute("src"),/\?v=20261019-install-menu-v1$/);
   assert.match(await page.locator('link[href^="oustory-branding.css"]').getAttribute("href"),/\?v=20261019-install-menu-v1$/);
@@ -213,8 +217,21 @@ try{
   assert.match(await page.locator("#verse-feedback").innerText(),/Verse copied/);
   await verseTools.getByRole("button",{name:"Share verse"}).click();
   const shared=await page.evaluate(()=>window.__verseActions.shared.at(-1));
-  assert.equal(shared.title,"Genesis 2:1");
+  assert.equal(shared.title,"Genesis 2:1 · Oustory");
   assert.equal(shared.text,copied);
+  assert.equal(new URL(shared.url).searchParams.get("book"),"genesis");
+  assert.equal(new URL(shared.url).searchParams.get("chapter"),"2");
+  assert.equal(new URL(shared.url).searchParams.get("verse"),"1");
+  // Prove a new visitor follows the link to the exact chapter and verse,
+  // not the previous visitor's saved place or the app Home screen.
+  const linkedPage=await page.context().newPage();
+  await linkedPage.goto(shared.url,{waitUntil:"domcontentloaded"});
+  await linkedPage.locator("#verse-1").waitFor();
+  assert.equal(await linkedPage.locator("#chapter-title").innerText(),"Genesis 2");
+  assert.equal(await linkedPage.locator("#read-button").getAttribute("aria-current"),"page");
+  assert.deepEqual(await linkedPage.evaluate(()=>window.OustoryReader.getPosition()),
+    {book:"genesis",chapter:2,verse:1});
+  await linkedPage.close();
   assert.match(await page.locator("#verse-feedback").innerText(),/Verse shared/);
   await page.locator("#verse-panel .verse-more summary").click();
   await page.getByRole("button",{name:"Save verse"}).click();
