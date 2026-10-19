@@ -224,14 +224,18 @@ try{
   assert.equal(new URL(shared.url).searchParams.get("verse"),"1");
   // Prove a new visitor follows the link to the exact chapter and verse,
   // not the previous visitor's saved place or the app Home screen.
-  const linkedPage=await page.context().newPage();
+  const linkedContext=await browser.newContext({viewport:{width:390,height:844}});
+  const linkedPage=await linkedContext.newPage();
+  await linkedPage.goto(new URL("./",shared.url).href,{waitUntil:"domcontentloaded"});
+  await linkedPage.evaluate(()=>localStorage.setItem("cpt.reader.position",
+    JSON.stringify({book:"psalms",chapter:2,verse:3})));
   await linkedPage.goto(shared.url,{waitUntil:"domcontentloaded"});
   await linkedPage.locator("#verse-1").waitFor();
   assert.equal(await linkedPage.locator("#chapter-title").innerText(),"Genesis 2");
   assert.equal(await linkedPage.locator("#read-button").getAttribute("aria-current"),"page");
   assert.deepEqual(await linkedPage.evaluate(()=>window.OustoryReader.getPosition()),
     {book:"genesis",chapter:2,verse:1});
-  await linkedPage.close();
+  await linkedContext.close();
   assert.match(await page.locator("#verse-feedback").innerText(),/Verse shared/);
   await page.locator("#verse-panel .verse-more summary").click();
   await page.getByRole("button",{name:"Save verse"}).click();
