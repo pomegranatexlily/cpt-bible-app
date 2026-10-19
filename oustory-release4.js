@@ -84,6 +84,7 @@
   const backupActions=el("div",undefined,"release4-actions");
   row(backupActions,"Export saved data",exportSaved,"release4-export");
   row(backupActions,"Import backup file",()=>qs("release4-file").click(),"release4-import");
+  row(backupActions,"Delete saved study data",deleteSaved,"release4-delete-saved");
   dialog.append(backupActions);
   const file=el("input");file.type="file";file.accept=".json,application/json";
   file.id="release4-file";file.hidden=true;file.setAttribute("aria-label","Choose Oustory backup JSON file");
@@ -150,6 +151,21 @@
   if(isDownloading)return;
   if(!confirm("Remove downloaded offline book files? Saved reading places and highlights will stay."))return;
   try{await send("CLEAR_OFFLINE_BOOKS");await refresh()}catch(e){status("release4-offline-status",e.message)}
+ }
+ // Erase only Oustory-owned keys. Never clear all origin storage: other apps
+ // sharing a host could have independent values, and offline books are separate.
+ function deleteSaved(){
+  try{
+   const present=KEYS.filter(key=>localStorage.getItem(key)!==null);
+   if(!present.length){status("release4-backup-status","No saved study data remains on this device.");return}
+   if(!confirm("Permanently delete your saved Oustory reading places, highlights, personal verse notes, study progress and reading preferences from this device? Export a backup first if needed. Downloaded offline books are not affected.")){
+    status("release4-backup-status","Deletion cancelled; your saved study data is unchanged.");return;
+   }
+   for(const key of present)localStorage.removeItem(key);
+   if(present.some(key=>localStorage.getItem(key)!==null))throw Error("Some saved fields could not be removed.");
+   status("release4-backup-status","Saved study data deleted from this device. Reloading…");
+   location.reload();
+  }catch(e){status("release4-backup-status","Deletion incomplete: "+e.message)}
  }
  function exportSaved(){
   try{
