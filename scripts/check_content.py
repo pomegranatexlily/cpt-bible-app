@@ -71,6 +71,17 @@ for i,meta in enumerate(books):
             subcount+=1
         total_v+=len(chap["verses"])
     assert subcount==meta["verseCount"],f"Wrong book count: {meta['title']}"
+# Founder-approved correction: today's October 19, 2026 reading is Jeremiah 31:31.
+jeremiah=json.loads((DATA/"jeremiah.json").read_text(encoding="utf8"))
+jeremiah_31_31=next(v["text"] for c in jeremiah["chapters"] if c["number"]==31
+                    for v in c["verses"] if v["number"]==31)
+assert jeremiah_31_31==(
+    "“Behold, the days come,” says Yahawah, “that I will make a new covenant "
+    "with the house of Yahsharala, and with the house of Yahawadah.”"
+), "Jeremiah 31:31 lost approved Yahawadah spelling"
+assert '["The Covenant","jeremiah",31,31,' in (
+    ROOT/"oustory-features.js").read_text(encoding="utf8"), "Daily verse source no longer includes Jeremiah 31:31"
+
 assert actual_missing==expected_missing,"Missing positions not represented"
 assert (total_ch,total_v)==(1362,36801)
 assert seed_colored>500,"Previously approved master colors lost"
