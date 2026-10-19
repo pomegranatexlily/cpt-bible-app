@@ -106,7 +106,8 @@ self.addEventListener("fetch",event=>{
    try{
     const response=await fetch(request,{cache:"no-store"});
     if(!response.ok)throw Error("Verse UI asset unavailable");
-    event.waitUntil(caches.open(SHELL).then(cache=>cache.put(canonical,response.clone())));
+    const copy=response.clone();
+    event.waitUntil(caches.open(SHELL).then(cache=>cache.put(canonical,copy)));
     return response;
    }catch{
     return (await caches.match(canonical))||Response.error();
