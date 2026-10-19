@@ -109,6 +109,8 @@ try{
   // Verify the HTML requests a newly versioned verse controller and CSS.
   assert.match(await page.locator('script[src^="oustory-features.js"]').getAttribute("src"),/\?v=20261019-verse-actions-v3$/);
   assert.match(await page.locator('link[href^="oustory-features.css"]').getAttribute("href"),/\?v=20261019-verse-actions-v3$/);
+  assert.match(await page.locator('script[src^="oustory-branding.js"]').getAttribute("src"),/\?v=20261019-install-menu-v1$/);
+  assert.match(await page.locator('link[href^="oustory-branding.css"]').getAttribute("href"),/\?v=20261019-install-menu-v1$/);
 
   await page.locator("#nav-home").waitFor({timeout:20000});
   assert.equal(await page.locator("#nav-home").getAttribute("aria-current"),"page");
@@ -263,6 +265,16 @@ try{
     await page.locator("#nav-discover").click();
   await page.getByText("Torah Foundations").waitFor();
   await page.screenshot({path:"out/ui-smoke/discover-mobile.png",fullPage:false});
+  await page.locator("#nav-more").click();
+  await page.locator("#oustory-menu[open]").waitFor();
+  // Oustory provides install guidance inside its own app menu; Safari must
+  // still perform the native Add to Home Screen operation itself.
+  await page.getByRole("button",{name:"Add to Home Screen",exact:true}).click();
+  await page.locator("#oustory-install-panel[open]").waitFor();
+  assert.match(await page.locator("#oustory-install-instructions").innerText(),/Install app or Add to Home Screen/);
+  await page.locator("#oustory-install-panel").getByRole("button",{name:"Copy app link"}).click();
+  assert.equal((await page.evaluate(()=>window.__verseActions.copied.at(-1))),"http://127.0.0.1:8765/");
+  await page.locator("#oustory-install-panel").getByRole("button",{name:"Close",exact:true}).click();
   await page.locator("#nav-more").click();
   await page.locator("#oustory-menu[open]").waitFor();
   assert.match(await page.locator(".oustory-menu-brand img").getAttribute("src"),/oustory-poster-icon-512\.png/);
