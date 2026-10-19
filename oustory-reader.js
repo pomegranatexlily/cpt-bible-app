@@ -297,14 +297,6 @@
         node.onclick = () => library(index);
         list.append(node);
       });
-      list.append(make('h3','Supplemental Writings — 19 Books','chapter-picker-title'));
-      list.append(make('p','Separate historical collection. Source status is shown for each work; unverified drafts are not primary-canon Scripture.','sheet-copy'));
-      supplements.forEach(b=>{
-        const node=make('button',b.title,'list-button');
-        node.onclick=()=>library('supplement:'+b.id);
-        node.append(make('small',b.readable_witness?'Historical source draft available':'Text in preparation'));
-        list.append(node);
-      });
     } else {
       chapters.hidden = false;
       const back = make('button', '‹  All books', 'list-button');
