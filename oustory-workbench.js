@@ -185,7 +185,7 @@
   function notes(body,record){
     const key=escapeKey(record);
     const title=el("h2","Personal observation","workbench-section-title");body.append(title);
-    body.append(el("p","Private to this browser. Your own notes are never presented as CPT–APE editorial commentary.","workbench-note"));
+    body.append(el("p","Saved in this browser, not synced. Pages on this same website origin may access local storage; avoid sensitive notes. Your notes are separate from CPT–APE editorial commentary.","workbench-note"));
     const area=el("textarea");area.id="workbench-personal-note";area.rows=7;area.maxLength=MAX_LENGTH;
     area.placeholder="Write your observation about this verse…";
     area.value=allNotes()[key]||"";
