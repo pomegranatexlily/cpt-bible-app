@@ -17,6 +17,14 @@ try{
     class MockUtterance { constructor(text){ this.text=text; this.rate=1; } }
     Object.defineProperty(window,"SpeechSynthesisUtterance",
       {configurable:true,value:MockUtterance});
+    // Test native clipboard and share buttons without invoking platform UI.
+    window.__verseActions={copied:[],shared:[]};
+    Object.defineProperty(navigator,"clipboard",{configurable:true,value:{
+      async writeText(text){window.__verseActions.copied.push(text)}
+    }});
+    Object.defineProperty(navigator,"share",{configurable:true,value:async payload=>{
+      window.__verseActions.shared.push(payload);
+    }});
     Object.defineProperty(window,"speechSynthesis",{
       configurable:true,
       value:{
@@ -186,6 +194,20 @@ try{
   await page.locator(".verse-entry").first().click();
   await page.locator("#verse-panel[open]").waitFor();
   assert.ok((await page.locator("#verse-panel .verse-text").innerText()).length>10);
+  // A tap exposes Copy and Share immediately, without opening More.
+  const firstVerseText=await page.locator("#verse-panel .verse-text").innerText();
+  const verseTools=page.locator("#verse-panel .verse-quick-actions");
+  assert.equal(await verseTools.getByRole("button",{name:"Copy verse"}).isVisible(),true);
+  assert.equal(await verseTools.getByRole("button",{name:"Share verse"}).isVisible(),true);
+  await verseTools.getByRole("button",{name:"Copy verse"}).click();
+  const copied=await page.evaluate(()=>window.__verseActions.copied.at(-1));
+  assert.equal(copied,firstVerseText+"\n— Genesis 2:1 (Oustory reading edition)");
+  assert.match(await page.locator("#verse-feedback").innerText(),/Verse copied/);
+  await verseTools.getByRole("button",{name:"Share verse"}).click();
+  const shared=await page.evaluate(()=>window.__verseActions.shared.at(-1));
+  assert.equal(shared.title,"Genesis 2:1");
+  assert.equal(shared.text,copied);
+  assert.match(await page.locator("#verse-feedback").innerText(),/Verse shared/);
   await page.locator("#verse-panel .verse-more summary").click();
   await page.getByRole("button",{name:"Save verse"}).click();
   const savedVerses=await page.evaluate(()=>JSON.parse(localStorage.getItem("cpt.reader.saved")));

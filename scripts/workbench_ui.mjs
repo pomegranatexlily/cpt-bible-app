@@ -13,7 +13,7 @@ try{
  await page.locator(".verse-entry").first().click();
  await page.locator("#verse-panel[open]").waitFor();
  const buttons=await page.locator("#verse-panel .verse-quick-actions button").allInnerTexts();
- assert.deepEqual(buttons,["Compare","Interlinear","Notes"],"Only three clear primary verse actions");
+ assert.deepEqual(buttons,["Copy verse","Share verse","Compare","Interlinear","Notes"],"Copy and Share must be immediately available without hiding existing study actions");
  const more=page.locator("#verse-panel .verse-more");
  assert.equal(await more.getAttribute("open"),null,"Advanced tools should be folded by default");
  await page.getByRole("button",{name:"Interlinear",exact:true}).click();

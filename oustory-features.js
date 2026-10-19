@@ -240,11 +240,60 @@
       status==="open-question"?"Manuscript question open":
       status==="provisional"?"Provisional founder interpretation":"Draft editorial note";
   }
-  async function copyVerse(){
-    if(!selected)return;
-    const s=selected.text+"\n— "+selected.book+" "+selected.chapter+":"+selected.verse+" (Oustory reading edition)";
-    try{await navigator.clipboard.writeText(s);byId("verse-feedback").textContent="Verse copied."}
-    catch{byId("verse-feedback").textContent="Clipboard unavailable on this browser."}
+  // The copy/share payload comes from the verified reader record, not text
+  // selected from the DOM (which can include verse numbers and note markers).
+  function versePayload(record){
+    return record.text+"\n— "+refKey(record.book,record.chapter,record.verse)+" (Oustory reading edition)";
+  }
+  function verseStatus(message){
+    const feedback=byId("verse-feedback");
+    if(feedback)feedback.textContent=message;
+  }
+  async function writeClipboard(text){
+    try{
+      if(navigator.clipboard?.writeText){
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+    }catch{ /* Fall back to selection-based copying for older iOS browsers. */ }
+    const input=el("textarea");
+    input.value=text;
+    input.setAttribute("aria-hidden","true");
+    input.style.cssText="position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;pointer-events:none";
+    document.body.append(input);
+    const previous=document.activeElement;
+    let copied=false;
+    try{
+      input.focus();
+      input.select();
+      input.setSelectionRange(0,input.value.length);
+      copied=typeof document.execCommand==="function"&&document.execCommand("copy");
+    }catch{copied=false}
+    finally{
+      input.remove();
+      try{if(previous instanceof HTMLElement && previous.isConnected)previous.focus({preventScroll:true})}catch{}
+    }
+    return copied;
+  }
+  async function copyVerse(record=selected){
+    if(!record)return;
+    const ok=await writeClipboard(versePayload(record));
+    verseStatus(ok?"Verse copied. Paste it anywhere.":"Copy unavailable. Select the verse text above to copy manually.");
+  }
+  async function shareVerse(record){
+    if(!record)return;
+    const reference=refKey(record.book,record.chapter,record.verse);
+    if(typeof navigator.share==="function"){
+      try{
+        await navigator.share({title:reference,text:versePayload(record)});
+        verseStatus("Verse shared.");
+        return;
+      }catch(error){
+        if(error?.name==="AbortError")return; // User dismissed the native sheet.
+      }
+    }
+    const copied=await writeClipboard(versePayload(record));
+    verseStatus(copied?"Share sheet unavailable. Verse copied—paste it into any app.":"Sharing is unavailable. Select the verse text above to copy manually.");
   }
   function makeDialog(){
     verseDialog=el("dialog");verseDialog.id="verse-panel";
@@ -276,13 +325,19 @@
     verseDialog.append(el("p",record.text,"verse-text"));
     const quick=el("div",undefined,"verse-quick-actions");
     verseDialog.append(quick);
+    addAction(quick,"Copy verse",()=>void copyVerse(record),true);
+    addAction(quick,"Share verse",()=>void shareVerse(record));
+    const feedback=el("p","","feature-status");
+    feedback.id="verse-feedback";
+    feedback.setAttribute("role","status");
+    feedback.setAttribute("aria-live","polite");
+    verseDialog.append(feedback);
     addAction(quick,"Compare",()=>window.OustoryWorkbench?.open(record,"compare"));
     addAction(quick,"Interlinear",()=>window.OustoryWorkbench?.open(record,"interlinear"));
     addAction(quick,"Notes",()=>window.OustoryWorkbench?.open(record,"notes"));
     const more=el("details",undefined,"verse-more");
     more.append(el("summary","More verse actions & editorial research"));
     const a=actions(more);
-    addAction(a,"Copy verse",copyVerse);
     addAction(a,"Save verse",()=>{
       const stored=window.OustoryReader?.saveVerse(record.id,record.chapter,record.verse);
       byId("verse-feedback").textContent=stored?"Verse saved on this device.":"Verse could not be saved.";
@@ -296,15 +351,8 @@
       verseDialog.querySelector(".verse-more").open=true;
     });
     addAction(a,"Create verse image",()=>window.OustoryShareCard?.open(record));
-    addAction(a,"Share verse",async()=>{
-      if(!navigator.share){await copyVerse();return}
-      try{await navigator.share({title:k,text:record.text+"\n— "+k})}
-      catch(e){if(e.name!=="AbortError")byId("verse-feedback").textContent="Sharing unavailable."}
-    });
     addAction(a,"Editorial research",()=>window.OustoryWorkbench?.open(record,"editorial"));
-    const feedback=el("p","","feature-status");feedback.id="verse-feedback";
-    feedback.setAttribute("role","status");
-    more.append(feedback);verseDialog.append(more);
+    verseDialog.append(more);
     verseDialog.showModal();
   }
   function annotateVerse(info){
