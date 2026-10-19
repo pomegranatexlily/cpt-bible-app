@@ -77,7 +77,7 @@
   installTools.append(linkCopy,dismiss);
   installDialog.append(installTitle,explanation,status,installTools);
   document.body.append(installDialog);
-  const installed=()=>window.matchMedia?.('(display-mode: standalone)').matches||navigator.standalone===true;
+  const installed=()=>window.matchMedia?.('(display-mode: standalone)')?.matches||navigator.standalone===true;
   async function showInstall(){
     if(installed()){
       explanation.textContent='Oustory is already running as an installed app on this device.';
