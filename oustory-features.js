@@ -259,8 +259,7 @@
     const input=el("textarea");
     input.value=text;
     input.setAttribute("aria-hidden","true");
-    input.setAttribute("readonly","");
-    input.style.cssText="position:fixed;top:0;left:-9999px;width:1px;height:1px;opacity:0";
+    input.style.cssText="position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;pointer-events:none";
     document.body.append(input);
     const previous=document.activeElement;
     let copied=false;
@@ -272,7 +271,7 @@
     }catch{copied=false}
     finally{
       input.remove();
-      if(previous instanceof HTMLElement && previous.isConnected)previous.focus({preventScroll:true});
+      try{if(previous instanceof HTMLElement && previous.isConnected)previous.focus({preventScroll:true})}catch{}
     }
     return copied;
   }
