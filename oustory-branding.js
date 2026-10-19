@@ -111,6 +111,7 @@
     ['Saved places', () => window.OustoryReader?.openSaved()],
     ['Add to Home Screen', showInstall],
     ['Reading settings', () => document.getElementById('settings-panel')?.showModal()],
+    ['Privacy & data', () => location.assign(new URL('./privacy.html',location.href).href)],
     ['About this edition', () => document.querySelector('button[data-panel="edition-panel"]').click()]
   ];
   actions.forEach(([label, action]) => {
