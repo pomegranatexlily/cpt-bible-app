@@ -353,7 +353,18 @@ try{
   await page.locator("#books-panel[open]").waitFor();
   const count=await page.locator("#book-list button").count();
   assert.equal(count,80,"Only the original 80 books must appear");
-  assert.equal(await page.locator("#book-list .chapter-picker-title").first().textContent(),"Primary Canon — 80 Books");
+  assert.equal(await page.locator("#book-list .chapter-picker-title").first().textContent(),"80 Books — Alphanumeric Order");
+  // One alphanumeric book list: numeric prefixes 1, 2, 3 first,
+  // titles alphabetized within each prefix, followed by A-Z titles.
+  const visibleTitles=await page.locator("#book-list button").allTextContents();
+  const canonicalTitles=await page.evaluate(()=>window.CPT_BOOKS.map(b=>b.title));
+  const collator=new Intl.Collator("en",{numeric:true,sensitivity:"base"});
+  assert.deepEqual(visibleTitles,[...canonicalTitles].sort(collator.compare),
+    "Every one of the 80 books must appear in natural alphanumeric order");
+  assert.equal(visibleTitles[0],"1 Chronicles");
+  assert.ok(visibleTitles.indexOf("1 Corinthians")<visibleTitles.indexOf("1 Samuel"));
+  assert.ok(visibleTitles.indexOf("1 Samuel")<visibleTitles.indexOf("2 Chronicles"));
+  assert.ok(visibleTitles.indexOf("3 John")<visibleTitles.indexOf("Acts"));
   assert.equal(await page.locator("#book-list .chapter-picker-title").count(),1);
   assert.equal(await page.locator("#book-list button").filter({hasText:/Enoch|Jasher|3 Maccabees/}).count(),0);
   await page.locator("#books-panel [data-close]").click();
