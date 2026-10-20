@@ -69,7 +69,7 @@
   const close=row(head,"×",()=>dialog.close(),"release4-close");
   close.className="icon-button";close.setAttribute("aria-label","Close offline and backup settings");
   head.prepend(title);dialog.append(head);
-  dialog.append(el("p","Offline Scripture is stored on this device. Download the complete working 80-book edition while connected. No login or cloud sync.","sheet-copy"));
+  dialog.append(el("p","Offline Scripture is stored on this device. Download all 80 Scripture books for offline reading while connected. No login or cloud sync.","sheet-copy"));
   const state=el("p","Checking offline storage…","release4-status");
   state.id="release4-offline-status";state.setAttribute("role","status");state.setAttribute("aria-live","polite");
   dialog.append(state);
