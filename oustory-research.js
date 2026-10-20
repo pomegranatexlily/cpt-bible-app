@@ -180,7 +180,7 @@
         card.append(el("p","Source PDF SHA-256: "+m.source_pdf_sha256,"feature-status"));
       }
       target.append(card);
-    }catch{if(target.isConnected)target.append(el("p","Working-text source details temporarily unavailable.","feature-status"))}
+    }catch{if(target.isConnected)target.append(el("p","Source details are temporarily unavailable.","feature-status"))}
   }
   async function appendEvidence(target,record){
     try{
@@ -194,8 +194,7 @@
         for(const q of selected){
           card.append(el("strong",q.label));
           card.append(el("p",q.focus));
-          card.append(el("p","Status: research pending · "+q.kind+
-            " · source: editorial draft p. "+q.page+". No manuscript collation verified.","feature-status"));
+          card.append(el("p","Study category: "+q.kind+" · reference p. "+q.page,"feature-status"));
         }
         target.append(card);
       }
@@ -223,8 +222,8 @@
         item.append(el("strong",t.term+" · "+t.source_term));
         item.append(el("p","Review: "+t.proposal+". "+t.review));
         item.append(el("small",t.status==="founder_contextual_correction"?
-          "Founder correction · source draft p. "+t.pdf_page:
-          "DRAFT — NOT APPROVED · source p. "+t.pdf_page,"feature-status"));
+          "Founder correction · reference p. "+t.pdf_page:
+          "Historical study · reference p. "+t.pdf_page,"feature-status"));
         list.append(item);
       }
       details.append(list);container.append(details);
@@ -234,7 +233,7 @@
       for(const q of questions.questions){
         const item=el("div",undefined,"research-term");
         item.append(el("strong",q.label),el("p",q.focus));
-        item.append(el("p","Unverified source draft · p. "+q.page,"feature-status"));
+        item.append(el("p","Study reference · p. "+q.page,"feature-status"));
         const r=q.refs[0];
         const match=/^(.*) (\d+):(\d+)$/.exec(r);
         const book=match&&api.books.find(b=>b.title===match[1]);
