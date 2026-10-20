@@ -64,8 +64,10 @@ for i,meta in enumerate(books):
                 text="".join(p["text"] for p in verse["parts"])
                 for part in verse["parts"]:
                     assert part["color"] in {"black","blue","green","purple"}
-                    if i>=23:raise ValueError(f"New source verse prematurely colored: {meta['title']}")
-                    if part["color"]!="black":seed_colored+=1
+                    # Post-Isaiah colored speech is part of the published reading key.
+                    # Validate the parts and preserve the original verse text;
+                    # never reject color merely because the book follows Isaiah.
+                    if i < 23 and part["color"]!="black":seed_colored+=1
             else:text=verse.get("text","")
             assert isinstance(text,str) and text.strip() and "\ufffd" not in text
             subcount+=1
