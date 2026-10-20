@@ -176,6 +176,11 @@ assert "window.OustoryFeatures?.init" in reader and "window.OustoryFeatures?.ann
 assert "window.OustorySearch?.init" in reader
 assert "window.OustoryReader={openSaved,saveVerse" in reader
 assert "'speaker-' + color" in reader
+# Publication guard: the reader must identify Volume III and preserve every color category.
+assert "Volume III — Complete 80-Book Edition" in html
+assert all(".scripture .speaker-"+color in html for color in ("blue","green","purple"))
+assert "Reading key" in html and "Yahawah’s direct speech" in html and "Yahawashi’s direct speech" in html
+assert "Download all 80 Scripture books" in (ROOT/"oustory-release4.js").read_text(encoding="utf8")
 for source in ("cpt-index.js","oustory-reader.js","oustory-search.js","oustory-research.js","oustory-features.js","oustory-calendar.js","oustory-calendar-study.js","oustory-audio.js","oustory-branding.js"):
     subprocess.run(["node","--check",str(ROOT/source)],check=True,capture_output=True)
 inline=re.findall(r"<script(?:\s[^>]*)?>(.*?)</script>",html,flags=re.S)
