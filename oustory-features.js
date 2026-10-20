@@ -164,7 +164,7 @@
       display.textContent=verse;
       const meta=api.books.find(b=>b.id===group[1]);
       source.textContent=meta.title+" "+group[2]+":"+group[3]+
-        " · "+(api.books.indexOf(meta)<23?"verified earlier edition":"provisional source reading");
+        " · Oustory Bible";
       const n=notesByRef.get(refKey(meta.title,group[2],group[3]));
       if(n){noteBtn.hidden=false;noteBtn.onclick=()=>openVerse({book:meta.title,id:group[1],chapter:group[2],verse:group[3],text:verse})}
     }catch(e){
@@ -187,9 +187,9 @@
       ()=>show("calendar"),window.OustoryCalendar?.rememberedTrack()||"earlier");
   }
   function renderStudy(){
-    title("Study · covenant literacy","Read with the record","Scripture reading, founder corrections, draft terminology review, and openly unresolved textual research.");
+    title("Study · covenant literacy","Read with the record","Scripture reading, language study, historical comparison, and editorial notes.");
     const editorial=card(root,"Why this rendering — editorial index");
-    editorial.append(el("p","Browse source-linked editorial rulings, drafts and unresolved manuscript questions without leaving the Study screen cluttered with every note."));
+    editorial.append(el("p","Explore Scripture passages and their accompanying editorial notes in one place."));
     addAction(actions(editorial),"Browse editorial notes",()=>window.OustoryWorkbench?.openEditorialIndex([...new Set(notesByRef.values())]),true);
     const research=card(root,"Research desk");
     const content=el("div",undefined,"research-study-content");research.append(content);
@@ -208,7 +208,7 @@
     addAction(savedButtons,"Saved chapters",()=>window.OustoryReader?.openSaved());
     addAction(savedButtons,"Highlighted verses",()=>showHighlights());
     const topics=card(root,"Covenant topics");
-    topics.append(el("p","Starting passages for each category; a full tagged knowledge graph is a later phase."));
+    topics.append(el("p","Start with these passages for each covenant topic."));
     const grid=el("div",undefined,"feature-grid");topics.append(grid);
     for(const [name,id,ch,v] of TOPICS){
       const item=card(grid,name);
@@ -349,9 +349,9 @@
       note.append(el("p",statusText(entry.status),"feature-note-type"));
       note.append(el("p",entry.body,"note-text"));
     }else{
-      note.append(el("p","No verse-specific editorial ruling is indexed at this coordinate. This is not evidence that the passage is finalized.","feature-status"));
+      note.append(el("p","No additional editorial note is indexed for this verse.","feature-status"));
     }
-    note.append(el("p","An editorial interpretation is not independent manuscript evidence. Source text remains unchanged.","feature-status"));
+    
   }
   function openVerse(record){
     selected=record;
