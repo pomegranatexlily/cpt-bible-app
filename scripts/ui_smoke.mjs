@@ -8,6 +8,9 @@ const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFac
 const errors=[];
 page.on("pageerror",e=>errors.push(e.message));
 page.on("console",m=>{if(m.type()==="error")errors.push(m.text())});
+// In CI the print PDF is not committed; emulate a real published PDF for discovery.
+await page.route("**/assets/oustory-complete-80-book-2026.pdf",route=>
+  route.fulfill({status:200,contentType:"application/pdf",body:""}));
 fs.mkdirSync("out/ui-smoke",{recursive:true});
 try{
   // Browser audio is device-dependent. Mock the native API to test real
