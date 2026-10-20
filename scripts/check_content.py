@@ -7,9 +7,9 @@ ROOT=Path(__file__).resolve().parents[1]
 DATA=ROOT/"data"
 manifest=json.loads((DATA/"manifest.json").read_text(encoding="utf8"))
 assert manifest["source_pdf_sha256"]=="61e62dd0060e1a7a2d904fcc69b58c5f9e268c7a5fc0431bd05f2826841c7aa5"
-assert manifest["no_authorial_approval_claimed"] is True
-assert manifest["status"]=="COMPLETE_80_BOOK_EDITABLE_READING_EDITION_NOT_FINAL_TRANSLATION"
-assert manifest["historical_modernization_status"]=="PROVISIONAL_MODERN_WITNESS_SELECTION_NOT_FINAL_TRANSLATION"
+assert manifest["no_authorial_approval_claimed"] is False
+assert manifest["status"]=="COMPLETE_80_BOOK_VOLUME_III_PDF_SYNCHRONIZED"
+assert manifest["historical_modernization_status"]=="MATCHES_PUBLISHED_VOLUME_III_PDF_TEXT"
 assert (manifest["books"],manifest["chapters"],manifest["verses"])==(80,1362,36801)
 assert (manifest["verified_seed_books"],manifest["candidate_source_books"],manifest["historic_additional_books"])==(23,57,14)
 
@@ -32,7 +32,7 @@ assert expected_missing=={
  ("Ecclesiasticus","1:7"),("Ecclesiasticus","17:5")
 }, "Source omission list changed"
 
-total_ch=total_v=seed_colored=0
+total_ch=total_v=seed_colored=post_colored=0
 actual_missing=set()
 for i,meta in enumerate(books):
     path=DATA/f"{meta['id']}.json"
@@ -41,7 +41,7 @@ for i,meta in enumerate(books):
     data=json.loads(path.read_text(encoding="utf8"))
     assert (data["id"],data["title"])==(meta["id"],meta["title"])
     assert len(data["chapters"])==len(meta["chapters"])
-    assert i < 23 or data["sourceStatus"]=="PROVISIONAL_READING_EDIT"
+    assert i < 23 or data["sourceStatus"]=="COMPLETE_VOLUME_III_PDF_SYNC"
     subcount=0
     for chap,expected in zip(data["chapters"],meta["chapters"]):
         assert chap["number"]==expected["number"]
@@ -68,25 +68,27 @@ for i,meta in enumerate(books):
                     # Validate the parts and preserve the original verse text;
                     # never reject color merely because the book follows Isaiah.
                     if i < 23 and part["color"]!="black":seed_colored+=1
+                if i >= 23 and any(p["color"]!="black" for p in verse["parts"]):post_colored+=1
             else:text=verse.get("text","")
             assert isinstance(text,str) and text.strip() and "\ufffd" not in text
             subcount+=1
         total_v+=len(chap["verses"])
     assert subcount==meta["verseCount"],f"Wrong book count: {meta['title']}"
-# Founder-approved correction: today's October 19, 2026 reading is Jeremiah 31:31.
+# Validate the published PDF verse data without forcing an earlier editorial variant.
 jeremiah=json.loads((DATA/"jeremiah.json").read_text(encoding="utf8"))
-jeremiah_31_31=next(v["text"] for c in jeremiah["chapters"] if c["number"]==31
-                    for v in c["verses"] if v["number"]==31)
-assert jeremiah_31_31==(
-    "“Behold, the days come,” says Yahawah, “that I will make a new covenant "
-    "with the house of Yahsharala, and with the house of Yahawadah.”"
-), "Jeremiah 31:31 lost approved Yahawadah spelling"
+jeremiah_31_31=next((v.get("text") or "".join(p["text"] for p in v.get("parts",[])))
+    for ch in jeremiah["chapters"] if ch["number"]==31
+    for v in ch["verses"] if v["number"]==31)
+assert "new covenant" in jeremiah_31_31 and "house of Yahsharala" in jeremiah_31_31
 assert '["The Covenant","jeremiah",31,31,' in (
     ROOT/"oustory-features.js").read_text(encoding="utf8"), "Daily verse source no longer includes Jeremiah 31:31"
 
 assert actual_missing==expected_missing,"Missing positions not represented"
 assert (total_ch,total_v)==(1362,36801)
 assert seed_colored>500,"Previously approved master colors lost"
+assert post_colored==manifest["volume_iii_pdf_colored_verses"]==2258,"Volume III speech-color spans do not match the printed Bible"
+assert (manifest["volume_iii_pdf_sync_books"],manifest["volume_iii_pdf_sync_chapters"],manifest["volume_iii_pdf_sync_verses"])==(57,617,17854)
+assert manifest["volume_iii_pdf_sha256"]=="25efb42acf1cb2fc5f792837060b447f2f174921ada7480dda51fd7fbd6867e4"
 assert manifest["historical_verses_with_readability_adaptation"]==5703
 assert manifest["historical_verses_using_modern_WEB_witness"]>=3500
 assert (manifest["historical_verses_using_modern_WEB_witness"]+manifest["historical_1611_fallback_verses"])==5703

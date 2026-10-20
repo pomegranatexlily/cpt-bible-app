@@ -18,7 +18,7 @@ try{
  await page.locator("#release4-download").click();
  await page.waitForFunction(()=>document.querySelector("#release4-offline-status")?.textContent==="All 80 books are stored for offline reading.",null,{timeout:120000});
  const actualCount=await page.evaluate(async()=>{
-  const cache=await caches.open("oustory-books-r4");
+  const cache=await caches.open("oustory-books-r5-volume-iii-full-sync-20261020");
   return (await cache.keys()).filter(r=>/\/data\/[a-z0-9-]+\.json$/.test(new URL(r.url).pathname)).length;
  });
  assert.equal(actualCount,80,"All 80 separate book JSON files must be cached");
@@ -102,7 +102,7 @@ try{
   saved:localStorage.getItem("cpt.reader.saved"),
   notes:localStorage.getItem("oustory.personal-notes.v1"),
   unrelated:localStorage.getItem("another-project.preference"),
-  cachedBooks:(await (await caches.open("oustory-books-r4")).keys())
+  cachedBooks:(await (await caches.open("oustory-books-r5-volume-iii-full-sync-20261020")).keys())
     .filter(req=>new URL(req.url).pathname.includes("/data/") && new URL(req.url).pathname.endsWith(".json")).length
  }));
  assert.equal(after.saved,null,"Saved reading places must be deleted");

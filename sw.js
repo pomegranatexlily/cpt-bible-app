@@ -1,8 +1,8 @@
 /* Oustory Release 4: first-party offline reading. No Scripture transformations. */
 "use strict";
-const SHELL="oustory-shell-r23-reader-polish-20261020";
-const BOOKS="oustory-books-r4";
-const RUNTIME="oustory-runtime-r4";
+const SHELL="oustory-shell-r24-volume-iii-full-sync-20261020";
+const BOOKS="oustory-books-r5-volume-iii-full-sync-20261020";
+const RUNTIME="oustory-runtime-r5-volume-iii-full-sync-20261020";
 const APP=new URL(self.registration.scope);
 const CORE=[
  "./","./index.html","./privacy.html","./manifest.webmanifest","./cpt-index.js",
@@ -42,6 +42,8 @@ self.addEventListener("activate",event=>{
  event.waitUntil((async()=>{
   for(const key of await caches.keys()){
    if(key.startsWith("oustory-shell-")&&key!==SHELL)await caches.delete(key);
+   if(key.startsWith("oustory-books-")&&key!==BOOKS)await caches.delete(key);
+   if(key.startsWith("oustory-runtime-")&&key!==RUNTIME)await caches.delete(key);
   }
   // Delete leftover supplemental documents from pre-existing offline caches.
   const withdrawn=new URL("./data/supplemental/",APP).pathname;
