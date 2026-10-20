@@ -234,14 +234,14 @@
     return root;
   }
   function noteIndex(entries){
-    studyHeader("Back to Study",back,"Editorial notes","Filter by title, Scripture book, or review status. Founder rulings, drafts, and open questions remain separate.");
+    studyHeader("Back to Study",back,"Editorial notes","Search editorial notes by topic, Scripture reference, or category.");
     const controls=el("div",undefined,"workbench-index-controls");
     const term=el("input");term.type="search";term.id="workbench-note-search";
     term.placeholder="Search editorial notes";term.setAttribute("aria-label","Search editorial notes");
     const status=el("select");status.id="workbench-note-filter";
     status.setAttribute("aria-label","Editorial status");
-    const options=[["","All evidence statuses"],["author-ruling","Founder ruling"],
-      ["open-question","Open question"],["provisional","Provisional"],["draft-note","Draft"]];
+    const options=[["","All note categories"],["author-ruling","Founder ruling"],
+      ["open-question","Textual study"],["provisional","Interpretive"],["draft-note","Historical"]];
     for(const [value,label] of options){const x=el("option",label);x.value=value;status.append(x)}
     const book=el("select");book.id="workbench-book-filter";book.setAttribute("aria-label","Scripture book");
     const names=[...new Set(entries.flatMap(n=>(n.refs||[]).map(ref=>ref.replace(/\s+\d+:\d+$/,""))))].sort();
@@ -262,7 +262,7 @@
       for(const n of matches){
         const b=action(list,n.label,()=>noteDetail(n,entries),"workbench-index-row");
         b.append(el("small",(n.refs||[]).join(", ")+" · "+
-          (n.status==="author-ruling"?"Founder ruling":n.status==="open-question"?"Open question":n.status==="provisional"?"Provisional interpretation":"Draft editorial note")));
+          (n.status==="author-ruling"?"Founder ruling":n.status==="open-question"?"Textual study":n.status==="provisional"?"Interpretive study":"Historical study")));
       }
     };
     term.oninput=display;status.onchange=display;book.onchange=display;
@@ -271,8 +271,8 @@
   function noteDetail(note,entries){
     studyHeader("All editorial notes",()=>noteIndex(entries),note.label,
       note.status==="author-ruling"?"Founder editorial ruling":
-      note.status==="open-question"?"Unresolved manuscript question":
-      note.status==="provisional"?"Provisional founder interpretation":"Draft editorial note");
+      note.status==="open-question"?"Textual study note":
+      note.status==="provisional"?"Interpretive study note":"Historical study note");
     root.append(el("p",note.body,"workbench-editorial-body"));
     root.append(el("p","","workbench-note"));
     const links=el("div",undefined,"workbench-note-list");root.append(links);
