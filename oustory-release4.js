@@ -91,7 +91,7 @@
   file.addEventListener("change",importSaved);dialog.append(file);
   const feedback=el("p","Import replaces the backed-up saved-data fields after validation and confirmation; Scripture files and other browser data are untouched.","sheet-copy");
   feedback.id="release4-backup-status";feedback.setAttribute("role","status");feedback.setAttribute("aria-live","polite");dialog.append(feedback);
-  dialog.append(el("p","Offline mode covers locally cached books and core screens. Live calendar verification and unvisited 1611 comparison/search resources may require a connection. This remains an editorial working edition, not the founder-approved final CPT–APE.","sheet-copy"));
+  dialog.append(el("p","Offline mode covers locally cached books and core screens. Live calendar verification and unvisited 1611 comparison/search resources may require a connection. ","sheet-copy"));
   document.body.append(dialog);
  }
  async function worker(){
