@@ -115,7 +115,7 @@
     const data=await api.loadBook(id);
     const chapter=data.chapters.find(c=>c.number===ch);
     const verse=chapter?.verses.find(x=>x.number===v);
-    if(!verse)throw new Error("Verse unavailable in this source witness.");
+    if(!verse)throw new Error("Verse is not available at that reference.");
     return textOf(verse);
   }
   function refreshDailyHome(){
@@ -266,8 +266,8 @@
   }
   function statusText(status){
     return status==="author-ruling"?"Founder editorial ruling":
-      status==="open-question"?"Manuscript question open":
-      status==="provisional"?"Provisional founder interpretation":"Draft editorial note";
+      status==="open-question"?"Textual study note":
+      status==="provisional"?"Interpretive study note":"Historical study note";
   }
   // The copy/share payload comes from the verified reader record, not text
   // selected from the DOM (which can include verse numbers and note markers).
