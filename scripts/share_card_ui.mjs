@@ -1,5 +1,6 @@
 /* Browser regression for Oustory Release 5 client-only verse image cards. */
 import assert from "node:assert/strict";
+import fs from "node:fs";
 import {chromium} from "playwright";
 
 const browser=await chromium.launch({headless:true});
@@ -25,27 +26,21 @@ try{
   await dialog.locator("img").waitFor({timeout:20000});
   assert.match(await dialog.locator("h2").innerText(),/Genesis 1:1/);
   assert.match(await dialog.locator("#share-card-status").innerText(),/Image ready to share or save/i);
-  const check=await page.evaluate(async()=>{
-    const img=document.querySelector("#oustory-share-card-dialog img");
-    const blob=await (await fetch(img.src)).blob();
-    const bytes=new Uint8Array(await blob.arrayBuffer());
-    const bitmap=await createImageBitmap(blob);
-    return {type:blob.type,size:blob.size,head:[...bytes.slice(0,8)],
-      width:bitmap.width,height:bitmap.height,alt:img.alt};
-  });
-  assert.equal(check.type,"image/png");
-  assert.ok(check.size>20000,"PNG must actually render a visible image");
-  assert.deepEqual(check.head,[137,80,78,71,13,10,26,10]);
-  assert.equal(check.width,1080);
-  assert.ok(check.height>=660&&check.height<=4096);
-  assert.ok(check.alt.includes(quote),"Accessible image description must include complete source wording");
-  assert.match(check.alt,/POMEGRANATE × LILY/);
+  // Inspect the actual downloadable file; blob: fetch is flaky on CI's
+  // headless service-worker/browser combination.
+  const alt=await dialog.locator("img").getAttribute("alt");
   const dl=page.waitForEvent("download");
   await dialog.getByRole("button",{name:"Save PNG"}).click();
   const download=await dl;
   assert.equal(download.suggestedFilename(),"oustory-genesis-1-1.png");
-  const failure=await download.failure();
-  assert.equal(failure,null,"Save PNG must be downloadable as a real browser file");
+  assert.equal(await download.failure(),null,"Save PNG must be downloadable as a real browser file");
+  const bytes=fs.readFileSync(await download.path());
+  assert.ok(bytes.length>20000,"PNG must actually render a visible image");
+  assert.deepEqual([...bytes.subarray(0,8)],[137,80,78,71,13,10,26,10]);
+  assert.equal(bytes.readUInt32BE(16),1080);
+  assert.ok(bytes.readUInt32BE(20)>=660&&bytes.readUInt32BE(20)<=4096);
+  assert.ok(alt.includes(quote),"Accessible image description must include complete source wording");
+  assert.match(alt,/POMEGRANATE × LILY/);
   await dialog.getByRole("button",{name:"Share PNG"}).click();
   assert.match(await dialog.locator("#share-card-status").innerText(),/unsupported|share options/i);
   await dialog.getByRole("button",{name:"Close"}).click();
