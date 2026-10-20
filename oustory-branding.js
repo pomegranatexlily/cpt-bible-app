@@ -122,6 +122,19 @@
     menu.append(button);
   });
   document.body.append(menu);
+  // Offer the complete print PDF only after the actual file is published.
+  // A missing PDF never creates a dead link or an unfinished-edition notice.
+  const printPdfUrl=new URL('./assets/oustory-complete-80-book-2026.pdf',location.href);
+  fetch(printPdfUrl,{method:'HEAD',cache:'no-store'}).then(response=>{
+    if(!response.ok||!/^application\\/pdf(?:;|$)/i.test(response.headers.get('content-type')||''))return;
+    const link=document.createElement('a');
+    link.className='oustory-menu-row';
+    link.href=printPdfUrl.href;
+    link.textContent='Read complete 80-book PDF';
+    link.target='_blank';link.rel='noopener noreferrer';
+    const rows=[...menu.querySelectorAll('.oustory-menu-row')];
+    menu.insertBefore(link,rows[4]||null);
+  }).catch(()=>{});
   opener.onclick = () => menu.showModal();
   const edition = document.getElementById('edition-panel');
   if (edition) {
