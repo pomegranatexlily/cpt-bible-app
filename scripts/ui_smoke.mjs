@@ -113,7 +113,7 @@ try{
     "https://pomegranatexlily.github.io/cpt-bible-app/assets/oustory-poster-icon-512.png");
   assert.equal(await page.locator('meta[name="twitter:card"]').getAttribute("content"),"summary");
   assert.match(await page.locator('link[href^="oustory-features.css"]').getAttribute("href"),/\?v=20261019-verse-actions-v3$/);
-  assert.match(await page.locator('script[src^="oustory-branding.js"]').getAttribute("src"),/\?v=20261019-install-menu-v1$/);
+  assert.match(await page.locator('script[src^="oustory-branding.js"]').getAttribute("src"),/\?v=20261020-print-pdf-menu$/);
   assert.match(await page.locator('link[href^="oustory-branding.css"]').getAttribute("href"),/\?v=20261019-install-menu-v1$/);
 
   await page.locator("#nav-home").waitFor({timeout:20000});
