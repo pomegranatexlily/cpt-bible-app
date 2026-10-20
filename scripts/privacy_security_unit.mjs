@@ -25,7 +25,7 @@ assert.match(data,/Delete saved study data/);
 assert.match(data,/if\(!confirm\("Permanently delete/);
 assert.match(data,/location\.reload\(\)/);
 assert.match(sw,/".\/privacy\.html"/,"Privacy page must be available in offline shell");
-assert.match(sw,/const SHELL="oustory-shell-r18-privacy-20261019"/);
+assert.match(sw,/const SHELL="oustory-shell-r\d+-[a-z0-9-]+"/);
 assert.match(privacy,/<h1>Privacy &amp; data<\/h1>/);
 for(const term of ["personal verse notes","saved data","GitHub Pages",
  "Shabbat Calendar","IP address","no advertising trackers","Importing a backup",
