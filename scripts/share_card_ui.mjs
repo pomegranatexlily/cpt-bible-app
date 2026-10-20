@@ -24,7 +24,7 @@ try{
   await dialog.waitFor();
   await dialog.locator("img").waitFor({timeout:20000});
   assert.match(await dialog.locator("h2").innerText(),/Genesis 1:1/);
-  assert.match(await dialog.locator("#share-card-status").innerText(),/working text/i);
+  assert.match(await dialog.locator("#share-card-status").innerText(),/Image ready to share or save/i);
   const check=await page.evaluate(async()=>{
     const img=document.querySelector("#oustory-share-card-dialog img");
     const blob=await (await fetch(img.src)).blob();
@@ -39,7 +39,7 @@ try{
   assert.equal(check.width,1080);
   assert.ok(check.height>=660&&check.height<=4096);
   assert.ok(check.alt.includes(quote),"Accessible image description must include complete source wording");
-  assert.match(check.alt,/EDITORIAL REVIEW ONGOING/);
+  assert.match(check.alt,/POMEGRANATE × LILY/);
   const dl=page.waitForEvent("download");
   await dialog.getByRole("button",{name:"Save PNG"}).click();
   const download=await dl;
