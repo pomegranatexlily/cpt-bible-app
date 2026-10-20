@@ -103,7 +103,7 @@
       if (token !== renderToken) return;
       const chapterData = data.chapters.find(c => c.number === selectedChapter);
       const verses = chapterData?.verses;
-      if (!verses) throw new Error('This chapter is unavailable in the verified source.');
+      if (!verses) throw new Error('This chapter is not available right now.');
       window.OustoryAudio?.setChapter({bookId:selectedId, book:book().title, chapter:selectedChapter, verses});
       const container = $('#scripture');
       const fragment = document.createDocumentFragment();
@@ -317,7 +317,7 @@
       ci=books[bi].chapters.findIndex(c => c.number === last.chapter);
     }
     initialRender=render(lastIndex >= 0 && Number.isInteger(last?.verse) ? last.verse : 1);
-  } else showMessage('No verified manuscript index was loaded.', true);
+  } else showMessage('The Scripture index could not be loaded.', true);
   (async () => {
     try { const fonts = await document.fonts.load('400 16px "Schibsted Grotesk"');
       $('#font-status').textContent = fonts.length ? 'Schibsted Grotesk loaded.' : 'Using system font fallback.';
