@@ -107,8 +107,8 @@ try{
   await page.goto("http://127.0.0.1:8765/",{waitUntil:"domcontentloaded"});
   // Cached PWAs previously served the old three-button verse sheet.
   // Verify the HTML requests a newly versioned verse controller and CSS.
-  assert.match(await page.locator('script[src^="oustory-features.js"]').getAttribute("src"),/^oustory-features\.js\?v=20261019-daily-verse-v1$/);
-  assert.match(await page.locator('script[src^="oustory-reader.js"]').getAttribute("src"),/\?v=20261019-remove-supplemental-19$/);
+  assert.match(await page.locator('script[src^="oustory-features.js"]').getAttribute("src"),/^oustory-features\.js\?v=20261020-copy-cleanup$/);
+  assert.match(await page.locator('script[src^="oustory-reader.js"]').getAttribute("src"),/\?v=20261020-alphanumeric-books$/);
   assert.equal(await page.locator('meta[property="og:image"]').getAttribute("content"),
     "https://pomegranatexlily.github.io/cpt-bible-app/assets/oustory-poster-icon-512.png");
   assert.equal(await page.locator('meta[name="twitter:card"]').getAttribute("content"),"summary");
@@ -260,8 +260,8 @@ try{
     "Save Verse must preserve chapter and source verse");
   await page.getByRole("button",{name:"Compare",exact:true}).click();
   await page.locator("#workbench-body .research-pair").waitFor();
-  assert.match(await page.locator("#workbench-body .research-column-title").first().innerText(),/Oustory working text/);
-  assert.match(await page.locator("#workbench-body .research-column-title").last().innerText(),/1611 printed English KJV/);
+  assert.match(await page.locator("#workbench-body .research-column-title").first().innerText(),/CPT · APE/);
+  assert.match(await page.locator("#workbench-body .research-column-title").last().innerText(),/1611 KJV/);
   assert.ok(await page.locator("#workbench-body .research-word-diff").count()>0,"Historic English differences should be highlighted");
   await page.getByRole("button",{name:/Back to Scripture/}).click();
   await page.getByRole("button",{name:"Compare versions"}).click();
