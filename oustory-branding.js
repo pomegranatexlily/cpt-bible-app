@@ -122,19 +122,28 @@
     menu.append(button);
   });
   document.body.append(menu);
-  // Offer the complete print PDF only after the actual file is published.
-  // A missing PDF never creates a dead link or an unfinished-edition notice.
-  const printPdfUrl=new URL('./assets/oustory-complete-80-book-2026.pdf',location.href);
-  fetch(printPdfUrl,{method:'HEAD',cache:'no-store'}).then(response=>{
-    if(!response.ok||!(response.headers.get('content-type')||'').toLowerCase().startsWith('application/pdf'))return;
-    const link=document.createElement('a');
-    link.className='oustory-menu-row';
-    link.href=printPdfUrl.href;
-    link.textContent='Read complete 80-book PDF';
-    link.target='_blank';link.rel='noopener noreferrer';
-    const rows=[...menu.querySelectorAll('.oustory-menu-row')];
-    menu.insertBefore(link,rows[4]||null);
-  }).catch(()=>{});
+  // Show the print PDF only after an actual PDF is published to this repository.
+  // Either the short release filename or the supplied KDP filename is accepted.
+  (async()=>{
+    for(const filename of [
+      'oustory-complete-80-book-2026.pdf',
+      'OUSTORY_COMPLETE_80_BOOK_KDP_SINGLE_HARDCOVER_TRUE_TWO_COLUMN.pdf'
+    ]){
+      const pdfUrl=new URL('./assets/'+filename,location.href);
+      try{
+        const response=await fetch(pdfUrl,{method:'HEAD',cache:'no-store'});
+        if(!response.ok||!(response.headers.get('content-type')||'').toLowerCase().startsWith('application/pdf'))continue;
+        const link=document.createElement('a');
+        link.className='oustory-menu-row';
+        link.href=pdfUrl.href;
+        link.textContent='Read complete 80-book PDF';
+        link.target='_blank';link.rel='noopener noreferrer';
+        const rows=[...menu.querySelectorAll('.oustory-menu-row')];
+        menu.insertBefore(link,rows[4]||null);
+        break;
+      }catch{}
+    }
+  })();
   opener.onclick = () => menu.showModal();
   const edition = document.getElementById('edition-panel');
   if (edition) {
