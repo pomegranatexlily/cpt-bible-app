@@ -10,6 +10,11 @@
     return node;
   };
   const books = Array.isArray(window.CPT_BOOKS) ? window.CPT_BOOKS : [];
+  // Navigation display only: 1 Chronicles, 1 Corinthians ... 2 Chronicles ...
+  // Keep the underlying 80-book canon sequence unchanged for chapter arrows and references.
+  const bookSorter = new Intl.Collator('en', {numeric:true, sensitivity:'base'});
+  const alphanumericBooks = books.map((entry,index)=>({entry,index}))
+    .sort((a,b)=>bookSorter.compare(a.entry.title,b.entry.title)||a.index-b.index);
   const cache = new Map();
   const inflight = new Map();
   let bi = 0, ci = 0, renderToken = 0, touch = null, scrollSaveTimer = null;
@@ -174,8 +179,8 @@
     $('#books-empty').hidden=books.length>0;
     if(selected===null){
       chapters.hidden=true;
-      list.append(make('h3','Primary Canon — 80 Books','chapter-picker-title'));
-      books.forEach((entry,index)=>{
+      list.append(make('h3','80 Books — Alphanumeric Order','chapter-picker-title'));
+      alphanumericBooks.forEach(({entry,index})=>{
         const node=make('button',entry.title,'list-button');
         node.onclick=()=>library(index);
         list.append(node);
