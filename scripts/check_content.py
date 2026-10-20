@@ -68,7 +68,7 @@ for i,meta in enumerate(books):
                     # Validate the parts and preserve the original verse text;
                     # never reject color merely because the book follows Isaiah.
                     if i < 23 and part["color"]!="black":seed_colored+=1
-                if i >= 23 and any(p["color"]!="black" for p in verse["parts"]):post_colored+=1
+                if i >= 23 and part is verse["parts"][0] and any(p["color"]!="black" for p in verse["parts"]):post_colored+=1
             else:text=verse.get("text","")
             assert isinstance(text,str) and text.strip() and "\ufffd" not in text
             subcount+=1
