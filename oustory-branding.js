@@ -126,7 +126,7 @@
   // A missing PDF never creates a dead link or an unfinished-edition notice.
   const printPdfUrl=new URL('./assets/oustory-complete-80-book-2026.pdf',location.href);
   fetch(printPdfUrl,{method:'HEAD',cache:'no-store'}).then(response=>{
-    if(!response.ok||!/^application\\/pdf(?:;|$)/i.test(response.headers.get('content-type')||''))return;
+    if(!response.ok||!(response.headers.get('content-type')||'').toLowerCase().startsWith('application/pdf'))return;
     const link=document.createElement('a');
     link.className='oustory-menu-row';
     link.href=printPdfUrl.href;
