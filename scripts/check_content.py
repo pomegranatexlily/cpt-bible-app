@@ -134,7 +134,7 @@ stylesheet=(ROOT/"oustory-features.css").read_text(encoding="utf8")
 assert all(s in features for s in ("Why this rendering","Home","Study","Discover","annotateVerse","openVerse","THEMES","TOPICS","PLANS"))
 assert "verse-entry" in stylesheet and "feature-mode" in stylesheet
 assert re.search(r'<script src="oustory-features\.js(?:\?v=[a-zA-Z0-9_-]+)?"></script>',html), "Missing local verse UI script"
-assert '<script src="oustory-research.js"></script>' in html
+assert re.search(r'<script src="oustory-research\.js(?:\?v=[a-zA-Z0-9_-]+)?"></script>',html)
 assert '<link rel="stylesheet" href="oustory-research.css">' in html
 term=json.loads((DATA/"terminology-review.json").read_text(encoding="utf8"))
 assert term["actual_term_groups"]==len(term["terms"])==27 and term["auto_replace"] is False
