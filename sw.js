@@ -1,6 +1,6 @@
 /* Oustory Release 4: first-party offline reading. No Scripture transformations. */
 "use strict";
-const SHELL="oustory-shell-r22-print-pdf-menu-20261020";
+const SHELL="oustory-shell-r23-reader-polish-20261020";
 const BOOKS="oustory-books-r4";
 const RUNTIME="oustory-runtime-r4";
 const APP=new URL(self.registration.scope);
@@ -74,13 +74,17 @@ async function downloadBooks(ids,port){
   for(const id of ids){
    if(job.cancelled){port.postMessage({kind:"cancelled",downloaded,total:ids.length});return}
    const url=bookUrl(id);
+   // Refresh each requested book instead of silently retaining stale downloaded editions.
+   // Keep an existing offline copy only when the network is unavailable.
    const existing=await cache.match(url);
-   if(!existing){
-    const response=await fetch(url,{cache:"no-cache"});
-    if(!response.ok||response.type!=="basic")throw Error("Could not download "+id+" ("+response.status+").");
+   try{
+    const response=await fetch(url,{cache:"no-store"});
+    if(!response.ok||response.type!=="basic")throw Error("Could not refresh "+id+" ("+response.status+").");
     const body=await response.clone().json();
     if(body.id!==id||!Array.isArray(body.chapters))throw Error("Invalid book data: "+id);
     await cache.put(url,response);
+   }catch(error){
+    if(!existing)throw error;
    }
    downloaded++;
    port.postMessage({kind:"progress",downloaded,total:ids.length});
