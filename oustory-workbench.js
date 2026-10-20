@@ -130,7 +130,7 @@
     byId("reader").scrollTop=0;
   }
   async function compare(body,record){
-    const info=el("p","1611 printed English KJV · pinned historical reference edition.","workbench-note");
+    const info=el("p","1611 KJV comparison","workbench-note");
     const select=el("select",undefined,"workbench-edition");
     select.id="workbench-edition";select.setAttribute("aria-label","Comparison edition");
     const option=el("option","1611 King James Bible");option.value="1611";select.append(option);
@@ -138,7 +138,7 @@
     body.append(info,label);
     const target=el("div",undefined,"workbench-compare-content");body.append(target);
     await window.OustoryResearch?.compareVerse?.(record,target);
-    const end=el("p","Other editions will only appear after complete, verified source texts are available. English differences do not establish manuscript differences.","workbench-note");
+    const end=el("p","Comparison is aligned by book, chapter, and verse.","workbench-note");
     body.append(end);
   }
   async function interlinear(body,record){
@@ -274,7 +274,7 @@
       note.status==="open-question"?"Unresolved manuscript question":
       note.status==="provisional"?"Provisional founder interpretation":"Draft editorial note");
     root.append(el("p",note.body,"workbench-editorial-body"));
-    root.append(el("p","This note describes an editorial position. It does not change Oustory's source text or prove a manuscript variant.","workbench-note"));
+    root.append(el("p","","workbench-note"));
     const links=el("div",undefined,"workbench-note-list");root.append(links);
     for(const ref of note.refs||[]){
       const m=/^(.*)\s+(\d+):(\d+)$/.exec(ref);
@@ -287,7 +287,7 @@
   }
   async function previewVerse(note,entries,ref){
     studyHeader("Back to editorial note",()=>noteDetail(note,entries),
-      ref.book+" "+ref.chapter+":"+ref.verse,"Passage from the current source-based Oustory working edition");
+      ref.book+" "+ref.chapter+":"+ref.verse,"Oustory Bible Scripture passage");
     const placeholder=el("p","Loading Scripture passage…","workbench-status");root.append(placeholder);
     try{
       const src=await api.loadBook(ref.id);
@@ -296,7 +296,7 @@
       if(!verse){placeholder.textContent="This manuscript witness does not contain that verse coordinate.";return}
       const text=typeof verse.text==="string"?verse.text:(verse.parts||[]).map(p=>p.text).join("");
       placeholder.replaceWith(el("blockquote",text,"workbench-verse"));
-      root.append(el("p","Read-only source view. No alterations to manuscript, verse numbering, or personal study position.","workbench-note"));
+      root.append(el("p","Read-only Scripture passage.","workbench-note"));
     }catch(e){if(placeholder.isConnected)placeholder.textContent="Passage unavailable: "+e.message}
   }
   function openEditorialIndex(entries){
