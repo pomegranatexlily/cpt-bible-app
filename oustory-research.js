@@ -73,7 +73,7 @@
     wrap.append(el("h4","Verse "+ch+":"+verse,"research-ref"));
     const columns=el("div",undefined,"research-columns");
     const a=el("div",undefined,"research-column"),b=el("div",undefined,"research-column");
-    a.append(el("strong","Oustory working text","research-column-title"));
+    a.append(el("strong","CPT · APE","research-column-title"));
     b.append(el("strong","1611 printed English KJV","research-column-title"));
     const [difA,difB]=reading!==null&&witness!==null?differing(reading,witness):[null,null];
     a.append(highlight(reading??"",difA));
@@ -93,7 +93,6 @@
       const witness=await loadWitness(record.id);
       if(!target.isConnected)return;
       target.replaceChildren();
-      target.append(el("p","Wording highlights reflect English differences, including spelling. They do NOT prove a manuscript variant or doctrinal change.","research-source-warning"));
       if(witness.status!=="available"){
         target.append(el("p","No verified 1611 verse-coordinate source is available for this book. Comparison is intentionally unavailable.","feature-status"));
         return;
@@ -121,7 +120,6 @@
       const [book,witness]=await Promise.all([api.loadBook(id),loadWitness(id)]);
       if(!dialog.open)return;
       dialog.querySelector(".feature-status")?.remove();
-      dialog.append(el("p","1611 KJV = a historical printed English witness, NOT an original-language manuscript. Differences can be spelling, wording or verse availability.","research-source-warning"));
       if(witness.status!=="available"){
         dialog.append(el("p","This title has no verified parallel coordinate source in the pinned 1611 repository.","feature-status"));return;
       }
@@ -144,7 +142,7 @@
     try{
       const [book,witness]=await Promise.all([api.loadBook(id),loadWitness(id)]);
       if(!target.isConnected)return;
-      target.replaceChildren(el("p","1611 KJV is a historical printed English witness, not a Hebrew or Greek manuscript. Highlighted wording can reflect spelling alone.","research-source-warning"));
+      target.replaceChildren();
       if(witness.status!=="available"){
         target.append(el("p","The pinned 1611 repository does not provide aligned verse positions for this book.","feature-status"));
         return;
@@ -168,11 +166,10 @@
       const m=await sourcePending;
       if(!target.isConnected)return;
       const card=el("section",undefined,"research-question-card");
-      card.append(el("h3","Working-text source record"));
+      card.append(el("h3","Text source"));
       const source=m.new_book_provenance.find(x=>x.id===record.id);
       if(source){
-        card.append(el("p","Provisional Oustory reading edition · "+(source.source_type||"source-based witness")+
-          ". This verse has not received final authorial approval.","feature-status"));
+        card.append(el("p","Source: "+(source.source_type||"source-based witness"),"feature-status"));
         if(source.source_url && /^https:\/\/raw\.githubusercontent\.com\//.test(source.source_url)){
           const link=el("a","Open pinned source file");
           link.href=source.source_url;link.target="_blank";link.rel="noopener noreferrer";
@@ -180,8 +177,7 @@
         }
         if(source.source_sha256)card.append(el("p","Source SHA-256: "+source.source_sha256,"feature-status"));
       }else{
-        card.append(el("p","Earlier Genesis–Isaiah master-based text; published master source SHA-256: "+m.source_pdf_sha256+
-          ". This checksum identifies an input edition, not a collated manuscript variant.","feature-status"));
+        card.append(el("p","Source PDF SHA-256: "+m.source_pdf_sha256,"feature-status"));
       }
       target.append(card);
     }catch{if(target.isConnected)target.append(el("p","Working-text source details temporarily unavailable.","feature-status"))}
