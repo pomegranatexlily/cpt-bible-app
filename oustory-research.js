@@ -74,7 +74,7 @@
     const columns=el("div",undefined,"research-columns");
     const a=el("div",undefined,"research-column"),b=el("div",undefined,"research-column");
     a.append(el("strong","CPT · APE","research-column-title"));
-    b.append(el("strong","1611 printed English KJV","research-column-title"));
+    b.append(el("strong","1611 KJV","research-column-title"));
     const [difA,difB]=reading!==null&&witness!==null?differing(reading,witness):[null,null];
     a.append(highlight(reading??"",difA));
     b.append(highlight(witness??"",difB));
@@ -82,7 +82,7 @@
     if(reading===null||witness===null){
       wrap.append(el("p",reading===null?
         "Absent from Oustory source at this verse number; no text inserted.":
-        "No corresponding 1611 verse at this position. Do not infer why without witness research.",
+        "No corresponding 1611 verse at this position.",
       "feature-status"));
     }
     return wrap;
@@ -144,7 +144,7 @@
       if(!target.isConnected)return;
       target.replaceChildren();
       if(witness.status!=="available"){
-        target.append(el("p","The pinned 1611 repository does not provide aligned verse positions for this book.","feature-status"));
+        target.append(el("p","A matching verse comparison is not available for this book.","feature-status"));
         return;
       }
       const c=book.chapters.find(item=>item.number===Number(chapter));
@@ -207,7 +207,7 @@
       const {terms,questions}=await loadEditorial();
       if(!container.isConnected)return;
       container.replaceChildren();
-      const p=el("p",terms.terms.length+" terminology groups from the editorial draft, plus "+questions.questions.length+" open witness questions. Only the Gentiles/nations contextual correction is newly founder-directed; no global text replacements.","feature-status");
+      const p=el("p",terms.terms.length+" terminology topics and "+questions.questions.length+" textual study questions.","feature-status");
       container.append(p);
       const correction=terms.terms.find(x=>x.term==="Gentiles");
       const prominent=el("section",undefined,"research-correction");
