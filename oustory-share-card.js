@@ -2,8 +2,8 @@
 /* Oustory Release 5: client-only Scripture image cards. Never edits Scripture. */
 (()=>{
   const WIDTH=1080, PAD=86, LINE=72, MAX_HEIGHT=4096;
-  const EDITION="CPT–APE · OUSTORY WORKING EDITION";
-  const DISCLOSURE="SOURCE-BASED READING TEXT · EDITORIAL REVIEW ONGOING";
+  const EDITION="CPT–APE · OUSTORY BIBLE";
+  const DISCLOSURE="POMEGRANATE × LILY";
   let dialog=null, previewURL=null, currentBlob=null, currentRecord=null, token=0;
 
   function fail(message){throw Error(message)}
@@ -120,7 +120,7 @@
       img.alt=card.reference+". "+safe.text+". "+EDITION+". "+DISCLOSURE+".";
       img.width=card.width;img.height=card.height;
       preview.replaceChildren(img);
-      loading.textContent="Image ready. This shows the current Oustory working text, not a finalized translation.";
+      loading.textContent="Image ready to share or save.";
       actions.append(
         button("Share PNG",async()=>{
           if(!currentBlob||!currentRecord)return;
@@ -130,7 +130,7 @@
             loading.textContent="Image sharing is unsupported on this browser. Use Save PNG instead.";return;
           }
           try{
-            await navigator.share({files:[file],title:card.reference,text:"Oustory · CPT–APE working edition"});
+            await navigator.share({files:[file],title:card.reference,text:"Oustory Bible · CPT–APE"});
             loading.textContent="Image sent to the device's share options.";
           }catch(e){if(e?.name!=="AbortError")loading.textContent="Image sharing failed. Use Save PNG instead."}
         }),
