@@ -1,6 +1,6 @@
 "use strict";
-// Oustory CPT–APE reader: 80-title editable working edition.
-// Earlier Genesis–Isaiah wording is retained; newly imported books are provisional.
+// Oustory CPT–APE reader: complete 80-book navigation and verse display.
+// Speaker colors render only from explicitly reviewed verse parts; never infer a speaker.
 (() => {
   const $ = selector => document.querySelector(selector);
   const make = (tag, text, cls) => {
