@@ -121,6 +121,22 @@
     button.onclick = () => { menu.close(); action(); };
     menu.append(button);
   });
+  // Exact owner-supplied Amazon URLs. Listing numbers remain neutral until Amazon metadata can be verified.
+  const printedBibles = [
+    ['Buy printed Oustory Bible · Amazon 1', 'https://a.co/d/0fkMW9qz'],
+    ['Buy printed Oustory Bible · Amazon 2', 'https://a.co/d/09jGa0jc']
+  ];
+  const privacyRow = [...menu.querySelectorAll('.oustory-menu-row')].find(row => row.textContent === 'Privacy & data');
+  printedBibles.forEach(([label,url]) => {
+    const link = document.createElement('a');
+    link.className = 'oustory-menu-row';
+    link.textContent = label;
+    link.href = url;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.style.textDecoration = 'none';
+    menu.insertBefore(link, privacyRow || null);
+  });
   document.body.append(menu);
   // Show the print PDF only after an actual PDF is published to this repository.
   // Either the short release filename or the supplied KDP filename is accepted.
@@ -150,5 +166,21 @@
     const editionIcon = icon.cloneNode(true);
     editionIcon.className = 'oustory-edition-icon';
     edition.querySelector('.sheet-header').after(editionIcon);
+    const shop = document.createElement('section');
+    shop.setAttribute('aria-label', 'Order the Oustory Covenant Bible in print');
+    const shopTitle = document.createElement('h3');
+    shopTitle.textContent = 'Order the printed Bible';
+    shop.append(shopTitle);
+    printedBibles.forEach(([label,url]) => {
+      const link = document.createElement('a');
+      link.className = 'oustory-menu-row';
+      link.href = url;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.style.textDecoration = 'none';
+      link.textContent = label;
+      shop.append(link);
+    });
+    edition.append(shop);
   }
 })();

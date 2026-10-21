@@ -1,6 +1,6 @@
 /* Oustory Release 4: first-party offline reading. No Scripture transformations. */
 "use strict";
-const SHELL="oustory-shell-r24-volume-iii-full-sync-20261020";
+const SHELL="oustory-shell-r25-print-links-20261021";
 const BOOKS="oustory-books-r5-volume-iii-full-sync-20261020";
 const RUNTIME="oustory-runtime-r5-volume-iii-full-sync-20261020";
 const APP=new URL(self.registration.scope);
