@@ -121,10 +121,10 @@
     button.onclick = () => { menu.close(); action(); };
     menu.append(button);
   });
-  // Exact owner-supplied Amazon URLs. Listing numbers remain neutral until Amazon metadata can be verified.
+  // Publisher-confirmed Amazon hardcover Volume I and Volume II listings.
   const printedBibles = [
-    ['Buy printed Oustory Bible · Amazon 1', 'https://a.co/d/0fkMW9qz'],
-    ['Buy printed Oustory Bible · Amazon 2', 'https://a.co/d/09jGa0jc']
+    ['Buy Oustory Covenant Bible · Volume I — The Law, Writings & Prophets', 'https://a.co/d/0fkMW9qz'],
+    ['Buy Oustory Covenant Bible · Volume II — The Prophetic, Historical, & Wisdom Writings', 'https://a.co/d/09jGa0jc']
   ];
   const privacyRow = [...menu.querySelectorAll('.oustory-menu-row')].find(row => row.textContent === 'Privacy & data');
   printedBibles.forEach(([label,url]) => {
