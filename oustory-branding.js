@@ -123,8 +123,8 @@
   });
   // Publisher-confirmed Amazon hardcover Volume I and Volume II listings.
   const printedBibles = [
-    ['Buy Oustory Covenant Bible · Volume I — The Law, Writings & Prophets', 'https://a.co/d/0fkMW9qz'],
-    ['Buy Oustory Covenant Bible · Volume II — The Prophetic, Historical, & Wisdom Writings', 'https://a.co/d/09jGa0jc']
+    ['Buy Oustory Covenant Bible · Volume I — The Law, Writings & Prophets', 'https://a.co/d/0fkMW9qz', 'https://pomegranatexlily.github.io/freedom-arkives/assets/covers/oustory-covenant-bible-volume-i.webp'],
+    ['Buy Oustory Covenant Bible · Volume II — The Prophetic, Historical, & Wisdom Writings', 'https://a.co/d/09jGa0jc', 'https://pomegranatexlily.github.io/freedom-arkives/assets/covers/oustory-covenant-bible-volume-ii.webp']
   ];
   const privacyRow = [...menu.querySelectorAll('.oustory-menu-row')].find(row => row.textContent === 'Privacy & data');
   printedBibles.forEach(([label,url]) => {
@@ -171,14 +171,23 @@
     const shopTitle = document.createElement('h3');
     shopTitle.textContent = 'Order the printed Bible';
     shop.append(shopTitle);
-    printedBibles.forEach(([label,url]) => {
+    printedBibles.forEach(([label,url,cover]) => {
       const link = document.createElement('a');
       link.className = 'oustory-menu-row';
       link.href = url;
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
-      link.style.textDecoration = 'none';
-      link.textContent = label;
+      link.style.cssText = 'text-decoration:none;display:flex;align-items:center;gap:14px;white-space:normal;';
+      const img = document.createElement('img');
+      img.src = cover;
+      img.alt = '';
+      img.width = 64;
+      img.height = 86;
+      img.loading = 'lazy';
+      img.style.cssText = 'width:64px;height:86px;object-fit:cover;border-radius:3px;flex:none;';
+      const text = document.createElement('span');
+      text.textContent = label;
+      link.append(img,text);
       shop.append(link);
     });
     edition.append(shop);
