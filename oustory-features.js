@@ -427,14 +427,29 @@
     const oldDock=document.querySelector(".bottom-dock");
     if(!oldDock)throw new Error("Oustory navigation missing");
     oldDock.replaceChildren();
+    // Original SVG icons: visual polish only. Keep stable IDs and view routing.
+    const icons={
+      home:'<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z"/>',
+      bible:'<path d="M12 6.5c-2.2-1.4-4.7-1.8-8-1.4v14c3.3-.4 5.8 0 8 1.4 2.2-1.4 4.7-1.8 8-1.4v-14c-3.3-.4-5.8 0-8 1.4Z"/><path d="M12 6.5v14M6.5 9c1.3 0 2.4.2 3.4.6M14.1 9.6c1-.4 2.1-.6 3.4-.6"/>',
+      study:'<path d="M4.5 3.5h10l3 3V14M14.5 3.5v3h3M7.5 9h6M7.5 12h4"/><circle cx="15.5" cy="16" r="4"/><path d="m18.5 19 3 3"/>',
+      discover:'<circle cx="12" cy="12" r="9"/><path d="m15.7 8.3-2.3 5.1-5.1 2.3 2.3-5.1 5.1-2.3Z"/><circle cx="12" cy="12" r=".55" fill="currentColor" stroke="none"/>',
+      more:'<rect x="4" y="4" width="6" height="6" rx="1.3"/><rect x="14" y="4" width="6" height="6" rx="1.3"/><rect x="4" y="14" width="6" height="6" rx="1.3"/><rect x="14" y="14" width="6" height="6" rx="1.3"/>'
+    };
     const items=[
-      ["home","Home","⌂"],["bible","Bible","▣"],
-      ["study","Study","⌕"],["discover","Discover","◇"],["more","More","☰"]
+      ["home","Home"],["bible","Bible"],["study","Study"],
+      ["discover","Discover"],["more","More"]
     ];
-    for(const [name,caption,symbol] of items){
+    for(const [name,caption] of items){
       const b=el("button",undefined,"dock-button");
       b.type="button";b.dataset.view=name;b.id=name==="bible"?"read-button":"nav-"+name;
-      b.append(el("span",symbol,"nav-symbol"),el("span",caption));
+      b.setAttribute("aria-label",caption);
+      const icon=document.createElementNS("http://www.w3.org/2000/svg","svg");
+      icon.setAttribute("viewBox","0 0 24 24");
+      icon.setAttribute("aria-hidden","true");
+      icon.setAttribute("focusable","false");
+      icon.classList.add("nav-icon");
+      icon.innerHTML=icons[name];
+      b.append(icon,el("span",caption,"dock-label"));
       b.onclick=()=>show(name);
       oldDock.append(b);
     }
