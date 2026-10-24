@@ -163,6 +163,18 @@
   opener.onclick = () => menu.showModal();
   const edition = document.getElementById('edition-panel');
   if (edition) {
+    // A long About sheet can be scrolled past its initial Close button.
+    // Give touch users a second escape by tapping the dimmed backdrop.
+    edition.addEventListener('click', (event) => {
+      if (event.target !== edition) return;
+      const box = edition.getBoundingClientRect();
+      if (event.clientX < box.left || event.clientX > box.right ||
+          event.clientY < box.top || event.clientY > box.bottom) {
+        edition.close();
+      }
+    });
+    // A reopened sheet should always show its title and Close button.
+    edition.addEventListener('close', () => { edition.scrollTop = 0; });
     const editionIcon = icon.cloneNode(true);
     editionIcon.className = 'oustory-edition-icon';
     edition.querySelector('.sheet-header').after(editionIcon);
