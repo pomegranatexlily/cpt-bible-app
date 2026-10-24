@@ -466,13 +466,13 @@ try{
   assert.ok(editionState.scrollTop>0,"About edition sheet should be scrollable");
   assert.ok(editionState.closeVisible,"Close control must stay visible after scrolling");
   await page.locator("#edition-panel .sheet-header [data-close]").click();
-  await page.locator("#edition-panel:not([open])").waitFor();
+  await page.locator("#edition-panel[open]").waitFor({state:"hidden"});
   await page.locator('[data-panel="edition-panel"]').first().click();
   await page.locator("#edition-panel[open]").waitFor();
   assert.equal(await page.locator("#edition-panel").evaluate(dialog=>dialog.scrollTop),0,
     "Reopening About edition must start at the header");
   await page.mouse.click(5,5);
-  await page.locator("#edition-panel:not([open])").waitFor();
+  await page.locator("#edition-panel[open]").waitFor({state:"hidden"});
     assert.deepEqual(errors,[],"No uncaught client errors");
   console.log("PASS Release 1 UI: native audio, saved verse, Study/More navigation, fast search, exact verse resume, calendar, all 80 books.");
 }finally{await browser.close()}
