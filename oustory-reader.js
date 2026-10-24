@@ -208,7 +208,9 @@
     if (id === 'books-panel') library();
     if (id === 'search-panel') window.OustorySearch?.opened();
     if (id === 'saved-panel') savedList();
-    document.getElementById(id).showModal();
+    const panel = document.getElementById(id);
+    panel.showModal();
+    if (id === "edition-panel") panel.scrollTop = 0;
   });
   document.querySelectorAll('[data-close]').forEach(node => node.onclick = () => node.closest('dialog').close());
   $('#read-button').onclick = () => { closePanels(); window.OustoryFeatures?.showBible(); $('#reader').focus(); };
