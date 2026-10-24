@@ -125,8 +125,8 @@ try{
     "https://pomegranatexlily.github.io/cpt-bible-app/assets/oustory-poster-icon-512.png");
   assert.equal(await page.locator('meta[name="twitter:card"]').getAttribute("content"),"summary");
   assert.match(await page.locator('link[href^="oustory-features.css"]').getAttribute("href"),/\?v=20261023-nav-v1$/);
-  assert.match(await page.locator('script[src^="oustory-branding.js"]').getAttribute("src"),/\?v=20261021-volume-covers-v2$/);
-  assert.match(await page.locator('link[href^="oustory-branding.css"]').getAttribute("href"),/\?v=20261019-install-menu-v1$/);
+  assert.match(await page.locator('script[src^="oustory-branding.js"]').getAttribute("src"),/\?v=20261024-edition-escape-v1$/);
+  assert.match(await page.locator('link[href^="oustory-branding.css"]').getAttribute("href"),/\?v=20261024-edition-escape-v1$/);
 
   await page.locator("#nav-home").waitFor({timeout:20000});
   // Navigation uses a shared SVG icon language, keyboard labels, and a clear active state.
