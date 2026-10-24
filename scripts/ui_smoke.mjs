@@ -120,13 +120,13 @@ try{
   // Cached PWAs previously served the old three-button verse sheet.
   // Verify the HTML requests a newly versioned verse controller and CSS.
   assert.match(await page.locator('script[src^="oustory-features.js"]').getAttribute("src"),/^oustory-features\.js\?v=20261023-nav-v1$/);
-  assert.match(await page.locator('script[src^="oustory-reader.js"]').getAttribute("src"),/\?v=20261020-reader-polish$/);
+  assert.match(await page.locator('script[src^="oustory-reader.js"]').getAttribute("src"),/\?v=20261024-edition-escape-v1$/);
   assert.equal(await page.locator('meta[property="og:image"]').getAttribute("content"),
     "https://pomegranatexlily.github.io/cpt-bible-app/assets/oustory-poster-icon-512.png");
   assert.equal(await page.locator('meta[name="twitter:card"]').getAttribute("content"),"summary");
   assert.match(await page.locator('link[href^="oustory-features.css"]').getAttribute("href"),/\?v=20261023-nav-v1$/);
-  assert.match(await page.locator('script[src^="oustory-branding.js"]').getAttribute("src"),/\?v=20261021-volume-covers-v2$/);
-  assert.match(await page.locator('link[href^="oustory-branding.css"]').getAttribute("href"),/\?v=20261019-install-menu-v1$/);
+  assert.match(await page.locator('script[src^="oustory-branding.js"]').getAttribute("src"),/\?v=20261024-edition-escape-v1$/);
+  assert.match(await page.locator('link[href^="oustory-branding.css"]').getAttribute("href"),/\?v=20261024-edition-escape-v1$/);
 
   await page.locator("#nav-home").waitFor({timeout:20000});
   // Navigation uses a shared SVG icon language, keyboard labels, and a clear active state.
@@ -450,6 +450,29 @@ try{
   await page.locator('#chapter-list button[aria-label="Genesis, chapter 1"]').click();
   await page.locator("#chapter-title").getByText("Genesis 1").waitFor();
   assert.equal(await page.locator("#workbench-root").isHidden(),true);
-  assert.deepEqual(errors,[],"No uncaught client errors");
+  // Regression: on iPhone, scrolling the lengthy About edition sheet must not
+  // hide the only exit or trap the reader behind a modal backdrop.
+  await page.locator('[data-panel="edition-panel"]').first().click();
+  await page.locator("#edition-panel[open]").waitFor();
+  const editionState=await page.locator("#edition-panel").evaluate(dialog=>{
+    dialog.scrollTop=dialog.scrollHeight;
+    const close=dialog.querySelector(".sheet-header [data-close]");
+    const sheet=dialog.getBoundingClientRect(),button=close.getBoundingClientRect();
+    return {
+      scrollTop:dialog.scrollTop,
+      closeVisible:button.top>=sheet.top&&button.bottom<=sheet.bottom
+    };
+  });
+  assert.ok(editionState.scrollTop>0,"About edition sheet should be scrollable");
+  assert.ok(editionState.closeVisible,"Close control must stay visible after scrolling");
+  await page.locator("#edition-panel .sheet-header [data-close]").click();
+  await page.locator("#edition-panel[open]").waitFor({state:"hidden"});
+  await page.locator('[data-panel="edition-panel"]').first().click();
+  await page.locator("#edition-panel[open]").waitFor();
+  assert.equal(await page.locator("#edition-panel").evaluate(dialog=>dialog.scrollTop),0,
+    "Reopening About edition must start at the header");
+  await page.mouse.click(5,5);
+  await page.locator("#edition-panel[open]").waitFor({state:"hidden"});
+    assert.deepEqual(errors,[],"No uncaught client errors");
   console.log("PASS Release 1 UI: native audio, saved verse, Study/More navigation, fast search, exact verse resume, calendar, all 80 books.");
 }finally{await browser.close()}
