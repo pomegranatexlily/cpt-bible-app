@@ -7,7 +7,16 @@ const browser=await chromium.launch({headless:true});
 const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
 const errors=[];
 page.on("pageerror",e=>errors.push(e.message));
-page.on("console",m=>{if(m.type()==="error")errors.push(m.text())});
+// The published reader and Freedom Arkives share a GitHub Pages origin; the
+// localhost smoke server does not. Ignore only CSP image warnings for the two
+// publisher-owned covers. All other browser errors remain release blockers.
+const localOnlyCoverWarning=/^Refused to load the image 'https:\/\/pomegranatexlily\.github\.io\/freedom-arkives\/assets\/covers\/oustory-covenant-bible-volume-(?:i|ii)\.webp' because it violates the following Content Security Policy directive: "img-src 'self' data: blob:"\.\s*$/;
+page.on("console",m=>{
+  if(m.type()!=="error")return;
+  const message=m.text();
+  if(localOnlyCoverWarning.test(message))return;
+  errors.push(message);
+});
 // In CI the print PDF is not committed; emulate a real published PDF for discovery.
 await page.route("**/assets/oustory-complete-80-book-2026.pdf",route=>
   route.fulfill({status:200,contentType:"application/pdf",body:""}));
