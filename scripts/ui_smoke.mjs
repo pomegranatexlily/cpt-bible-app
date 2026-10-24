@@ -7,7 +7,16 @@ const browser=await chromium.launch({headless:true});
 const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
 const errors=[];
 page.on("pageerror",e=>errors.push(e.message));
-page.on("console",m=>{if(m.type()==="error")errors.push(m.text())});
+// The published reader and Freedom Arkives share a GitHub Pages origin; the
+// localhost smoke server does not. Ignore only CSP image warnings for the two
+// publisher-owned covers. All other browser errors remain release blockers.
+const localOnlyCoverWarning=/^Refused to load the image 'https:\/\/pomegranatexlily\.github\.io\/freedom-arkives\/assets\/covers\/oustory-covenant-bible-volume-(?:i|ii)\.webp' because it violates the following Content Security Policy directive: "img-src 'self' data: blob:"\.\s*$/;
+page.on("console",m=>{
+  if(m.type()!=="error")return;
+  const message=m.text();
+  if(localOnlyCoverWarning.test(message))return;
+  errors.push(message);
+});
 // In CI the print PDF is not committed; emulate a real published PDF for discovery.
 await page.route("**/assets/oustory-complete-80-book-2026.pdf",route=>
   route.fulfill({status:200,contentType:"application/pdf",body:""}));
@@ -110,16 +119,32 @@ try{
   await page.goto("http://127.0.0.1:8765/",{waitUntil:"domcontentloaded"});
   // Cached PWAs previously served the old three-button verse sheet.
   // Verify the HTML requests a newly versioned verse controller and CSS.
-  assert.match(await page.locator('script[src^="oustory-features.js"]').getAttribute("src"),/^oustory-features\.js\?v=20261020-reader-polish$/);
+  assert.match(await page.locator('script[src^="oustory-features.js"]').getAttribute("src"),/^oustory-features\.js\?v=20261023-nav-v1$/);
   assert.match(await page.locator('script[src^="oustory-reader.js"]').getAttribute("src"),/\?v=20261020-reader-polish$/);
   assert.equal(await page.locator('meta[property="og:image"]').getAttribute("content"),
     "https://pomegranatexlily.github.io/cpt-bible-app/assets/oustory-poster-icon-512.png");
   assert.equal(await page.locator('meta[name="twitter:card"]').getAttribute("content"),"summary");
-  assert.match(await page.locator('link[href^="oustory-features.css"]').getAttribute("href"),/\?v=20261019-verse-actions-v3$/);
-  assert.match(await page.locator('script[src^="oustory-branding.js"]').getAttribute("src"),/\?v=20261020-print-pdf-menu$/);
+  assert.match(await page.locator('link[href^="oustory-features.css"]').getAttribute("href"),/\?v=20261023-nav-v1$/);
+  assert.match(await page.locator('script[src^="oustory-branding.js"]').getAttribute("src"),/\?v=20261021-volume-covers-v2$/);
   assert.match(await page.locator('link[href^="oustory-branding.css"]').getAttribute("href"),/\?v=20261019-install-menu-v1$/);
 
   await page.locator("#nav-home").waitFor({timeout:20000});
+  // Navigation uses a shared SVG icon language, keyboard labels, and a clear active state.
+  const nav=page.locator(".bottom-dock .dock-button");
+  assert.equal(await nav.count(),5);
+  assert.deepEqual(await nav.allTextContents(),["Home","Bible","Study","Discover","More"]);
+  for(const button of await nav.all()){
+    assert.equal(await button.locator("svg.nav-icon[aria-hidden='true']").count(),1);
+    assert.ok((await button.getAttribute("aria-label"))?.length);
+    assert.ok((await button.evaluate(el=>el.getBoundingClientRect().height))>=44);
+  }
+  assert.equal(await page.locator(".bottom-dock .nav-symbol").count(),0);
+  assert.equal(await page.locator("#nav-home").getAttribute("aria-current"),"page");
+  await page.locator("#nav-study").click();
+  assert.equal(await page.locator("#nav-study").getAttribute("aria-current"),"page");
+  assert.equal(await page.locator("#nav-home").getAttribute("aria-current"),null);
+  await page.locator("#nav-home").click();
+
   assert.equal(await page.locator("#nav-home").getAttribute("aria-current"),"page");
   await page.locator(".feature-title").getByText("The nation's record").waitFor();
   await page.locator(".feature-verse").waitFor();
