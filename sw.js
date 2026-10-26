@@ -1,6 +1,6 @@
 /* Oustory Release 4: first-party offline reading. No Scripture transformations. */
 "use strict";
-const SHELL="oustory-shell-r29-edition-modal-escape-20261024";
+const SHELL="oustory-shell-r30-holy-days-guide-20261026";
 const BOOKS="oustory-books-r5-volume-iii-full-sync-20261020";
 const RUNTIME="oustory-runtime-r5-volume-iii-full-sync-20261020";
 const APP=new URL(self.registration.scope);
@@ -8,7 +8,7 @@ const CORE=[
  "./","./index.html","./privacy.html","./manifest.webmanifest","./cpt-index.js",
  "./oustory-reader.js","./oustory-features.js","./oustory-features.css",
  "./oustory-branding.js","./oustory-branding.css","./oustory-calendar.js",
- "./oustory-calendar-study.js","./oustory-calendar.css","./oustory-audio.js",
+ "./oustory-calendar-study.js","./oustory-calendar.css","./oustory-holy-days.js","./oustory-holy-days.css","./oustory-audio.js",
  "./oustory-search.js","./oustory-research.js","./oustory-research.css",
  "./oustory-release4.js","./oustory-release4.css",
  "./oustory-share-card.js","./oustory-share-card.css",
@@ -131,7 +131,7 @@ self.addEventListener("fetch",event=>{
  // Verse buttons are first-party UI code: prefer fresh assets online, but
  // preserve the installed offline copy when the phone has no connection.
  // Versioned ?v= URLs bypass an older cache-first service worker on first load.
- if(["oustory-features.js","oustory-features.css","oustory-branding.js","oustory-branding.css","oustory-reader.js"]
+ if(["oustory-features.js","oustory-features.css","oustory-branding.js","oustory-branding.css","oustory-reader.js","oustory-holy-days.js","oustory-holy-days.css"]
    .some(name=>url.pathname===new URL("./"+name,APP).pathname)){
   event.respondWith((async()=>{
    const canonical=new URL(url.pathname,APP.origin).href;
