@@ -188,6 +188,9 @@
   }
   function renderStudy(){
     title("Study · covenant literacy","Read with the record","Scripture reading, language study, historical comparison, and editorial notes.");
+    const holyDays=card(root,"Holy Days & practical observance");
+    holyDays.append(el("p","Torah passages, supporting Scripture references, step-by-step household checklists, and practical food ideas for the weekly Sabbath and appointed times."));
+    addAction(actions(holyDays),"Open Holy Days guide",()=>window.OustoryHolyDays?.render(root,()=>show("study"),jumpByTitle),true);
     const editorial=card(root,"Why this rendering — editorial index");
     editorial.append(el("p","Explore Scripture passages and their accompanying editorial notes in one place."));
     addAction(actions(editorial),"Browse editorial notes",()=>window.OustoryWorkbench?.openEditorialIndex([...new Set(notesByRef.values())]),true);
