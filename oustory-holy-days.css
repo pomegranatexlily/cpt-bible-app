@@ -1,0 +1,15 @@
+/* Practical holy-day guide cards and mobile-friendly checklist controls. */
+.holy-day-card{scroll-margin-top:18px}
+.holy-day-card h2{font-family:Georgia,"Times New Roman",serif;font-size:clamp(22px,5vw,29px);line-height:1.25;margin:3px 0 9px}
+.holy-day-card h3{font-size:15px;margin:22px 0 9px}
+.holy-day-card .holy-day-anchor{color:var(--covenant-gold);font-size:13px;font-weight:650}
+.holy-day-details{margin:16px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:13px 0}
+.holy-day-details summary{cursor:pointer;font-size:14px;font-weight:650}
+.holy-day-ref-list{display:flex;gap:8px;flex-wrap:wrap;padding-top:12px}
+.holy-day-ref-list .feature-action{min-height:38px;font-size:12px;padding:8px 11px}
+.holy-day-checklist{display:grid;gap:0}
+.holy-day-check{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);font-size:14px;line-height:1.55;cursor:pointer}
+.holy-day-check input{width:20px;height:20px;flex:none;margin:1px 0 0;accent-color:var(--covenant-gold)}
+.holy-day-check span{flex:1}
+.holy-day-food{white-space:pre-wrap;line-height:1.7!important;color:var(--text)!important}
+.holy-day-note{line-height:1.7!important}
