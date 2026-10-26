@@ -119,7 +119,7 @@ try{
   await page.goto("http://127.0.0.1:8765/",{waitUntil:"domcontentloaded"});
   // Cached PWAs previously served the old three-button verse sheet.
   // Verify the HTML requests a newly versioned verse controller and CSS.
-  assert.match(await page.locator('script[src^="oustory-features.js"]').getAttribute("src"),/^oustory-features\.js\?v=20261023-nav-v1$/);
+  assert.match(await page.locator('script[src^="oustory-features.js"]').getAttribute("src"),/^oustory-features\.js\?v=20261026-holy-days-v1$/);
   assert.match(await page.locator('script[src^="oustory-reader.js"]').getAttribute("src"),/\?v=20261024-edition-escape-v1$/);
   assert.equal(await page.locator('meta[property="og:image"]').getAttribute("content"),
     "https://pomegranatexlily.github.io/cpt-bible-app/assets/oustory-poster-icon-512.png");
