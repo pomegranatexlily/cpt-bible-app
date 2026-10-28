@@ -102,6 +102,12 @@ body.feature-mode .reading-column{display:none}
 .chapter-audio .audio-status{display:block;color:var(--muted);font-size:12px;line-height:1.4;min-height:17px}
 .chapter-audio[data-audio-state=playing] .audio-status{color:var(--covenant-gold)}
 .chapter-audio :focus-visible{outline:2px solid var(--covenant-gold);outline-offset:3px}
+
+/* T1 (2026-10-28) — persistent audio player: the chapter narration card stays
+   visible at the top of the reading surface while the chapter scrolls beneath
+   it. CSS only; no behavior change. The card lives inside .reading-column,
+   which spans the full chapter, so sticky travels the whole chapter. */
+.chapter-audio{position:sticky;top:8px;z-index:11;box-shadow:0 6px 20px rgb(0 0 0 / 18%)}
 @media(max-width:360px){.chapter-audio-controls{gap:6px}.chapter-audio{padding-inline:9px}.chapter-audio .audio-speed{gap:3px}}
 
 /* Current Covenant Bible cover mark: visible in Home as well as the app menu and About. */
