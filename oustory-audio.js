@@ -134,9 +134,11 @@
     if (mode === "finished") {
       verseIndex = 0; chunkIndex = 0; chunks = [];
     }
-    cancelVoice();
+    // Do not cancel immediately before queuing speech. WebKit/Safari 27 can
+    // discard the new utterance when cancel() and speak() run back-to-back.
+    // Active playback was already cancelled by Pause/Stop/chapter changes.
     mode = "playing";
-    nextChunk(generation); // Called synchronously from a real tap for iOS gesture activation.
+    nextChunk(generation); // Keep the first utterance directly inside the user's tap.
   }
   function setRate(value) {
     rate = Number(value);
@@ -147,7 +149,12 @@
       chunks = [];
       chunkIndex = 0; // Restart the current verse at the newly selected speed.
       mode = "playing";
-      nextChunk(generation);
+      const token = generation;
+      update();
+      // Let WebKit finish cancelling the old utterance before queueing its replacement.
+      setTimeout(() => {
+        if (generation === token && mode === "playing") nextChunk(token);
+      }, 0);
     } else update();
   }
   function recoverSpeechAfterReturn() {
