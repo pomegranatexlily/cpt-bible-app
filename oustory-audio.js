@@ -150,6 +150,19 @@
       nextChunk(generation);
     } else update();
   }
+  function recoverSpeechAfterReturn() {
+    // Reconcile a stale iOS standalone speech queue after the app returns.
+    // Keep the selected chapter, verse progress, and saved locations unchanged.
+    if (!supported || document.hidden) return;
+    if (mode === "playing") {
+      mode = "paused";
+      cancelVoice();
+      update("Speech was interrupted when Oustory returned to the foreground. Tap Play to resume.");
+      return;
+    }
+    cancelVoice();
+    update();
+  }
   function createButton(label, symbol, cls) {
     const b = document.createElement("button");
     b.type = "button"; b.className = cls; b.textContent = symbol;
@@ -198,8 +211,11 @@
       if (document.hidden && mode === "playing") {
         mode = "paused"; cancelVoice();
         update("Paused · reopen Oustory to resume from this verse");
+      } else if (!document.hidden) {
+        recoverSpeechAfterReturn();
       }
     });
+    window.addEventListener("pageshow", recoverSpeechAfterReturn);
     update();
   }
   window.OustoryAudio = {init, setChapter, loading, stop};
