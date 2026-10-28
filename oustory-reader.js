@@ -68,7 +68,7 @@
     $('#text-size').value = prefs.size;
     $('#line-spacing').value = prefs.spacing;
     $('#appearance').value = prefs.appearance;
-    document.querySelector('meta[name="theme-color"]').content = prefs.appearance === 'paper' ? '#f3f0e8' : '#111111';
+    document.querySelector('meta[name="theme-color"]').content = prefs.appearance === 'paper' ? '#f5f0e6' : '#141210';
   }
   function closePanels() { document.querySelectorAll('dialog[open]').forEach(d => d.close()); }
   function updateControls() {
