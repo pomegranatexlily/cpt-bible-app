@@ -1,0 +1,56 @@
+<!doctype html><html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#141210"><title>Oustory Bible — 3D Archive (Prototype)</title><meta name="description" content="Prototype: an optional 3D scripture archive for the Oustory 80-book CPT–APE Bible reader. Sample passages only."><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; media-src 'self' blob:; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-src 'none'"><link rel="stylesheet" href="oustory-archive.css"></head>
+<body>
+<div class="app">
+<header class="toolbar"><div class="toolbar-inner">
+<div class="toolbar-title">OUSTORY <span>· Archive</span></div>
+<a class="reader-link" href="index.html">← Reader</a>
+<span class="proto-badge">Prototype</span>
+</div></header>
+<main class="archive-surface" aria-label="3D scripture archive prototype">
+<div class="archive-column">
+
+<!-- ARCHIVE VIEW: collections as layered surfaces -->
+<section id="archive-view" class="view" aria-label="Archive collections">
+<h1>The Archive</h1>
+<p class="lede">Seven collections from the 80-book Covenant sequence. Tap a collection to open its shelf. Prototype only — sample passages, no fabricated text.</p>
+<div class="stage" id="stage" role="listbox" aria-label="Collections"><!-- collection cards rendered by oustory-archive.js --></div>
+<div class="controls" role="group" aria-label="Collection navigation">
+<button class="nav-btn" id="prev-collection" type="button" aria-label="Previous collection">◀ Prev</button>
+<span id="collection-indicator" aria-live="polite"></span>
+<button class="nav-btn" id="next-collection" type="button" aria-label="Next collection">Next ▶</button>
+</div>
+<p class="hint">Tip: use ◀ ▶ buttons or your keyboard arrow keys. Enter opens the focused collection. No dragging needed.</p>
+</section>
+
+<!-- SHELF VIEW: books inside one collection -->
+<section id="shelf-view" class="view hidden" aria-label="Collection shelf">
+<button class="back-btn" id="back-to-archive" type="button">◀ Back to Archive</button>
+<h2 id="shelf-title"></h2>
+<p class="lede" id="shelf-count"></p>
+<ul class="book-list" id="book-list"></ul>
+<p class="hint">Tap a book to read its sample passage. Books without a sample show what the real reader would load.</p>
+</section>
+
+<!-- READING VIEW: real sample text, scripture first -->
+<section id="reading-view" class="view hidden" aria-label="Reading view">
+<button class="back-btn" id="back-to-shelf" type="button">◀ Back to Shelf</button>
+<article class="reading-card">
+<h2 id="reading-title"></h2>
+<p class="reading-ref" id="reading-ref"></p>
+<div class="verses" id="verses"></div>
+<p class="reading-note" id="reading-note"></p>
+</article>
+<div class="controls" role="group" aria-label="Reading navigation">
+<button class="nav-btn" id="prev-book" type="button">◀ Prev book</button>
+<button class="nav-btn" id="next-book" type="button">Next book ▶</button>
+</div>
+</section>
+
+<p class="foot">Prototype only. Sample passages are verbatim from the Covenant text data files (Psalm 23, Genesis 1, John 1). No translation, manuscript witness, or textual reading has been fabricated for this prototype.</p>
+<p id="fallback-note" class="foot hidden">Flat mode: your device does not support CSS 3D depth, so the archive is shown flat. All collections and reading still work.</p>
+
+</div>
+</main>
+</div>
+<script src="oustory-archive.js"></script>
+</body></html>
