@@ -24,7 +24,7 @@
   function write(key, value) {
     try { localStorage.setItem(key, JSON.stringify(value)); return true; } catch { return false; }
   }
-  const prefs = {size:21, spacing:'1.85', appearance:'dark', ...read('cpt.reader.settings', {})};
+  const prefs = {size:21, spacing:'1.85', appearance:'dark', font:'serif', ...read('cpt.reader.settings', {})};
   let saved = read('cpt.reader.saved', []);
   if (!Array.isArray(saved)) saved = [];
   const book = () => books[bi];
@@ -65,9 +65,13 @@
     document.documentElement.dataset.theme = prefs.appearance;
     document.documentElement.style.setProperty('--size', prefs.size + 'px');
     document.documentElement.style.setProperty('--leading', prefs.spacing);
+    const FONTS = {serif:'Georgia, "Times New Roman", serif', book:'"Iowan Old Style", Palatino, "Palatino Linotype", Georgia, serif', sans:'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'};
+    document.documentElement.style.setProperty('--reader-font', FONTS[prefs.font] || FONTS.serif);
     $('#text-size').value = prefs.size;
     $('#line-spacing').value = prefs.spacing;
     $('#appearance').value = prefs.appearance;
+    const fontPicker = $('#font-family');
+    if (fontPicker) fontPicker.value = prefs.font;
     document.querySelector('meta[name="theme-color"]').content = prefs.appearance === 'paper' ? '#f5f0e6' : '#141210';
   }
   function closePanels() { document.querySelectorAll('dialog[open]').forEach(d => d.close()); }
@@ -269,7 +273,7 @@
     clearTimeout(scrollSaveTimer);
     scrollSaveTimer=setTimeout(storeVisibleVerse,180);
   }, {passive:true});
-  for (const [id,key] of [['text-size','size'],['line-spacing','spacing'],['appearance','appearance']])
+  for (const [id,key] of [['text-size','size'],['line-spacing','spacing'],['appearance','appearance'],['font-family','font']])
     $('#'+id).addEventListener('input', event => {
       prefs[key] = key === 'size' ? Number(event.target.value) : event.target.value;
       apply(); write('cpt.reader.settings', prefs);

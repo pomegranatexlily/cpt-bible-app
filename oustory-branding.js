@@ -1,5 +1,16 @@
 (() => {
   try { if (localStorage.getItem('oustory.spatial') === '1') document.documentElement.classList.add('spatial-on'); } catch {}
+  try { if (localStorage.getItem('oustory.focus') === '1') document.documentElement.classList.add('focus-on'); } catch {}
+  const focusExit = document.createElement('button');
+  focusExit.id = 'focus-exit';
+  focusExit.type = 'button';
+  focusExit.textContent = 'Exit focus';
+  focusExit.setAttribute('aria-label', 'Exit focus mode');
+  focusExit.addEventListener('click', () => {
+    document.documentElement.classList.remove('focus-on');
+    try { localStorage.setItem('oustory.focus', '0'); } catch {}
+  });
+  document.body.append(focusExit);
   const settingsButton = document.querySelector('button[data-panel="settings-panel"]');
   if (!settingsButton || document.getElementById('oustory-menu')) return;
   const opener = settingsButton.cloneNode(true);
@@ -111,6 +122,11 @@
     ['Search Scripture', () => document.querySelector('button[data-panel="search-panel"]').click()],
     ['Saved places', () => window.OustoryReader?.openSaved()],
     ['Archive', () => location.assign(new URL('./archive.html',location.href).href)],
+    ['Focus mode', () => {
+      const on = document.documentElement.classList.toggle('focus-on');
+      try { localStorage.setItem('oustory.focus', on ? '1' : '0'); } catch {}
+      menu.close();
+    }],
     ['Spatial view', () => {
       const on = document.documentElement.classList.toggle('spatial-on');
       try { localStorage.setItem('oustory.spatial', on ? '1' : '0'); } catch {}

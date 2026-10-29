@@ -85,7 +85,7 @@ body.feature-mode .reading-column{display:none}
 @media(max-width:390px){.feature-root{padding-inline:15px}.feature-card{padding:17px}.feature-grid{gap:8px}.bottom-dock .dock-button{font-size:9px}}
 
 /* Scripture is a reading surface, not UI chrome. */
-.scripture{font-family:Georgia,"Times New Roman",serif;letter-spacing:-.012em}
+.scripture{font-family:var(--reader-font, Georgia, "Times New Roman", serif);letter-spacing:-.012em}
 .reader-source-disclosure{font-size:12px;line-height:1.55;color:var(--muted);margin:-8px 0 25px;padding:10px 13px;border-left:2px solid var(--note-border);background:var(--selected)}
 
 
@@ -188,3 +188,9 @@ html.spatial-on:not([data-theme="paper"]){
     #141210;
   background-attachment: fixed;
 }
+
+/* Focus mode: chrome steps away, the reading stays. Toggled from the More
+   menu; a single quiet pill is the way back. */
+#focus-exit{display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:60;padding:9px 18px;border-radius:99px;border:1px solid var(--nav-border);background:rgb(20 18 16 / .92);color:var(--ink,#f5f0e6);font-size:13px;letter-spacing:.02em}
+html.focus-on #focus-exit{display:block}
+html.focus-on .toolbar,html.focus-on .bottom-dock,html.focus-on .chapter-navigation{display:none}
