@@ -824,6 +824,422 @@
       "file": "audio/ezekiel_048.mp3",
       "duration": 318.77,
       "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 0,
+      "chapterTitle": "Jeremiah 1",
+      "file": "audio/jeremiah_001.mp3",
+      "duration": 209.09,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 1,
+      "chapterTitle": "Jeremiah 2",
+      "file": "audio/jeremiah_002.mp3",
+      "duration": 382.49,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 2,
+      "chapterTitle": "Jeremiah 3",
+      "file": "audio/jeremiah_003.mp3",
+      "duration": 254.74,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 3,
+      "chapterTitle": "Jeremiah 4",
+      "file": "audio/jeremiah_004.mp3",
+      "duration": 272.06,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 4,
+      "chapterTitle": "Jeremiah 5",
+      "file": "audio/jeremiah_005.mp3",
+      "duration": 267.48,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 5,
+      "chapterTitle": "Jeremiah 6",
+      "file": "audio/jeremiah_006.mp3",
+      "duration": 264.24,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 6,
+      "chapterTitle": "Jeremiah 7",
+      "file": "audio/jeremiah_007.mp3",
+      "duration": 373.32,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 7,
+      "chapterTitle": "Jeremiah 8",
+      "file": "audio/jeremiah_008.mp3",
+      "duration": 229.61,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 8,
+      "chapterTitle": "Jeremiah 9",
+      "file": "audio/jeremiah_009.mp3",
+      "duration": 336.12,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 9,
+      "chapterTitle": "Jeremiah 10",
+      "file": "audio/jeremiah_010.mp3",
+      "duration": 220.8,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 10,
+      "chapterTitle": "Jeremiah 11",
+      "file": "audio/jeremiah_011.mp3",
+      "duration": 226.56,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 11,
+      "chapterTitle": "Jeremiah 12",
+      "file": "audio/jeremiah_012.mp3",
+      "duration": 175.22,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 12,
+      "chapterTitle": "Jeremiah 13",
+      "file": "audio/jeremiah_013.mp3",
+      "duration": 228.0,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 13,
+      "chapterTitle": "Jeremiah 14",
+      "file": "audio/jeremiah_014.mp3",
+      "duration": 220.9,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 14,
+      "chapterTitle": "Jeremiah 15",
+      "file": "audio/jeremiah_015.mp3",
+      "duration": 213.05,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 15,
+      "chapterTitle": "Jeremiah 16",
+      "file": "audio/jeremiah_016.mp3",
+      "duration": 205.9,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 16,
+      "chapterTitle": "Jeremiah 17",
+      "file": "audio/jeremiah_017.mp3",
+      "duration": 244.8,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 17,
+      "chapterTitle": "Jeremiah 18",
+      "file": "audio/jeremiah_018.mp3",
+      "duration": 189.89,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 18,
+      "chapterTitle": "Jeremiah 19",
+      "file": "audio/jeremiah_019.mp3",
+      "duration": 174.53,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 19,
+      "chapterTitle": "Jeremiah 20",
+      "file": "audio/jeremiah_020.mp3",
+      "duration": 204.72,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 20,
+      "chapterTitle": "Jeremiah 21",
+      "file": "audio/jeremiah_021.mp3",
+      "duration": 149.4,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 21,
+      "chapterTitle": "Jeremiah 22",
+      "file": "audio/jeremiah_022.mp3",
+      "duration": 375.07,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 22,
+      "chapterTitle": "Jeremiah 23",
+      "file": "audio/jeremiah_023.mp3",
+      "duration": 445.49,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 23,
+      "chapterTitle": "Jeremiah 24",
+      "file": "audio/jeremiah_024.mp3",
+      "duration": 242.23,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 24,
+      "chapterTitle": "Jeremiah 25",
+      "file": "audio/jeremiah_025.mp3",
+      "duration": 382.94,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 25,
+      "chapterTitle": "Jeremiah 26",
+      "file": "audio/jeremiah_026.mp3",
+      "duration": 422.33,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 26,
+      "chapterTitle": "Jeremiah 27",
+      "file": "audio/jeremiah_027.mp3",
+      "duration": 381.0,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 27,
+      "chapterTitle": "Jeremiah 28",
+      "file": "audio/jeremiah_028.mp3",
+      "duration": 237.65,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 28,
+      "chapterTitle": "Jeremiah 29",
+      "file": "audio/jeremiah_029.mp3",
+      "duration": 439.54,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 29,
+      "chapterTitle": "Jeremiah 30",
+      "file": "audio/jeremiah_030.mp3",
+      "duration": 215.59,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 30,
+      "chapterTitle": "Jeremiah 31",
+      "file": "audio/jeremiah_031.mp3",
+      "duration": 480.55,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 31,
+      "chapterTitle": "Jeremiah 32",
+      "file": "audio/jeremiah_032.mp3",
+      "duration": 452.74,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 32,
+      "chapterTitle": "Jeremiah 33",
+      "file": "audio/jeremiah_033.mp3",
+      "duration": 275.3,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 33,
+      "chapterTitle": "Jeremiah 34",
+      "file": "audio/jeremiah_034.mp3",
+      "duration": 263.35,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 34,
+      "chapterTitle": "Jeremiah 35",
+      "file": "audio/jeremiah_035.mp3",
+      "duration": 334.73,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 35,
+      "chapterTitle": "Jeremiah 36",
+      "file": "audio/jeremiah_036.mp3",
+      "duration": 733.22,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 36,
+      "chapterTitle": "Jeremiah 37",
+      "file": "audio/jeremiah_037.mp3",
+      "duration": 264.24,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 37,
+      "chapterTitle": "Jeremiah 38",
+      "file": "audio/jeremiah_038.mp3",
+      "duration": 336.89,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 38,
+      "chapterTitle": "Jeremiah 39",
+      "file": "audio/jeremiah_039.mp3",
+      "duration": 157.58,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 39,
+      "chapterTitle": "Jeremiah 40",
+      "file": "audio/jeremiah_040.mp3",
+      "duration": 212.62,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 40,
+      "chapterTitle": "Jeremiah 41",
+      "file": "audio/jeremiah_041.mp3",
+      "duration": 201.36,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 41,
+      "chapterTitle": "Jeremiah 42",
+      "file": "audio/jeremiah_042.mp3",
+      "duration": 221.42,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 42,
+      "chapterTitle": "Jeremiah 43",
+      "file": "audio/jeremiah_043.mp3",
+      "duration": 135.12,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 43,
+      "chapterTitle": "Jeremiah 44",
+      "file": "audio/jeremiah_044.mp3",
+      "duration": 399.89,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 44,
+      "chapterTitle": "Jeremiah 45",
+      "file": "audio/jeremiah_045.mp3",
+      "duration": 150.65,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 45,
+      "chapterTitle": "Jeremiah 46",
+      "file": "audio/jeremiah_046.mp3",
+      "duration": 408.19,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 46,
+      "chapterTitle": "Jeremiah 47",
+      "file": "audio/jeremiah_047.mp3",
+      "duration": 65.47,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 47,
+      "chapterTitle": "Jeremiah 48",
+      "file": "audio/jeremiah_048.mp3",
+      "duration": 371.3,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 48,
+      "chapterTitle": "Jeremiah 49",
+      "file": "audio/jeremiah_049.mp3",
+      "duration": 412.73,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 49,
+      "chapterTitle": "Jeremiah 50",
+      "file": "audio/jeremiah_050.mp3",
+      "duration": 466.8,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 50,
+      "chapterTitle": "Jeremiah 51",
+      "file": "audio/jeremiah_051.mp3",
+      "duration": 588.7,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "jeremiah",
+      "chapterIndex": 51,
+      "chapterTitle": "Jeremiah 52",
+      "file": "audio/jeremiah_052.mp3",
+      "duration": 452.28,
+      "voice": "miles-v1"
     }
   ]
 }
