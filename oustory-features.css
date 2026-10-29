@@ -129,7 +129,7 @@ body.feature-mode .reading-column{display:none}
 .chapter-audio-seek input[type=range]{flex:1;min-width:0;accent-color:var(--covenant-gold)}
 .chapter-audio-seek input[type=range]:disabled{opacity:.32}
 .chapter-audio .audio-time{font-variant-numeric:tabular-nums;color:var(--muted);font-size:12px;white-space:nowrap;min-width:52px;text-align:right}
-.verse-entry.is-audio-current{background:rgb(201 162 39 / 16%);outline:1px solid var(--covenant-gold);outline-offset:2px;border-radius:4px;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px}
+.verse-entry.is-audio-current{text-decoration:underline;text-decoration-color:var(--covenant-gold);text-decoration-thickness:2px;text-underline-offset:4px}
 
 /* Dock links to prototype pages (Archive/Spatial) — anchors styled as dock buttons */
 .bottom-dock a.dock-button{text-decoration:none;color:inherit}
