@@ -146,3 +146,19 @@ html.spatial-on .bottom-dock{transform:perspective(900px) rotateX(-1.2deg);box-s
 @media (prefers-reduced-motion:reduce){
   html.spatial-on .chapter-audio,html.spatial-on #books-panel,html.spatial-on #saved-panel,html.spatial-on #search-panel,html.spatial-on #verse-panel,html.spatial-on #settings-panel,html.spatial-on #oustory-menu,html.spatial-on .bottom-dock{transform:none}
 }
+
+/* Spatial v2: the environment. A living backdrop behind the reader — gold
+   glow, the Oustory tree emblem ghosted through (screen blend drops its
+   black), a vignette — so the cards float in a place, not a void. */
+html.spatial-on:not([data-theme="paper"]){
+  background:
+    radial-gradient(120% 55% at 50% -8%, rgb(201 162 39 / .16), transparent 60%),
+    url("assets/oustory-poster-icon-512.png") center 32% / min(82vw, 440px) no-repeat,
+    radial-gradient(95% 90% at 50% 45%, transparent 52%, rgb(0 0 0 / .55)),
+    #141210;
+  background-blend-mode: normal, screen, normal, normal;
+  background-attachment: fixed;
+}
+html.spatial-on:not([data-theme="paper"]) body{background:transparent}
+html.spatial-on .chapter-audio{background:linear-gradient(180deg,#1e1a14,#131109);border:1px solid var(--nav-border)}
+html.spatial-on #chapter-title{background-image:url("assets/oustory-poster-icon-512.png"),linear-gradient(180deg,rgb(201 162 39 / 13%),rgb(201 162 39 / 3%));background-position:right -14px center,0 0;background-size:auto 170%,100% 100%;background-repeat:no-repeat}
