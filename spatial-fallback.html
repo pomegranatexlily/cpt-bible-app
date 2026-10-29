@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<!--
+  OUSTORY — Spatial Archive · 2D Reading Fallback (PROTOTYPE)
+  Repo drop-in: copy this file, spatial-fallback.css and spatial-fallback.js
+  to the cpt-bible-app repo root as-is. No build step, no new dependencies,
+  no manifest or service-worker changes required. Narration on Psalm 23
+  reuses the repo's existing audio/psalms_023.mp3 (already shipped).
+  Verse text below is embedded sample data only, verbatim from the
+  Covenant text files data/psalms.json and data/genesis.json. Books
+  without a sample show a notice instead of invented text.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OUSTORY — 2D Reading Fallback (Prototype)</title>
+<link rel="stylesheet" href="spatial-fallback.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">OUSTORY <span class="brand-sub">Spatial Archive</span></div>
+  <div class="proto-badge">PROTOTYPE — sample passages only</div>
+</header>
+
+<main id="app">
+  <!-- COLLECTIONS VIEW -->
+  <section id="collections-view" class="view" aria-label="Collections">
+    <h1>Reading, without the 3D</h1>
+    <p class="lede">The same archive and reading view as the spatial prototype, with zero 3D dependency. Tap a passage to read it.</p>
+
+    <h2>Sample passages</h2>
+    <div class="sample-grid" id="sample-grid" role="list"></div>
+
+    <h2>The 80-book collection</h2>
+    <p class="lede">Canonical sequence from the Covenant collection. Only the three samples above open in this prototype; every other book says so plainly instead of showing invented text.</p>
+    <ul class="book-list" id="book-list"></ul>
+
+    <p class="notice" id="collection-notice" role="status" aria-live="polite"></p>
+  </section>
+
+  <!-- READING VIEW -->
+  <section id="reading-view" class="view hidden" aria-label="Reading view">
+    <button class="back-btn" id="back-to-collections" type="button">◀ Back to collections</button>
+    <article class="reading-card">
+      <h2 id="reading-title"></h2>
+      <p class="reading-ref" id="reading-ref"></p>
+      <div class="verses" id="verses"></div>
+      <p class="reading-note" id="reading-note"></p>
+    </article>
+
+    <div class="player hidden" id="player" role="region" aria-label="Narration player">
+      <span class="player-label">🎧 Miles narration — Psalm 23</span>
+      <audio id="narration" controls preload="none" src="audio/psalms_023.mp3"></audio>
+      <span class="player-note">Prototype sample. Full-chapter narration lives in the reader app.</span>
+    </div>
+
+    <div class="controls" role="group" aria-label="Reading controls">
+      <button id="prev-passage" type="button">◀ Prev passage</button>
+      <span id="passage-indicator" aria-live="polite"></span>
+      <button id="next-passage" type="button">Next passage ▶</button>
+    </div>
+    <div class="controls" role="group" aria-label="Text size">
+      <button id="font-smaller" type="button" aria-label="Smaller text">A−</button>
+      <button id="font-reset" type="button">Reset size</button>
+      <button id="font-larger" type="button" aria-label="Larger text">A+</button>
+    </div>
+    <p class="hint">Keys: ◀ ▶ move between passages, Esc returns to collections. Tap any verse to select it.</p>
+  </section>
+</main>
+
+<footer class="foot">
+  <p>Prototype only — not the reader app. Scripture text is the primary focus; no 3D, no frameworks, no network calls.</p>
+</footer>
+
+<script src="spatial-fallback.js"></script>
+</body>
+</html>
