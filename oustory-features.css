@@ -169,3 +169,9 @@ html.spatial-on:not([data-theme="paper"]){
     #141210;
   background-attachment: fixed;
 }
+
+/* Spatial v4: breathing room — the bubbles give the text space from their
+   edges (his ruling: letters were crowding the frame). */
+html.spatial-on #scripture{padding:22px 21px 28px}
+html.spatial-on #chapter-title{padding:15px 19px}
+html.spatial-on .chapter-audio{padding:17px 17px 15px}
