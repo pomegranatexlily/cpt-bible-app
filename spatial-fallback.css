@@ -1,0 +1,159 @@
+/* OUSTORY 2D reading fallback — dark-first, zero 3D, zero frameworks.
+   Palette matches the repo's covenant tokens: deep ink #141210,
+   covenant gold #c9a227, nav accent #e1bc64, seal red #8b0000,
+   plus deep emerald #0f2a1e panels from the upgrade spec.
+   No white/light theme. No motion: view switches are instant. */
+
+:root {
+  --ink: #141210;
+  --panel: #1d1a15;
+  --emerald: #0f2a1e;
+  --gold: #c9a227;
+  --nav-accent: #e1bc64;
+  --parchment: #f5f0e6;
+  --muted: #b9b2a2;
+  --red: #8b0000;
+  --line: rgb(225 188 100 / 22%);
+  --text-size: 18px;
+}
+
+* { box-sizing: border-box; }
+
+html { background: var(--ink); }
+
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--parchment);
+  font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+  font-size: var(--text-size);
+  line-height: 1.65;
+  -webkit-text-size-adjust: 100%;
+}
+
+.topbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.brand { font-weight: 700; letter-spacing: 0.06em; }
+.brand-sub { color: var(--nav-accent); font-weight: 400; letter-spacing: 0; }
+
+.proto-badge {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  background: var(--gold);
+  border-radius: 999px;
+  padding: 4px 10px;
+}
+
+main { max-width: 720px; margin: 0 auto; padding: 16px; }
+
+.view.hidden, .hidden { display: none !important; }
+
+h1 { font-size: 1.6em; line-height: 1.25; margin: 8px 0; }
+h2 { font-size: 1.2em; line-height: 1.3; margin: 24px 0 8px; color: var(--nav-accent); }
+
+.lede { color: var(--muted); margin: 0 0 12px; }
+.hint { font-family: system-ui, -apple-system, sans-serif; font-size: 14px; color: var(--muted); }
+.notice { font-family: system-ui, -apple-system, sans-serif; color: var(--nav-accent); min-height: 1.4em; }
+
+/* Sample passage cards */
+.sample-grid { display: grid; gap: 12px; }
+.sample-card {
+  text-align: left;
+  background: var(--emerald);
+  color: var(--parchment);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.sample-card strong { display: block; font-size: 1.05em; color: var(--nav-accent); }
+.sample-card span { font-family: system-ui, -apple-system, sans-serif; font-size: 14px; color: var(--muted); }
+
+/* Book list */
+.book-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.book-list button {
+  width: 100%;
+  text-align: left;
+  background: var(--panel);
+  color: var(--parchment);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 12px 14px;
+  min-height: 48px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 1em;
+}
+.book-list button .has-sample { color: var(--nav-accent); font-family: system-ui, -apple-system, sans-serif; font-size: 13px; }
+
+/* Reading view */
+.back-btn {
+  background: transparent;
+  color: var(--nav-accent);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 10px 16px;
+  min-height: 44px;
+  cursor: pointer;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 15px;
+}
+.reading-card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 20px; margin-top: 16px; }
+.reading-ref { color: var(--muted); font-family: system-ui, -apple-system, sans-serif; font-size: 14px; margin-top: -8px; }
+.verses p { margin: 0 0 12px; }
+.verse-num {
+  color: var(--gold);
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 0.8em;
+  font-weight: 700;
+  margin-right: 8px;
+}
+.verse { border-radius: 8px; padding: 2px 6px; margin-left: -6px; cursor: pointer; }
+.verse.selected { background: rgb(225 188 100 / 16%); outline: 1px solid var(--line); }
+.reading-note { font-family: system-ui, -apple-system, sans-serif; font-size: 14px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 12px; }
+
+/* Player + controls */
+.player { background: var(--emerald); border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin-top: 16px; display: grid; gap: 8px; }
+.player-label { font-family: system-ui, -apple-system, sans-serif; font-weight: 600; color: var(--nav-accent); }
+.player audio { width: 100%; }
+.player-note { font-family: system-ui, -apple-system, sans-serif; font-size: 13px; color: var(--muted); }
+
+.controls { display: flex; gap: 10px; align-items: center; justify-content: space-between; margin-top: 16px; flex-wrap: wrap; }
+.controls button {
+  background: var(--panel);
+  color: var(--parchment);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 10px 16px;
+  min-height: 44px;
+  min-width: 44px;
+  cursor: pointer;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 15px;
+}
+.controls button:disabled { opacity: 0.4; cursor: default; }
+#passage-indicator { font-family: system-ui, -apple-system, sans-serif; font-size: 14px; color: var(--muted); }
+
+.foot { max-width: 720px; margin: 0 auto; padding: 8px 16px 32px; color: var(--muted); font-family: system-ui, -apple-system, sans-serif; font-size: 13px; }
+
+button:focus-visible, .verse:focus-visible { outline: 3px solid var(--nav-accent); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { scroll-behavior: auto !important; }
+}
+
+@media (min-width: 700px) {
+  .sample-grid { grid-template-columns: repeat(3, 1fr); }
+  .book-list { grid-template-columns: repeat(2, 1fr); }
+}
