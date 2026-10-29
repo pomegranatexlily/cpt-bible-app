@@ -175,3 +175,8 @@ html.spatial-on:not([data-theme="paper"]){
 html.spatial-on #scripture{padding:22px 21px 28px}
 html.spatial-on #chapter-title{padding:15px 19px}
 html.spatial-on .chapter-audio{padding:17px 17px 15px}
+
+/* Spatial v5: the reading bubble is a real framed surface — visible border,
+   generous inside padding, and a calm solid fill so the background planes
+   show around the words, never through them. */
+html.spatial-on #scripture{padding:26px 24px 32px;border:1px solid var(--nav-border);background:linear-gradient(180deg,rgb(201 162 39 / 6%),rgb(0 0 0 / 22%) 240px),rgb(15 12 9 / .88);box-shadow:0 24px 48px rgb(0 0 0 / .55),inset 0 1px 0 rgb(245 240 230 / 5%)}
