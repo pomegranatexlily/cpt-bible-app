@@ -157,18 +157,6 @@ html.spatial-on .chapter-audio{background:linear-gradient(180deg,#1e1a14,#131109
    edge-light, a horizon line and a low orb glow — all gradient geometry on
    the root background, so it sits behind everything and never fights the
    letters. The center behind the text stays the darkest plane. */
-html.spatial-on:not([data-theme="paper"]){
-  background:
-    radial-gradient(42% 30% at 86% 12%, rgb(201 162 39 / .10), transparent 70%),
-    linear-gradient(180deg, transparent 76.8%, rgb(201 162 39 / .16) 77%, rgb(0 0 0 / .35) 77.4%, transparent 82%),
-    linear-gradient(112deg, transparent 58%, rgb(233 205 128 / .13) 58.2%, rgb(30 25 18 / .9) 59%, rgb(20 17 12 / .9) 88%, transparent 88.4%),
-    linear-gradient(96deg, transparent 6%, rgb(27 22 15 / .95) 6.4%, rgb(18 15 11 / .95) 30%, transparent 30.5%),
-    repeating-linear-gradient(45deg, rgb(245 240 230 / .014) 0 2px, transparent 2px 5px),
-    radial-gradient(120% 55% at 50% -8%, rgb(201 162 39 / .13), transparent 60%),
-    radial-gradient(95% 90% at 50% 45%, transparent 52%, rgb(0 0 0 / .5)),
-    #141210;
-  background-attachment: fixed;
-}
 
 /* Spatial v4: breathing room — the bubbles give the text space from their
    edges (his ruling: letters were crowding the frame). */
@@ -180,3 +168,23 @@ html.spatial-on .chapter-audio{padding:17px 17px 15px}
    generous inside padding, and a calm solid fill so the background planes
    show around the words, never through them. */
 html.spatial-on #scripture{padding:26px 24px 32px;border:1px solid var(--nav-border);background:linear-gradient(180deg,rgb(201 162 39 / 6%),rgb(0 0 0 / 22%) 240px),rgb(15 12 9 / .88);box-shadow:0 24px 48px rgb(0 0 0 / .55),inset 0 1px 0 rgb(245 240 230 / 5%)}
+
+/* Spatial v6: VAULT — the design he picked. A perspective floor: gold grid
+   lines converging to a vanishing point on a horizon at 72% height, a glow
+   at the horizon, the upper field calm and dark behind the words. Pure
+   gradient geometry on the root background; geometry only below the horizon
+   (a cover layer keeps the reading field clean). */
+html.spatial-on:not([data-theme="paper"]){
+  background:
+    radial-gradient(120% 55% at 50% -8%, rgb(201 162 39 / .12), transparent 60%),
+    radial-gradient(58% 20% at 50% 72%, rgb(201 162 39 / .17), transparent 70%),
+    radial-gradient(95% 90% at 50% 45%, transparent 52%, rgb(0 0 0 / .5)),
+    repeating-linear-gradient(45deg, rgb(245 240 230 / .014) 0 2px, transparent 2px 5px),
+    linear-gradient(180deg, #141210 0, #141210 71.4%, transparent 72.6%),
+    linear-gradient(180deg, transparent 71.8%, rgb(233 205 128 / .55) 72.1%, transparent 72.9%),
+    repeating-conic-gradient(from 180deg at 50% 72%, rgb(201 162 39 / .22) 0deg .55deg, transparent .55deg 9deg),
+    repeating-linear-gradient(180deg, rgb(201 162 39 / .13) 0 1px, transparent 1px 30px),
+    linear-gradient(180deg, transparent 72%, rgb(27 22 15 / .92) 74%, rgb(9 8 6) 100%),
+    #141210;
+  background-attachment: fixed;
+}
