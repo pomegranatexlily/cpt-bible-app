@@ -433,15 +433,22 @@
       bible:'<path d="M12 6.5c-2.2-1.4-4.7-1.8-8-1.4v14c3.3-.4 5.8 0 8 1.4 2.2-1.4 4.7-1.8 8-1.4v-14c-3.3-.4-5.8 0-8 1.4Z"/><path d="M12 6.5v14M6.5 9c1.3 0 2.4.2 3.4.6M14.1 9.6c1-.4 2.1-.6 3.4-.6"/>',
       study:'<path d="M4.5 3.5h10l3 3V14M14.5 3.5v3h3M7.5 9h6M7.5 12h4"/><circle cx="15.5" cy="16" r="4"/><path d="m18.5 19 3 3"/>',
       discover:'<circle cx="12" cy="12" r="9"/><path d="m15.7 8.3-2.3 5.1-5.1 2.3 2.3-5.1 5.1-2.3Z"/><circle cx="12" cy="12" r=".55" fill="currentColor" stroke="none"/>',
+      archive:'<path d="M4 4h16v16H4Z M4 9h16 M9 4v5 M15 4v5"/>',
+      spatial:'<path d="M12 3l9 5-9 5-9-5Z M3 13l9 5 9-5"/>',
       more:'<rect x="4" y="4" width="6" height="6" rx="1.3"/><rect x="14" y="4" width="6" height="6" rx="1.3"/><rect x="4" y="14" width="6" height="6" rx="1.3"/><rect x="14" y="14" width="6" height="6" rx="1.3"/>'
     };
     const items=[
       ["home","Home"],["bible","Bible"],["study","Study"],
-      ["discover","Discover"],["more","More"]
+      ["discover","Discover"],["more","More"],
+      ["archive","Archive"],["spatial","Spatial"]
     ];
+    const pageLinks={archive:"archive.html",spatial:"spatial-fallback.html"};
     for(const [name,caption] of items){
       const b=el("button",undefined,"dock-button");
-      b.type="button";b.dataset.view=name;b.id=name==="bible"?"read-button":"nav-"+name;
+      b.type="button";
+      if(pageLinks[name])b.dataset.page=name;
+      else b.dataset.view=name;
+      b.id=name==="bible"?"read-button":"nav-"+name;
       b.setAttribute("aria-label",caption);
       const icon=document.createElementNS("http://www.w3.org/2000/svg","svg");
       icon.setAttribute("viewBox","0 0 24 24");
@@ -450,7 +457,8 @@
       icon.classList.add("nav-icon");
       icon.innerHTML=icons[name];
       b.append(icon,el("span",caption,"dock-label"));
-      b.onclick=()=>show(name);
+      if(pageLinks[name])b.onclick=()=>{window.location.href=pageLinks[name];};
+      else b.onclick=()=>show(name);
       oldDock.append(b);
     }
   }
