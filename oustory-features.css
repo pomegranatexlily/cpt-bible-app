@@ -99,6 +99,9 @@ body.feature-mode .reading-column{display:none}
 .chapter-audio .audio-speed{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:12px;margin-left:auto;white-space:nowrap}
 .chapter-audio .audio-speed select{min-width:64px;max-width:76px;border:1px solid var(--line);border-radius:9px;background:var(--control);color:var(--text);padding:6px 3px;font-size:14px}
 .chapter-audio .audio-progress{font-variant-numeric:tabular-nums;color:var(--muted);font-size:12px;white-space:nowrap;min-width:42px;text-align:right}
+.chapter-audio .audio-volume{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12px;white-space:nowrap}
+.chapter-audio .audio-volume input[type=range]{flex:1;min-width:0;accent-color:var(--covenant-gold)}
+.chapter-audio .audio-volume-value{font-variant-numeric:tabular-nums;min-width:38px;text-align:right}
 .chapter-audio .audio-status{display:block;color:var(--muted);font-size:12px;line-height:1.4;min-height:17px}
 .chapter-audio[data-audio-state=playing] .audio-status{color:var(--covenant-gold)}
 .chapter-audio :focus-visible{outline:2px solid var(--covenant-gold);outline-offset:3px}

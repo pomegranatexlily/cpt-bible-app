@@ -16,17 +16,50 @@
    stop, called by oustory-reader.js exactly as before. */
 (() => {
   const STORAGE_KEY = "oustory.audio.rate";
+  const VOLUME_KEY = "oustory.audio.volume";
   const RATE_OPTIONS = [0.8, 1, 1.2, 1.4];
   // Versioned so a manifest update (new segments/wiring) is never masked by a
   // cached copy: bump this query whenever audio-manifest.json changes.
   const MANIFEST_URL = "audio-manifest.json?v=20261029-philippians-v1";
   const UNAVAILABLE = "Audio not yet available for this chapter.";
   let player, playButton, stopButton, ratePicker, status, verseCount, seekBar, timeLabel;
+  let volumeSlider, volumeValue;
   let audio = null, manifest = null, manifestLoaded = false;
   let current = null, verses = [], entry = null, mode = "none", failed = false;
   let verseIndex = 0, audioMode = "idle", highlighted = null;
   let autoAdvance = false;
   let rate = readRate();
+  let volume = readVolume();
+  let audioCtx = null, gainNode = null;
+  function readVolume() {
+    try {
+      const value = Number(JSON.parse(localStorage.getItem(VOLUME_KEY)));
+      return isFinite(value) && value >= 0 && value <= 2 ? value : 1;
+    } catch { return 1; }
+  }
+  function persistVolume() {
+    try { localStorage.setItem(VOLUME_KEY, JSON.stringify(volume)); } catch {}
+  }
+  function ensureBoost() {
+    if (audioCtx || !audio) return;
+    try {
+      const Ctor = window.AudioContext || window.webkitAudioContext;
+      if (!Ctor) return;
+      audioCtx = new Ctor();
+      const source = audioCtx.createMediaElementSource(audio);
+      gainNode = audioCtx.createGain();
+      gainNode.gain.value = volume;
+      const comp = audioCtx.createDynamicsCompressor();
+      comp.threshold.value = -12; comp.knee.value = 30; comp.ratio.value = 12;
+      source.connect(gainNode); gainNode.connect(comp); comp.connect(audioCtx.destination);
+      audio.volume = 1;
+    } catch { audioCtx = null; gainNode = null; }
+  }
+  function applyVolume() {
+    if (gainNode) gainNode.gain.value = volume;
+    else if (audio) audio.volume = Math.min(1, volume);
+    if (volumeValue) volumeValue.textContent = Math.round(volume * 100) + "%";
+  }
   function readRate() {
     try {
       const value = Number(JSON.parse(localStorage.getItem(STORAGE_KEY)));
@@ -273,6 +306,9 @@
   }
   function playElement() {
     if (!audio) return;
+    ensureBoost();
+    if (audioCtx && audioCtx.state === "suspended") { try { audioCtx.resume(); } catch {} }
+    applyVolume();
     audio.playbackRate = rate;
     let result = null;
     try { result = audio.play(); } catch { result = null; }
@@ -407,6 +443,22 @@
     }
     ratePicker.value = String(rate);
     speedLabel.append(ratePicker);
+    const volumeLabel = document.createElement("label");
+    volumeLabel.className = "audio-volume";
+    const volumeText = document.createElement("span");
+    volumeText.textContent = "Volume";
+    volumeSlider = document.createElement("input");
+    volumeSlider.id = "audio-volume";
+    volumeSlider.type = "range";
+    volumeSlider.min = "0";
+    volumeSlider.max = "200";
+    volumeSlider.step = "5";
+    volumeSlider.value = String(Math.round(volume * 100));
+    volumeSlider.setAttribute("aria-label", "Volume boost");
+    volumeValue = document.createElement("span");
+    volumeValue.className = "audio-volume-value";
+    volumeValue.textContent = Math.round(volume * 100) + "%";
+    volumeLabel.append(volumeText, volumeSlider, volumeValue);
     status = document.createElement("span");
     status.id = "audio-status";
     status.className = "audio-status";
@@ -427,11 +479,16 @@
     timeLabel = document.createElement("span");
     timeLabel.className = "audio-time";
     seekRow.append(seekBar, timeLabel);
-    player.append(controls, seekRow, status);
+    player.append(controls, volumeLabel, seekRow, status);
     document.getElementById("chapter-title").after(player);
     playButton.addEventListener("click", playPause);
     stopButton.addEventListener("click", stop);
     ratePicker.addEventListener("change", e => setRate(e.target.value));
+    volumeSlider.addEventListener("input", e => {
+      volume = Math.max(0, Math.min(2, (Number(e.target.value) || 0) / 100));
+      persistVolume();
+      applyVolume();
+    });
     seekBar.addEventListener("change", e => onSeek(e.target.value));
     document.addEventListener("visibilitychange", () => {
       if (document.hidden && audioMode === "playing") {
