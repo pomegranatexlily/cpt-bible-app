@@ -25,6 +25,7 @@
   let audio = null, manifest = null, manifestLoaded = false;
   let current = null, verses = [], entry = null, mode = "none", failed = false;
   let verseIndex = 0, audioMode = "idle", highlighted = null;
+  let autoAdvance = false;
   let rate = readRate();
   function readRate() {
     try {
@@ -214,6 +215,7 @@
   }
   function stop() {
     stopAudioOnly();
+    autoAdvance = false;
     verseIndex = 0;
     if (audio) { try { audio.currentTime = 0; } catch {} }
     setHighlight(null);
@@ -248,9 +250,17 @@
         return;
       }
     }
+    if (advanceToNextChapter()) return;
     audioMode = "finished";
     setHighlight(null);
-    update("Chapter finished · press Play to listen again");
+    update("End of the Bible · press Play to listen again");
+  }
+  function advanceToNextChapter() {
+    const nextButton = document.getElementById("next");
+    if (!nextButton || nextButton.disabled) return false;
+    autoAdvance = true;
+    nextButton.click();
+    return true;
   }
   function onAudioError() {
     if (entry) failed = true;
@@ -354,6 +364,15 @@
     player.hidden = false;
     player.setAttribute("aria-label", "Scripture audio player for " + book + " " + chapter);
     setAudioForChapter();
+    if (autoAdvance) {
+      autoAdvance = false;
+      if (entry && mode !== "none" && !failed) {
+        audioMode = "playing";
+        setHighlight(mode === "chapter" ? null : verseIndex);
+        update();
+        playElement();
+      }
+    }
   }
   function loading() {
     stopAudioOnly();

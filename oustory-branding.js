@@ -109,6 +109,8 @@
     ['Books & chapters', () => document.querySelector('button[data-panel="books-panel"]').click()],
     ['Search Scripture', () => document.querySelector('button[data-panel="search-panel"]').click()],
     ['Saved places', () => window.OustoryReader?.openSaved()],
+    ['Archive', () => location.assign(new URL('./archive.html',location.href).href)],
+    ['Spatial', () => location.assign(new URL('./spatial-fallback.html',location.href).href)],
     ['Add to Home Screen', showInstall],
     ['Reading settings', () => document.getElementById('settings-panel')?.showModal()],
     ['Privacy & data', () => location.assign(new URL('./privacy.html',location.href).href)],
