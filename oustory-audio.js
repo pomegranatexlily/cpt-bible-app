@@ -53,7 +53,57 @@
       comp.threshold.value = -12; comp.knee.value = 30; comp.ratio.value = 12;
       source.connect(gainNode); gainNode.connect(comp); comp.connect(audioCtx.destination);
       audio.volume = 1;
+      try {
+        audioCtx.addEventListener("statechange", () => {
+          if (audioCtx && audioCtx.state === "interrupted" && audioMode === "playing") { try { audioCtx.resume(); } catch {} }
+        });
+      } catch {}
     } catch { audioCtx = null; gainNode = null; }
+  }
+  const POS_KEY = "oustory.audio.position";
+  let lastPosSave = 0;
+  function savePosition() {
+    try {
+      if (!current || !audio || (mode !== "chapter" && mode !== "timed")) return;
+      const t = audio.currentTime || 0;
+      if (t < 3) return;
+      localStorage.setItem(POS_KEY, JSON.stringify({bookId: current.bookId, chapter: current.chapter, time: t}));
+    } catch {}
+  }
+  function savedPosition() {
+    try {
+      const p = JSON.parse(localStorage.getItem(POS_KEY));
+      if (p && current && p.bookId === current.bookId && p.chapter === current.chapter && p.time > 3) return p.time;
+    } catch {}
+    return 0;
+  }
+  function clearPosition() {
+    try { localStorage.removeItem(POS_KEY); } catch {}
+  }
+  function updateMediaSession() {
+    if (!("mediaSession" in navigator)) return;
+    try {
+      if (current) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: current.book + " " + current.chapter,
+          artist: "OUSTORY Covenant Bible",
+          album: current.book,
+          artwork: [
+            {src: "assets/oustory-poster-icon-192.png", sizes: "192x192", type: "image/png"},
+            {src: "assets/oustory-poster-icon-180.png", sizes: "180x180", type: "image/png"}
+          ]
+        });
+      }
+      navigator.mediaSession.playbackState = audioMode === "playing" ? "playing" : audioMode === "paused" ? "paused" : "none";
+    } catch {}
+  }
+  function updatePositionState() {
+    if (!("mediaSession" in navigator) || !navigator.mediaSession.setPositionState) return;
+    try {
+      if (audio && isFinite(audio.duration) && audio.duration > 0) {
+        navigator.mediaSession.setPositionState({duration: audio.duration, playbackRate: rate, position: Math.min(audio.currentTime || 0, audio.duration)});
+      }
+    } catch {}
   }
   function applyVolume() {
     if (gainNode) gainNode.gain.value = volume;
@@ -195,12 +245,25 @@
   function ensureAudio() {
     if (audio) return;
     audio = new Audio();
-    audio.preload = "metadata";
+    audio.preload = "auto";
     audio.addEventListener("timeupdate", onTimeUpdate);
     audio.addEventListener("ended", onAudioEnded);
     audio.addEventListener("error", onAudioError);
-    audio.addEventListener("playing", () => update());
-    audio.addEventListener("loadedmetadata", () => update());
+    audio.addEventListener("playing", () => { updateMediaSession(); update(); });
+    audio.addEventListener("pause", () => { savePosition(); updateMediaSession(); });
+    audio.addEventListener("loadedmetadata", () => {
+      if (mode === "chapter" || mode === "timed") {
+        const resume = savedPosition();
+        if (resume && isFinite(audio.duration) && resume < audio.duration - 5) {
+          try { audio.currentTime = resume; } catch {}
+          updateMediaSession();
+          update("Press Play to resume at " + fmtTime(resume));
+          return;
+        }
+      }
+      updateMediaSession();
+      update();
+    });
   }
   function loadChapterFile() {
     ensureAudio();
@@ -248,6 +311,7 @@
   }
   function stop() {
     stopAudioOnly();
+    clearPosition();
     autoAdvance = false;
     verseIndex = 0;
     if (audio) { try { audio.currentTime = 0; } catch {} }
@@ -256,6 +320,8 @@
   }
   function onTimeUpdate() {
     if (!audio) return;
+    const nowMs = performance.now();
+    if (nowMs - lastPosSave > 4000) { lastPosSave = nowMs; savePosition(); updatePositionState(); }
     if (mode === "timed" && entry && Array.isArray(entry.segments)) {
       const t = audio.currentTime;
       let found = -1;
@@ -283,6 +349,7 @@
         return;
       }
     }
+    clearPosition();
     if (advanceToNextChapter()) return;
     audioMode = "finished";
     setHighlight(null);
@@ -400,6 +467,7 @@
     player.hidden = false;
     player.setAttribute("aria-label", "Scripture audio player for " + book + " " + chapter);
     setAudioForChapter();
+    updateMediaSession();
     if (autoAdvance) {
       autoAdvance = false;
       if (entry && mode !== "none" && !failed) {
@@ -490,14 +558,38 @@
       applyVolume();
     });
     seekBar.addEventListener("change", e => onSeek(e.target.value));
+    // Playback must survive the lock screen and backgrounding: never pause
+    // just because the page hid. Remember the position instead, so if iOS
+    // kills the page entirely, reopening resumes where listening stopped.
     document.addEventListener("visibilitychange", () => {
-      if (document.hidden && audioMode === "playing") {
-        audioMode = "paused";
-        try { audio.pause(); } catch {}
-        update("Paused · reopen Oustory to resume");
+      if (document.hidden) {
+        savePosition();
+      } else if (audioCtx && audioCtx.state === "suspended" && audioMode === "playing") {
+        try { audioCtx.resume(); } catch {}
       }
     });
-    window.addEventListener("pagehide", () => { try { audio.pause(); } catch {} });
+    window.addEventListener("pagehide", () => { savePosition(); });
+    if ("mediaSession" in navigator) {
+      try {
+        navigator.mediaSession.setActionHandler("play", () => { if (audioMode !== "playing") playPause(); });
+        navigator.mediaSession.setActionHandler("pause", () => { if (audioMode === "playing") playPause(); });
+        navigator.mediaSession.setActionHandler("nexttrack", () => {
+          const b = document.getElementById("next");
+          if (b && !b.disabled) b.click();
+        });
+        navigator.mediaSession.setActionHandler("previoustrack", () => {
+          const b = document.getElementById("prev") || document.querySelector("[data-nav='prev']");
+          if (b && !b.disabled) b.click();
+        });
+        navigator.mediaSession.setActionHandler("seekto", details => {
+          if (audio && isFinite(audio.duration) && details && typeof details.seekTime === "number") {
+            try { audio.currentTime = Math.max(0, Math.min(audio.duration, details.seekTime)); } catch {}
+            if (mode === "timed") onTimeUpdate();
+            update();
+          }
+        });
+      } catch {}
+    }
     loadManifest();
     update();
   }
