@@ -17,7 +17,9 @@
 (() => {
   const STORAGE_KEY = "oustory.audio.rate";
   const RATE_OPTIONS = [0.8, 1, 1.2, 1.4];
-  const MANIFEST_URL = "audio-manifest.json";
+  // Versioned so a manifest update (new segments/wiring) is never masked by a
+  // cached copy: bump this query whenever audio-manifest.json changes.
+  const MANIFEST_URL = "audio-manifest.json?v=20261028-t4";
   const UNAVAILABLE = "Audio not yet available for this chapter.";
   let player, playButton, stopButton, ratePicker, status, verseCount, seekBar, timeLabel;
   let audio = null, manifest = null, manifestLoaded = false;
