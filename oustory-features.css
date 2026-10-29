@@ -103,9 +103,12 @@ body.feature-mode .reading-column{display:none}
 .chapter-audio[data-audio-state=playing] .audio-status{color:var(--covenant-gold)}
 .chapter-audio :focus-visible{outline:2px solid var(--covenant-gold);outline-offset:3px}
 
-/* T1 REVERTED 2026-10-28 — the sticky rule above broke chapter scrolling on
-   iPhone (user report). Player returns to its original in-flow position
-   until a scrolling-safe persistent-player approach is proven in testing. */
+/* T1 RESTORED 2026-10-28 as part of the follow-along package (with T4 verse
+   timings). The earlier revert was on a misread of the user's report: manual
+   scrolling was never broken — the missing feature was audio-driven
+   follow-along, which lives in the timed-mode engine, not in this rule.
+   This rule only keeps the player card visible while the text follows. */
+.chapter-audio{position:sticky;top:8px;z-index:11;box-shadow:0 6px 20px rgb(0 0 0 / 18%)}
 @media(max-width:360px){.chapter-audio-controls{gap:6px}.chapter-audio{padding-inline:9px}.chapter-audio .audio-speed{gap:3px}}
 
 /* Current Covenant Bible cover mark: visible in Home as well as the app menu and About. */
