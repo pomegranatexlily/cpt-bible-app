@@ -408,6 +408,390 @@
       "file": "audio/genesis_050.mp3",
       "duration": 197.02,
       "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 0,
+      "chapterTitle": "Ezekiel 1",
+      "file": "audio/ezekiel_001.mp3",
+      "duration": 438.6,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 1,
+      "chapterTitle": "Ezekiel 2",
+      "file": "audio/ezekiel_002.mp3",
+      "duration": 82.03,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 2,
+      "chapterTitle": "Ezekiel 3",
+      "file": "audio/ezekiel_003.mp3",
+      "duration": 243.19,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 3,
+      "chapterTitle": "Ezekiel 4",
+      "file": "audio/ezekiel_004.mp3",
+      "duration": 176.47,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 4,
+      "chapterTitle": "Ezekiel 5",
+      "file": "audio/ezekiel_005.mp3",
+      "duration": 180.53,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 5,
+      "chapterTitle": "Ezekiel 6",
+      "file": "audio/ezekiel_006.mp3",
+      "duration": 211.68,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 6,
+      "chapterTitle": "Ezekiel 7",
+      "file": "audio/ezekiel_007.mp3",
+      "duration": 297.89,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 7,
+      "chapterTitle": "Ezekiel 8",
+      "file": "audio/ezekiel_008.mp3",
+      "duration": 186.34,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 8,
+      "chapterTitle": "Ezekiel 9",
+      "file": "audio/ezekiel_009.mp3",
+      "duration": 115.51,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 9,
+      "chapterTitle": "Ezekiel 10",
+      "file": "audio/ezekiel_010.mp3",
+      "duration": 195.36,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 10,
+      "chapterTitle": "Ezekiel 11",
+      "file": "audio/ezekiel_011.mp3",
+      "duration": 276.05,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 11,
+      "chapterTitle": "Ezekiel 12",
+      "file": "audio/ezekiel_012.mp3",
+      "duration": 298.37,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 12,
+      "chapterTitle": "Ezekiel 13",
+      "file": "audio/ezekiel_013.mp3",
+      "duration": 300.43,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 13,
+      "chapterTitle": "Ezekiel 14",
+      "file": "audio/ezekiel_014.mp3",
+      "duration": 211.99,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 14,
+      "chapterTitle": "Ezekiel 15",
+      "file": "audio/ezekiel_015.mp3",
+      "duration": 69.67,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 15,
+      "chapterTitle": "Ezekiel 16",
+      "file": "audio/ezekiel_016.mp3",
+      "duration": 544.06,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 16,
+      "chapterTitle": "Ezekiel 17",
+      "file": "audio/ezekiel_017.mp3",
+      "duration": 307.42,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 17,
+      "chapterTitle": "Ezekiel 18",
+      "file": "audio/ezekiel_018.mp3",
+      "duration": 371.66,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 18,
+      "chapterTitle": "Ezekiel 19",
+      "file": "audio/ezekiel_019.mp3",
+      "duration": 107.93,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 19,
+      "chapterTitle": "Ezekiel 20",
+      "file": "audio/ezekiel_020.mp3",
+      "duration": 479.02,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 20,
+      "chapterTitle": "Ezekiel 21",
+      "file": "audio/ezekiel_021.mp3",
+      "duration": 298.25,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 21,
+      "chapterTitle": "Ezekiel 22",
+      "file": "audio/ezekiel_022.mp3",
+      "duration": 324.36,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 22,
+      "chapterTitle": "Ezekiel 23",
+      "file": "audio/ezekiel_023.mp3",
+      "duration": 433.66,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 23,
+      "chapterTitle": "Ezekiel 24",
+      "file": "audio/ezekiel_024.mp3",
+      "duration": 289.8,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 24,
+      "chapterTitle": "Ezekiel 25",
+      "file": "audio/ezekiel_025.mp3",
+      "duration": 168.74,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 25,
+      "chapterTitle": "Ezekiel 26",
+      "file": "audio/ezekiel_026.mp3",
+      "duration": 201.84,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 26,
+      "chapterTitle": "Ezekiel 27",
+      "file": "audio/ezekiel_027.mp3",
+      "duration": 285.55,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 27,
+      "chapterTitle": "Ezekiel 28",
+      "file": "audio/ezekiel_028.mp3",
+      "duration": 365.54,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 28,
+      "chapterTitle": "Ezekiel 29",
+      "file": "audio/ezekiel_029.mp3",
+      "duration": 274.87,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 29,
+      "chapterTitle": "Ezekiel 30",
+      "file": "audio/ezekiel_030.mp3",
+      "duration": 299.71,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 30,
+      "chapterTitle": "Ezekiel 31",
+      "file": "audio/ezekiel_031.mp3",
+      "duration": 197.95,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 31,
+      "chapterTitle": "Ezekiel 32",
+      "file": "audio/ezekiel_032.mp3",
+      "duration": 302.88,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 32,
+      "chapterTitle": "Ezekiel 33",
+      "file": "audio/ezekiel_033.mp3",
+      "duration": 387.96,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 33,
+      "chapterTitle": "Ezekiel 34",
+      "file": "audio/ezekiel_034.mp3",
+      "duration": 295.13,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 34,
+      "chapterTitle": "Ezekiel 35",
+      "file": "audio/ezekiel_035.mp3",
+      "duration": 199.2,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 35,
+      "chapterTitle": "Ezekiel 36",
+      "file": "audio/ezekiel_036.mp3",
+      "duration": 414.86,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 36,
+      "chapterTitle": "Ezekiel 37",
+      "file": "audio/ezekiel_037.mp3",
+      "duration": 461.04,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 37,
+      "chapterTitle": "Ezekiel 38",
+      "file": "audio/ezekiel_038.mp3",
+      "duration": 245.02,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 38,
+      "chapterTitle": "Ezekiel 39",
+      "file": "audio/ezekiel_039.mp3",
+      "duration": 284.95,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 39,
+      "chapterTitle": "Ezekiel 40",
+      "file": "audio/ezekiel_040.mp3",
+      "duration": 431.66,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 40,
+      "chapterTitle": "Ezekiel 41",
+      "file": "audio/ezekiel_041.mp3",
+      "duration": 243.29,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 41,
+      "chapterTitle": "Ezekiel 42",
+      "file": "audio/ezekiel_042.mp3",
+      "duration": 155.38,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 42,
+      "chapterTitle": "Ezekiel 43",
+      "file": "audio/ezekiel_043.mp3",
+      "duration": 247.32,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 43,
+      "chapterTitle": "Ezekiel 44",
+      "file": "audio/ezekiel_044.mp3",
+      "duration": 307.34,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 44,
+      "chapterTitle": "Ezekiel 45",
+      "file": "audio/ezekiel_045.mp3",
+      "duration": 281.62,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 45,
+      "chapterTitle": "Ezekiel 46",
+      "file": "audio/ezekiel_046.mp3",
+      "duration": 249.58,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 46,
+      "chapterTitle": "Ezekiel 47",
+      "file": "audio/ezekiel_047.mp3",
+      "duration": 246.41,
+      "voice": "miles-v1"
+    },
+    {
+      "document": "ezekiel",
+      "chapterIndex": 47,
+      "chapterTitle": "Ezekiel 48",
+      "file": "audio/ezekiel_048.mp3",
+      "duration": 318.77,
+      "voice": "miles-v1"
     }
   ]
 }
