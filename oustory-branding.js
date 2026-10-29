@@ -1,4 +1,5 @@
 (() => {
+  try { if (localStorage.getItem('oustory.spatial') === '1') document.documentElement.classList.add('spatial-on'); } catch {}
   const settingsButton = document.querySelector('button[data-panel="settings-panel"]');
   if (!settingsButton || document.getElementById('oustory-menu')) return;
   const opener = settingsButton.cloneNode(true);
@@ -110,7 +111,11 @@
     ['Search Scripture', () => document.querySelector('button[data-panel="search-panel"]').click()],
     ['Saved places', () => window.OustoryReader?.openSaved()],
     ['Archive', () => location.assign(new URL('./archive.html',location.href).href)],
-    ['Spatial', () => location.assign(new URL('./spatial-fallback.html',location.href).href)],
+    ['Spatial view', () => {
+      const on = document.documentElement.classList.toggle('spatial-on');
+      try { localStorage.setItem('oustory.spatial', on ? '1' : '0'); } catch {}
+      menu.close();
+    }],
     ['Add to Home Screen', showInstall],
     ['Reading settings', () => document.getElementById('settings-panel')?.showModal()],
     ['Privacy & data', () => location.assign(new URL('./privacy.html',location.href).href)],
