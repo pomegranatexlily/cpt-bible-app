@@ -7,7 +7,39 @@
       "chapterTitle": "Psalm 23",
       "file": "audio/psalms_023.mp3",
       "duration": 36.41,
-      "voice": "miles-v1"
+      "voice": "miles-v1",
+      "segments": [
+        {
+          "passage": 0,
+          "start": 0.0,
+          "end": 3.66
+        },
+        {
+          "passage": 1,
+          "start": 3.66,
+          "end": 8.6
+        },
+        {
+          "passage": 2,
+          "start": 8.6,
+          "end": 13.82
+        },
+        {
+          "passage": 3,
+          "start": 13.82,
+          "end": 22.52
+        },
+        {
+          "passage": 4,
+          "start": 22.52,
+          "end": 28.96
+        },
+        {
+          "passage": 5,
+          "start": 28.96,
+          "end": 36.41
+        }
+      ]
     },
     {
       "document": "genesis",
