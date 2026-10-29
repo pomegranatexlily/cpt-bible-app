@@ -3336,6 +3336,222 @@
    "file": "https://pomegranatexlily.github.io/oustory-audio/audio/psalms_150.mp3",
    "duration": 25.37,
    "voice": "miles-v1"
+  },
+  {
+   "document": "leviticus",
+   "chapterIndex": 0,
+   "chapterTitle": "Leviticus 1",
+   "file": "https://pomegranatexlily.github.io/oustory-audio-2/audio/leviticus_001.mp3",
+   "duration": 150.6,
+   "voice": "miles-v1"
+  },
+  {
+   "document": "leviticus",
+   "chapterIndex": 1,
+   "chapterTitle": "Leviticus 2",
+   "file": "https://pomegranatexlily.github.io/oustory-audio-2/audio/leviticus_002.mp3",
+   "duration": 134.64,
+   "voice": "miles-v1"
+  },
+  {
+   "document": "leviticus",
+   "chapterIndex": 2,
+   "chapterTitle": "Leviticus 3",
+   "file": "https://pomegranatexlily.github.io/oustory-audio-2/audio/leviticus_003.mp3",
+   "duration": 198.53,
+   "voice": "miles-v1"
+  },
+  {
+   "document": "leviticus",
+   "chapterIndex": 3,
+   "chapterTitle": "Leviticus 4",
+   "file": "https://pomegranatexlily.github.io/oustory-audio-2/audio/leviticus_004.mp3",
+   "duration": 305.83,
+   "voice": "miles-v1"
+  },
+  {
+   "document": "leviticus",
+   "chapterIndex": 4,
+   "chapterTitle": "Leviticus 5",
+   "file": "https://pomegranatexlily.github.io/oustory-audio-2/audio/leviticus_005.mp3",
+   "duration": 282.07,
+   "voice": "miles-v1"
+  },
+  {
+   "document": "leviticus",
+   "chapterIndex": 5,
+   "chapterTitle": "Leviticus 6",
+   "file": "https://pomegranatexlily.github.io/oustory-audio-2/audio/leviticus_006.mp3",
+   "duration": 266.33,
+   "voice": "miles-v1"
+  },
+  {
+   "document": "leviticus",
+   "chapterIndex": 6,
+   "chapterTitle": "Leviticus 7",
+   "file": "https://pomegranatexlily.github.io/oustory-audio-2/audio/leviticus_007.mp3",
+   "duration": 356.47,
+   "voice": "miles-v1"
+  },
+  {
+   "document": "leviticus",
+   "chapterIndex": 7,
+   "chapterTitle": "Leviticus 8",
+   "file": "https://pomegranatexlily.github.io/oustory-audio-2/audio/leviticus_008.mp3",
+   "duration": 284.74,
+   "voice": "miles-v1"
+  },
+  {
+   "document": "leviticus",
+   "chapterIndex": 8,
+   "chapterTitle": "Leviticus 9",
+   "file": "https://pomegranatexlily.github.io/oustory-audio-2/audio/leviticus_009.mp3",
+   "duration": 185.81,
+   "voice": "miles-v1"
+  },
+  {
+   "document": "leviticus",
+   "chapterIndex": 9,
+   "chapterTitle": "Leviticus 10",
+   "file": "https://pomegranatexlily.github.io/oustory-audio-2/audio/leviticus_010.mp3",
+   "duration": 186.77,
+   "voice": "miles-v1"
+  },
+  {
+   "document": "leviticus",
+   "chapterIndex": 10,
+   "chapterTitle": "Leviticus 11",
+   "file": "https://pomegranatexlily.github.io/oustory-audio-2/audio/leviticus_011.mp3",
+   "duration": 320.35,
+   "voice": "miles-v1"
+  },
+  {
+   "document": "leviticus",
+   "chapterIndex": 11,
+   "chapterTitle": "Leviticus 12",
+   "file": "https://pomegranatexlily.github.io/oustory-audio-2/audio/leviticus_012.mp3",
+   "duration": 69.6,
+   "voice": "miles-v1"
+  },
+  {
+   "document": "leviticus",
+   "chapterIndex": 12,
+   "chapterTitle": "Leviticus 13",
+   "file": "https://pomegranatexlily.github.io/oustory-audio-2/audio/leviticus_013.mp3",
+   "duration": 497.09,
+   "voice": "miles-v1"
+  },
+  {
+   "document": "leviticus",
+   "chapterIndex": 13,
+   "chapterTitle": "Leviticus 14",
+   "file": "https://pomegranatexlily.github.io/oustory-audio-2/audio/leviticus_014.mp3",
+   "duration": 461.95,
+   "voice": "miles-v1"
+  },
+  {
+   "document": "leviticus",
+   "chapterIndex": 14,
+   "chapterTitle": "Leviticus 15",
+   "file": "https://pomegranatexlily.github.io/oustory-audio-2/audio/leviticus_015.mp3",
+   "duration": 267.31,
+   "voice": "miles-v1"
+  },
+  {
+   "document": "leviticus",
+   "chapterIndex": 15,
+   "chapterTitle": "Leviticus 16",
+   "file": "https://pomegranatexlily.github.io/oustory-audio-2/audio/leviticus_016.mp3",
+   "duration": 327.31,
+   "voice": "miles-v1"
+  },
+  {
+   "document": "leviticus",
+   "chapterIndex": 16,
+   "chapterTitle": "Leviticus 17",
+   "file": "https://pomegranatexlily.github.io/oustory-audio-2/audio/leviticus_017.mp3",
+   "duration": 144.82,
+   "voice": "miles-v1"
+  },
+  {
+   "document": "leviticus",
+   "chapterIndex": 17,
+   "chapterTitle": "Leviticus 18",
+   "file": "https://pomegranatexlily.github.io/oustory-audio-2/audio/leviticus_018.mp3",
+   "duration": 228.38,
+   "voice": "miles-v1"
+  },
+  {
+   "document": "leviticus",
+   "chapterIndex": 18,
+   "chapterTitle": "Leviticus 19",
+   "file": "https://pomegranatexlily.github.io/oustory-audio-2/audio/leviticus_019.mp3",
+   "duration": 360.19,
+   "voice": "miles-v1"
+  },
+  {
+   "document": "leviticus",
+   "chapterIndex": 19,
+   "chapterTitle": "Leviticus 20",
+   "file": "https://pomegranatexlily.github.io/oustory-audio-2/audio/leviticus_020.mp3",
+   "duration": 262.56,
+   "voice": "miles-v1"
+  },
+  {
+   "document": "leviticus",
+   "chapterIndex": 20,
+   "chapterTitle": "Leviticus 21",
+   "file": "https://pomegranatexlily.github.io/oustory-audio-2/audio/leviticus_021.mp3",
+   "duration": 250.15,
+   "voice": "miles-v1"
+  },
+  {
+   "document": "leviticus",
+   "chapterIndex": 21,
+   "chapterTitle": "Leviticus 22",
+   "file": "https://pomegranatexlily.github.io/oustory-audio-2/audio/leviticus_022.mp3",
+   "duration": 255.24,
+   "voice": "miles-v1"
+  },
+  {
+   "document": "leviticus",
+   "chapterIndex": 22,
+   "chapterTitle": "Leviticus 23",
+   "file": "https://pomegranatexlily.github.io/oustory-audio-2/audio/leviticus_023.mp3",
+   "duration": 442.13,
+   "voice": "miles-v1"
+  },
+  {
+   "document": "leviticus",
+   "chapterIndex": 23,
+   "chapterTitle": "Leviticus 24",
+   "file": "https://pomegranatexlily.github.io/oustory-audio-2/audio/leviticus_024.mp3",
+   "duration": 169.34,
+   "voice": "miles-v1"
+  },
+  {
+   "document": "leviticus",
+   "chapterIndex": 24,
+   "chapterTitle": "Leviticus 25",
+   "file": "https://pomegranatexlily.github.io/oustory-audio-2/audio/leviticus_025.mp3",
+   "duration": 446.52,
+   "voice": "miles-v1"
+  },
+  {
+   "document": "leviticus",
+   "chapterIndex": 25,
+   "chapterTitle": "Leviticus 26",
+   "file": "https://pomegranatexlily.github.io/oustory-audio-2/audio/leviticus_026.mp3",
+   "duration": 455.57,
+   "voice": "miles-v1"
+  },
+  {
+   "document": "leviticus",
+   "chapterIndex": 26,
+   "chapterTitle": "Leviticus 27",
+   "file": "https://pomegranatexlily.github.io/oustory-audio-2/audio/leviticus_027.mp3",
+   "duration": 281.14,
+   "voice": "miles-v1"
   }
  ]
 }
