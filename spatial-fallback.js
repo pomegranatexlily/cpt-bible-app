@@ -1,12 +1,24 @@
-/* OUSTORY 2D reading fallback — plain JS, no frameworks, no network calls.
-   Sample verse text is verbatim from the Covenant text files
-   data/psalms.json and data/genesis.json. Nothing else is quoted here,
-   and no translation or reading is invented: books without a sample
-   show a notice instead of text. */
+/* OUSTORY Spatial Archive — plain JS, no frameworks, no network calls.
+   Collections follow the real 80-book canonical sequence (data/manifest.json:
+   "80-title working canonical sequence"). Group labels are navigation
+   grouping, not a doctrinal claim. Sample verse text is verbatim from the
+   Covenant text files data/psalms.json and data/genesis.json. Nothing else
+   is quoted here, and no translation or reading is invented: books without
+   a sample show a notice instead of text. */
 (function () {
   "use strict";
 
   var BOOK_IDS = ["genesis","exodus","leviticus","numbers","deuteronomy","joshua","judges","ruth","1-samuel","2-samuel","1-kings","2-kings","1-chronicles","2-chronicles","ezra","nehemiah","esther","job","psalms","proverbs","ecclesiastes","song-of-solomon","isaiah","jeremiah","lamentations","ezekiel","daniel","hosea","joel","amos","obadiah","jonah","micah","nahum","habakkuk","zephaniah","haggai","zechariah","malachi","1-esdras","2-esdras","tobit","judith","the-rest-of-esther","the-wisdom-of-solomon","ecclesiasticus","baruch","the-song-of-the-three-holy-children","the-history-of-susanna","bel-and-the-dragon","the-prayer-of-manasses","1-maccabees","2-maccabees","matthew","mark","luke","john","acts","romans","1-corinthians","2-corinthians","galatians","ephesians","philippians","colossians","1-thessalonians","2-thessalonians","1-timothy","2-timothy","titus","philemon","hebrews","james","1-peter","2-peter","1-john","2-john","3-john","jude","revelation"];
+
+  var COLLECTIONS = [
+    { id: "torah", title: "Torah", books: ["genesis","exodus","leviticus","numbers","deuteronomy"] },
+    { id: "history", title: "History", books: ["joshua","judges","ruth","1-samuel","2-samuel","1-kings","2-kings","1-chronicles","2-chronicles","ezra","nehemiah","esther"] },
+    { id: "wisdom", title: "Wisdom & Poetry", books: ["job","psalms","proverbs","ecclesiastes","song-of-solomon"] },
+    { id: "prophets", title: "Prophets", books: ["isaiah","jeremiah","lamentations","ezekiel","daniel","hosea","joel","amos","obadiah","jonah","micah","nahum","habakkuk","zephaniah","haggai","zechariah","malachi"] },
+    { id: "additional", title: "Additional Books", books: ["1-esdras","2-esdras","tobit","judith","the-rest-of-esther","the-wisdom-of-solomon","ecclesiasticus","baruch","the-song-of-the-three-holy-children","the-history-of-susanna","bel-and-the-dragon","the-prayer-of-manasses","1-maccabees","2-maccabees"] },
+    { id: "gospels", title: "Gospels & Acts", books: ["matthew","mark","luke","john","acts"] },
+    { id: "letters", title: "Letters & Revelation", books: ["romans","1-corinthians","2-corinthians","galatians","ephesians","philippians","colossians","1-thessalonians","2-thessalonians","1-timothy","2-timothy","titus","philemon","hebrews","james","1-peter","2-peter","1-john","2-john","3-john","jude","revelation"] }
+  ];
 
   function titleFromId(id) {
     var small = { of: true, and: true, the: true };
@@ -55,6 +67,8 @@
   var $ = function (id) { return document.getElementById(id); };
   var current = 0;
   var fontSize = 18;
+  var focusIndex = 0;
+  var stackCards = [];
 
   function showCollections() {
     $("reading-view").classList.add("hidden");
@@ -91,7 +105,7 @@
       });
       versesEl.appendChild(p);
     });
-    $("reading-note").textContent = "Prototype sample. Tap any verse to select it. Full chapters live in the reader app.";
+    $("reading-note").textContent = "Sample. Tap any verse to select it. Full chapters live in the reader app.";
     var player = $("player");
     if (s.audio) { player.classList.remove("hidden"); }
     else { player.classList.add("hidden"); $("narration").pause(); }
@@ -102,6 +116,23 @@
     $("reading-view").classList.remove("hidden");
     $("reading-title").focus();
     requestAnimationFrame(function () { window.__readingTextMs = performance.now(); });
+  }
+
+  function setFocus(index) {
+    focusIndex = (index + COLLECTIONS.length) % COLLECTIONS.length;
+    stackCards.forEach(function (card, i) {
+      var delta = (i - focusIndex + COLLECTIONS.length) % COLLECTIONS.length;
+      card.classList.remove("is-prev", "is-focus", "is-next");
+      if (delta === 0) card.classList.add("is-focus");
+      else if (delta === 1) card.classList.add("is-next");
+      else if (delta === COLLECTIONS.length - 1) card.classList.add("is-prev");
+    });
+    $("col-indicator").textContent = (focusIndex + 1) + " of " + COLLECTIONS.length;
+  }
+
+  function scrollToHub(id) {
+    var section = document.getElementById("hub-" + id);
+    if (section) section.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   function renderCollections() {
@@ -121,30 +152,86 @@
       grid.appendChild(b);
     });
 
-    var list = $("book-list");
-    BOOK_IDS.forEach(function (id) {
-      var li = document.createElement("li");
+    var stack = $("stack");
+    COLLECTIONS.forEach(function (col, i) {
       var b = document.createElement("button");
+      b.className = "collection-card";
       b.type = "button";
-      b.textContent = titleFromId(id) + " ";
-      if (sampleBookIds[id]) {
-        var tag = document.createElement("span");
-        tag.className = "has-sample";
-        tag.textContent = "· sample inside";
-        b.appendChild(tag);
-        b.addEventListener("click", function () {
-          for (var i = 0; i < SAMPLES.length; i++) {
-            if (SAMPLES[i].book === id) { openSample(i); return; }
-          }
-        });
-      } else {
-        b.addEventListener("click", function () {
-          $("collection-notice").textContent = "This prototype carries sample passages only. The full text of " + titleFromId(id) + " lives in the reader app — nothing is invented here.";
-        });
-      }
-      li.appendChild(b);
-      list.appendChild(li);
+      b.setAttribute("role", "listitem");
+      var strong = document.createElement("strong");
+      strong.textContent = col.title;
+      var count = document.createElement("span");
+      count.className = "count";
+      count.textContent = col.books.length + " books";
+      var action = document.createElement("span");
+      action.className = "action";
+      action.textContent = "Open collection";
+      b.appendChild(strong);
+      b.appendChild(count);
+      b.appendChild(action);
+      b.addEventListener("click", function () { setFocus(i); scrollToHub(col.id); });
+      stack.appendChild(b);
+      stackCards.push(b);
     });
+    setFocus(0);
+
+    var hub = $("hub");
+    COLLECTIONS.forEach(function (col) {
+      var section = document.createElement("section");
+      section.className = "hub-collection";
+      section.id = "hub-" + col.id;
+      var h = document.createElement("h3");
+      h.textContent = col.title;
+      section.appendChild(h);
+      var list = document.createElement("ul");
+      list.className = "book-list";
+      col.books.forEach(function (id) {
+        var li = document.createElement("li");
+        var b = document.createElement("button");
+        b.type = "button";
+        b.dataset.book = id;
+        b.textContent = titleFromId(id) + " ";
+        if (sampleBookIds[id]) {
+          var tag = document.createElement("span");
+          tag.className = "has-sample";
+          tag.textContent = "· sample inside";
+          b.appendChild(tag);
+          b.addEventListener("click", function () {
+            for (var i = 0; i < SAMPLES.length; i++) {
+              if (SAMPLES[i].book === id) { openSample(i); return; }
+            }
+          });
+        } else {
+          b.addEventListener("click", function () {
+            $("collection-notice").textContent = "This page carries sample passages only. The full text of " + titleFromId(id) + " lives in the reader app — nothing is invented here.";
+          });
+        }
+        li.appendChild(b);
+        list.appendChild(li);
+      });
+      section.appendChild(list);
+      hub.appendChild(section);
+    });
+  }
+
+  function applySearch(query) {
+    var q = query.trim().toLowerCase();
+    var sampleCards = $("sample-grid").children;
+    for (var i = 0; i < sampleCards.length; i++) {
+      sampleCards[i].style.display = (!q || sampleCards[i].textContent.toLowerCase().indexOf(q) !== -1) ? "" : "none";
+    }
+    var sections = $("hub").children;
+    for (var j = 0; j < sections.length; j++) {
+      var buttons = sections[j].querySelectorAll("button");
+      var any = false;
+      for (var k = 0; k < buttons.length; k++) {
+        var show = !q || buttons[k].textContent.toLowerCase().indexOf(q) !== -1;
+        buttons[k].closest("li").style.display = show ? "" : "none";
+        if (show) any = true;
+      }
+      sections[j].style.display = any ? "" : "none";
+    }
+    $("collection-notice").textContent = q ? "" : $("collection-notice").textContent;
   }
 
   function setFontSize(px) {
@@ -158,12 +245,19 @@
   $("font-smaller").addEventListener("click", function () { setFontSize(fontSize - 2); });
   $("font-larger").addEventListener("click", function () { setFontSize(fontSize + 2); });
   $("font-reset").addEventListener("click", function () { setFontSize(18); });
+  $("col-prev").addEventListener("click", function () { setFocus(focusIndex - 1); });
+  $("col-next").addEventListener("click", function () { setFocus(focusIndex + 1); });
+  $("book-search").addEventListener("input", function (e) { applySearch(e.target.value); });
   document.addEventListener("keydown", function (e) {
     var readingOpen = !$("reading-view").classList.contains("hidden");
-    if (!readingOpen) return;
-    if (e.key === "Escape") showCollections();
-    if (e.key === "ArrowLeft" && current > 0) openSample(current - 1);
-    if (e.key === "ArrowRight" && current < SAMPLES.length - 1) openSample(current + 1);
+    if (readingOpen) {
+      if (e.key === "Escape") showCollections();
+      if (e.key === "ArrowLeft" && current > 0) openSample(current - 1);
+      if (e.key === "ArrowRight" && current < SAMPLES.length - 1) openSample(current + 1);
+      return;
+    }
+    if (e.key === "ArrowLeft") setFocus(focusIndex - 1);
+    if (e.key === "ArrowRight") setFocus(focusIndex + 1);
   });
 
   renderCollections();
