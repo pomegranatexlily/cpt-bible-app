@@ -540,9 +540,9 @@
           const sp = new THREE.Sprite(new THREE.SpriteMaterial({
             map: new THREE.CanvasTexture(glowTexture(ca, cb)),
             blending: THREE.AdditiveBlending, depthWrite: false, transparent: true,
-            opacity: 0.17 + (i % 3) * 0.05, fog: false
+            opacity: 0.36 + (i % 3) * 0.09, fog: false
           }));
-          const sc = 55 + (i % 4) * 22;
+          const sc = 74 + (i % 4) * 30;
           sp.scale.set(sc, sc * 0.62, 1);
           sp.position.set(-80 + i * 15, 4 + (i % 4) * 11, -80 - (i % 2) * 14);
           scene.add(sp);
@@ -554,28 +554,28 @@
       const mTex = new THREE.CanvasTexture(moonTexture(2048, 1024));
       mTex.encoding = THREE.sRGBEncoding;
       const moonMesh = new THREE.Mesh(
-        new THREE.SphereGeometry(2.1, 64, 48),
+        new THREE.SphereGeometry(2.45, 64, 48),
         new THREE.MeshStandardMaterial({
           map: mTex, roughness: 1, fog: false,
           // Lights ON the moon: a soft self-glow from its own texture, low
           // enough that the computed phase terminator still reads.
-          emissive: 0xbfc8d8, emissiveMap: mTex, emissiveIntensity: 0.22
+          emissive: 0xbfc8d8, emissiveMap: mTex, emissiveIntensity: 0.38
         })
       );
       moonMesh.position.set(10.5, 13.5, -30);
       scene.add(moonMesh);
       const glow = new THREE.Sprite(new THREE.SpriteMaterial({
         map: new THREE.CanvasTexture(glowTexture("rgba(200,220,255,0.85)", "rgba(120,170,255,0.25)")),
-        blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0.65, fog: false
+        blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0.8, fog: false
       }));
-      glow.scale.set(8, 8, 1);
+      glow.scale.set(9.6, 9.6, 1);
       glow.position.copy(moonMesh.position);
       scene.add(glow);
       // Blue fresnel rim around the moon's real face — the phase, maria and
       // terminator stay exactly as computed; only a glowing blue edge is
       // added around the disc.
       const rimShell = new THREE.Mesh(
-        new THREE.SphereGeometry(2.1 * 1.07, 48, 32),
+        new THREE.SphereGeometry(2.45 * 1.07, 48, 32),
         new THREE.ShaderMaterial({
           uniforms: { c: { value: new THREE.Color(0x7fd0ff) } },
           vertexShader: "varying vec3 vN; varying vec3 vV; void main(){ vec4 mv = modelViewMatrix * vec4(position, 1.0); vN = normalMatrix * normal; vV = -mv.xyz; gl_Position = projectionMatrix * mv; }",
