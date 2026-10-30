@@ -1,12 +1,12 @@
 /* Oustory Release 4: first-party offline reading. Audio is recorded MP3 files (audio-manifest.json); no device narration. No Scripture transformations. */
 "use strict";
-const SHELL="oustory-shell-r35-moon3-20261030";
+const SHELL="oustory-shell-r36-sabbath-20261030";
 const BOOKS="oustory-books-r5-volume-iii-full-sync-20261020";
 const RUNTIME="oustory-runtime-r5-volume-iii-full-sync-20261020";
 const APP=new URL(self.registration.scope);
 const CORE=[
  "./","./index.html","./privacy.html","./manifest.webmanifest","./cpt-index.js",
- "./oustory-reader.js","./oustory-features.js","./oustory-features.css","./oustory-moon.js","./oustory-moon.css","./vendor/three.min.js",
+ "./oustory-reader.js","./oustory-features.js","./oustory-features.css","./oustory-moon.js","./oustory-moon.css","./vendor/three.min.js","./oustory-sabbath-countdown.js","./oustory-sabbath-countdown.css",
  "./oustory-branding.js","./oustory-branding.css","./oustory-calendar.js",
  "./oustory-calendar-study.js","./oustory-calendar.css","./oustory-audio.js",
  "./oustory-search.js","./oustory-research.js","./oustory-research.css",

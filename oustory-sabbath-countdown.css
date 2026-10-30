@@ -1,0 +1,62 @@
+/* Oustory — Sabbath countdown bar: sits at the very top of the app,
+   above the toolbar, on every screen. Solid and ruled, gold on ink. */
+.sabbath-bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: calc(env(safe-area-inset-top, 0px) + 7px) 14px 7px 18px;
+  background: #141210;
+  color: #f5f0e6;
+  border-bottom: 1px solid rgba(201, 162, 39, 0.55);
+  font-size: 13px;
+  line-height: 1.25;
+  z-index: 20;
+}
+.sabbath-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #c9a227;
+  white-space: nowrap;
+}
+.sabbath-clock {
+  font-variant-numeric: tabular-nums;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.sabbath-when {
+  margin-left: auto;
+  color: rgba(245, 240, 230, 0.62);
+  white-space: nowrap;
+}
+.sabbath-close {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: rgba(245, 240, 230, 0.75);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+.sabbath-close:hover { background: rgba(245, 240, 230, 0.1); color: #f5f0e6; }
+.sabbath-bar.is-today {
+  background: #c9a227;
+  color: #141210;
+  border-bottom-color: #c9a227;
+}
+.sabbath-bar.is-today .sabbath-label { color: #141210; }
+.sabbath-bar.is-today .sabbath-when { color: rgba(20, 18, 16, 0.66); }
+.sabbath-bar.is-today .sabbath-close { color: rgba(20, 18, 16, 0.75); }
+@media (max-width: 360px) {
+  .sabbath-bar { gap: 8px; padding-left: 12px; }
+  .sabbath-when { display: none; }
+}
