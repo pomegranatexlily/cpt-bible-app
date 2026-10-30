@@ -1,12 +1,20 @@
 "use strict";
-/* Oustory — Sabbath countdown bar.
-   A slim bar at the very top of the app counting down to the next Shabbat
-   by the covenant reckoning: Shabbat falls on lunar days
-   8, 15, 22, 29 of each month in the app's published calendar
-   (calendar/published.json months table). Date-based: the app does not
-   calculate sunset, so the count runs to the start of the Shabbat date.
-   The X dismisses the bar for that Shabbat cycle only; it returns for the
-   next Shabbat. If the calendar can't be read, no bar is shown. */
+/* Oustory — holy-day countdown bar.
+   A slim bar at the very top of the app counting down to the next holy day
+   in the covenant reckoning, all from the app's published calendar
+   (calendar/published.json):
+   - Shabbat: lunar days 8, 15, 22, 29 of each month (months table rule).
+   - New Moon: each month start (lunar day 1), plus published new_moon events.
+   - Feasts: ONLY the feast events in the published events list, with their
+     published titles. Draft track projections are never used, and no feast
+     date is ever computed here.
+   When a Sabbath and another holy day fall on the same date, the bar names
+   both ("Sabbath + Purim (continued)"). When the next holy day falls the
+   day after, the bar notes it briefly ("then New Moon Tue").
+   Date-based: the app does not calculate sunset, so the count runs to the
+   start of the holy day's date. The X dismisses the bar for that date only;
+   it returns for the next holy day. If the calendar can't be read, no bar
+   is shown. */
 (() => {
   const DISMISS_KEY = "oustory.sabbathCountdown.dismissedTarget";
   const SHABBAT_LUNAR_DAYS = [8, 15, 22, 29];
@@ -19,8 +27,10 @@
   const isoOf = date =>
     date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0") +
     "-" + String(date.getDate()).padStart(2, "0");
-
+  // Calendar arithmetic via date setters, never +86400000ms: across a
+  // fall-back boundary a day is 25 hours and ms math lands a day early.
   const addDays = (date, n) => new Date(date.getFullYear(), date.getMonth(), date.getDate() + n);
+
   function shabbatDates(months) {
     const starts = months.map(m => m.date).filter(Boolean).sort();
     const out = [];
@@ -32,14 +42,29 @@
         if (d < nextStart) out.push(d);
       }
     }
-    return out.sort((a, b) => a - b);
+    return out;
   }
 
-  function nextShabbat(dates, now) {
-    for (const d of dates) {
-      if (addDays(d, 1).getTime() > now.getTime()) return d; // today counts until its date ends
+  /* Merge every holy day into one list keyed by date, so overlaps share a
+     single entry with all their names. Name order: Sabbath, feasts, New Moon. */
+  function holyDays(data) {
+    const byDate = new Map();
+    const add = (date, name, rank) => {
+      const key = isoOf(date);
+      if (!byDate.has(key)) byDate.set(key, { date, names: [] });
+      const entry = byDate.get(key);
+      if (!entry.names.some(n => n.name === name)) entry.names.push({ name, rank });
+    };
+    for (const d of shabbatDates(data.months || [])) add(d, "Sabbath", 0);
+    for (const m of data.months || []) if (m.date) add(parseISODate(m.date), "New Moon", 2);
+    for (const e of data.events || []) {
+      if (!e.date) continue;
+      if (e.kind === "new_moon") add(parseISODate(e.date), "New Moon", 2);
+      else if (e.kind === "feast" && e.title) add(parseISODate(e.date), e.title, 1);
     }
-    return null;
+    return [...byDate.values()]
+      .map(e => ({ date: e.date, names: e.names.sort((a, b) => a.rank - b.rank).map(n => n.name) }))
+      .sort((a, b) => a.date - b.date);
   }
 
   function fmtDiff(ms) {
@@ -50,6 +75,10 @@
     const ss = String(total % 60).padStart(2, "0");
     return (days > 0 ? days + "d " : "") + hh + ":" + mm + ":" + ss;
   }
+  const fmtDate = d => new Intl.DateTimeFormat("en-US", {
+    weekday: "short", month: "short", day: "numeric"
+  }).format(d);
+  const fmtDay = d => new Intl.DateTimeFormat("en-US", { weekday: "short" }).format(d);
 
   async function init() {
     const app = document.querySelector(".app");
@@ -60,16 +89,16 @@
       if (!res.ok) return;
       data = await res.json();
     } catch { return; }
-    const dates = shabbatDates(data.months || []);
-    if (!dates.length) return;
+    const days = holyDays(data);
+    if (!days.length) return;
+    const byIso = new Map(days.map(e => [isoOf(e.date), e]));
 
     const bar = document.createElement("div");
     bar.className = "sabbath-bar";
     bar.setAttribute("role", "timer");
-    bar.setAttribute("aria-label", "Countdown to Sabbath");
+    bar.setAttribute("aria-label", "Countdown to the next holy day");
     const label = document.createElement("span");
     label.className = "sabbath-label";
-    label.textContent = "Sabbath";
     const clock = document.createElement("span");
     clock.className = "sabbath-clock";
     const when = document.createElement("span");
@@ -77,44 +106,47 @@
     const close = document.createElement("button");
     close.className = "sabbath-close";
     close.type = "button";
-    close.setAttribute("aria-label", "Dismiss the Sabbath countdown");
+    close.setAttribute("aria-label", "Dismiss this countdown");
     close.textContent = "×";
     bar.append(label, clock, when, close);
     app.insertBefore(bar, app.firstChild);
 
     let target = null;
     let timer = null;
+    function stop() { if (timer) { clearInterval(timer); timer = null; } }
     function dismiss() {
-      try { localStorage.setItem(DISMISS_KEY, isoOf(target)); } catch {}
+      try { localStorage.setItem(DISMISS_KEY, isoOf(target.date)); } catch {}
       stop();
       bar.remove();
     }
-    function stop() { if (timer) { clearInterval(timer); timer = null; } }
     close.addEventListener("click", dismiss);
 
     function tick() {
       const now = new Date();
-      const current = nextShabbat(dates, now);
+      const current = days.find(e => addDays(e.date, 1).getTime() > now.getTime());
       if (!current) { stop(); bar.remove(); return; }
-      if (!target || current.getTime() !== target.getTime()) {
+      if (!target || current.date.getTime() !== target.date.getTime()) {
         target = current;
         let dismissed = null;
         try { dismissed = localStorage.getItem(DISMISS_KEY); } catch {}
-        if (dismissed === isoOf(target)) { stop(); bar.remove(); return; }
-        when.textContent = new Intl.DateTimeFormat("en-US", {
-          weekday: "short", month: "short", day: "numeric"
-        }).format(target);
+        if (dismissed === isoOf(target.date)) { stop(); bar.remove(); return; }
+        label.textContent = target.names.join(" + ");
+        let whenText = fmtDate(target.date);
+        const nextDay = byIso.get(isoOf(addDays(target.date, 1)));
+        if (nextDay) whenText += " · then " + nextDay.names.join(" + ") + " " + fmtDay(nextDay.date);
+        when.textContent = whenText;
+        bar.setAttribute("aria-label", "Countdown to " + target.names.join(" and "));
       }
-      const start = target.getTime();
-      const end = addDays(target, 1).getTime();
+      const start = target.date.getTime();
+      const end = addDays(target.date, 1).getTime();
       if (now.getTime() < start) {
-        label.textContent = "Sabbath";
         clock.textContent = fmtDiff(start - now.getTime());
         bar.classList.remove("is-today");
+        label.textContent = target.names.join(" + ");
       } else {
-        label.textContent = "Sabbath · today";
         clock.textContent = fmtDiff(end - now.getTime());
         bar.classList.add("is-today");
+        label.textContent = target.names.join(" + ") + " · today";
       }
     }
     tick();
