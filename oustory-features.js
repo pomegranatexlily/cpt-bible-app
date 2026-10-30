@@ -78,6 +78,7 @@
   }
   function showBible(){
     window.OustoryWorkbench?.dismiss();
+    window.OustoryMoon?.unmount();
     document.body.classList.remove("feature-mode");
     root.hidden=true;
     const ref=byId("reference"),chapter=byId("chapter-title");
@@ -87,6 +88,7 @@
   function show(view){
     if(view==="bible"){showBible();byId("reader").focus();return}
     window.OustoryWorkbench?.dismiss();
+    window.OustoryMoon?.unmount();
     window.OustoryAudio?.stop(); // Never leave unseen audio playing behind another app screen.
     if(view==="more"){
       const menu=byId("oustory-menu");
@@ -149,6 +151,8 @@
     const brandText = el("div");brandText.append(el("strong","Covenant Bible"),el("span","Oustory · POM × LILY"));
     brand.append(cover,brandText);root.append(brand);
     title("Oustory · covenant reading","The nation's record","Read → Study → Research → Practice → Teach → Archive");
+    const moonCard=card(root,"Tonight · the Moon");
+    window.OustoryMoon?.mount(moonCard);
     const verseCard=card(root,"Today's reading");
     verseCard.append(el("p","Theme: "+group[0],"feature-kicker"));
     const display=el("p","Loading this verse from the Oustory text…","feature-verse");

@@ -1,0 +1,161 @@
+/* Oustory Moon — home-page moon for the Covenant Bible app.
+   Concordance language: solid, ruled, typographic. No glass slabs.
+   Colors: ink #141210, parchment #f5f0e6, gold #c9a227. */
+
+.moon-stage {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  max-height: 360px;
+  width: 100%;
+  margin: 10px 0 4px;
+  overflow: hidden;
+  background: radial-gradient(120% 90% at 50% 38%, #101728 0%, #0a0f1c 52%, #05070d 100%);
+  border-top: 1px solid rgba(201, 162, 39, 0.45);
+  border-bottom: 1px solid rgba(201, 162, 39, 0.45);
+}
+.moon-stage canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.moon-stage .moon-stars { pointer-events: none; }
+.moon-disc-fallback {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: min(78%, 300px);
+  height: auto;
+  aspect-ratio: 1 / 1;
+}
+/* Cinematic letterbox */
+.moon-stage::before,
+.moon-stage::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  height: 0;
+  background: #000;
+  z-index: 3;
+  transition: height 0.7s ease;
+  pointer-events: none;
+}
+.moon-stage::before { top: 0; }
+.moon-stage::after { bottom: 0; }
+.moon-stage.moon-letterbox::before,
+.moon-stage.moon-letterbox::after { height: 11%; }
+
+.moon-rows { margin-top: 8px; }
+.moon-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(245, 240, 230, 0.09);
+}
+.moon-row:last-child { border-bottom: none; }
+.moon-key {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(245, 240, 230, 0.55);
+  white-space: nowrap;
+}
+.moon-val {
+  font-size: 15px;
+  color: #f5f0e6;
+  text-align: right;
+}
+.moon-covenant {
+  margin: 10px 0 0;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: #c9a227;
+}
+.moon-stamp {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: rgba(245, 240, 230, 0.5);
+}
+
+.moon-switch {
+  display: flex;
+  gap: 4px;
+  margin-top: 12px;
+  border-top: 1px solid rgba(245, 240, 230, 0.12);
+  padding-top: 10px;
+}
+.moon-view-btn {
+  flex: 1;
+  appearance: none;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: rgba(245, 240, 230, 0.62);
+  font: inherit;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 6px 2px 7px;
+  cursor: pointer;
+}
+.moon-view-btn.is-active {
+  color: #c9a227;
+  border-bottom-color: #c9a227;
+}
+
+/* Earth view: everything disappears into the yard. */
+body.moon-earth-open { overflow: hidden; }
+.moon-earth {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  overflow: hidden;
+  background: linear-gradient(180deg, #04060f 0%, #081020 52%, #0a1120 78%, #060a06 100%);
+}
+.moon-earth-stars {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.moon-earth-disc {
+  position: absolute;
+  top: 13%;
+  right: 14%;
+  width: 118px;
+  height: 118px;
+  filter: drop-shadow(0 0 22px rgba(238, 234, 220, 0.35));
+  transition: transform 0.25s ease-out;
+}
+.moon-earth-scene {
+  position: absolute;
+  left: -2%;
+  right: -2%;
+  bottom: 0;
+  height: 48%;
+  transition: transform 0.25s ease-out;
+}
+.moon-earth-scene svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.moon-earth-back {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + 14px);
+  left: 14px;
+  appearance: none;
+  background: rgba(5, 7, 13, 0.6);
+  border: 1px solid rgba(201, 162, 39, 0.65);
+  color: #f5f0e6;
+  font: inherit;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 9px 14px;
+  border-radius: 2px;
+  cursor: pointer;
+}
