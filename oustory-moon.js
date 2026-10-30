@@ -63,6 +63,29 @@
   }
   const sunVector = f => [Math.sin(2 * Math.PI * f), 0, -Math.cos(2 * Math.PI * f)];
 
+  /* The same ephemeris for any Gregorian date (noon-UTC reference): age,
+     phase fraction, illumination, phase name. Drives the Moon page's
+     night-by-night month grid, so every night's disc agrees with tonight's
+     math. */
+  function stateForDate(isoDay) {
+    const ref = Date.parse(isoDay + "T12:00:00Z");
+    if (!Number.isFinite(ref)) return null;
+    let age = ((ref - EPOCH) / 86400000) % SYNODIC;
+    if (age < 0) age += SYNODIC;
+    const frac = age / SYNODIC;
+    const illum = (1 - Math.cos(2 * Math.PI * frac)) / 2;
+    const phaseIdx = Math.floor(frac * 8 + 0.5) % 8;
+    return { age, frac, illum, phase: PHASES[phaseIdx] };
+  }
+
+  async function loadCalendarData() {
+    try {
+      const res = await fetch("calendar/published.json");
+      if (!res.ok) return null;
+      return await res.json();
+    } catch { return null; }
+  }
+
   /* Covenant reckoning from the app's own published calendar months table:
      lunar day counts from the month start; Shabbat falls on lunar days
      8, 15, 22, 29. Feast dates are never derived here. */
@@ -252,6 +275,152 @@
       switcher.append(b);
     }
     card.append(switcher);
+
+    /* ---------- The Moon page: the full surface behind the card ---------- */
+    let page = null;
+    function closeMoonPage() {
+      if (!page) return;
+      page.remove();
+      page = null;
+      document.body.classList.remove("moonpage-open");
+    }
+    const openBtn = el("button", "Open the Moon page", "moon-open-btn");
+    openBtn.type = "button";
+    openBtn.onclick = () => { void openMoonPage(); };
+    card.append(openBtn);
+
+    async function openMoonPage() {
+      if (page) return;
+      const overlay = el("div", undefined, "moonpage");
+      overlay.setAttribute("role", "dialog");
+      overlay.setAttribute("aria-label", "The Moon page");
+      const head = el("div", undefined, "moonpage-head");
+      head.append(el("p", "THE MOON · " + state.dateLabel.toUpperCase(), "moonpage-eyebrow"));
+      head.append(el("h2", state.phase, "moonpage-title"));
+      const close = el("button", "×", "moonpage-close");
+      close.type = "button";
+      close.setAttribute("aria-label", "Close the Moon page");
+      close.onclick = closeMoonPage;
+      head.append(close);
+      overlay.append(head);
+      document.body.append(overlay);
+      document.body.classList.add("moonpage-open");
+      page = overlay;
+      overlay.scrollTop = 0;
+
+      const bigWrap = el("div", undefined, "moonpage-disc-wrap");
+      const big = el("canvas", undefined, "moonpage-disc");
+      big.width = 560; big.height = 560;
+      drawDisc(big, state, texCanvas);
+      bigWrap.append(big);
+      overlay.append(bigWrap);
+      overlay.append(el("p",
+        "Tonight — " + Math.round(state.illum * 100) + "% lit · " +
+        state.age.toFixed(1) + " days from the new moon · " + state.sign + " " +
+        Math.floor(state.signDeg) + "°", "moonpage-caption"));
+
+      const cal = await loadCalendarData();
+      if (!page) return; // closed while the calendar loaded
+
+      const DAY = 86400000;
+      const fmtD = ms => new Intl.DateTimeFormat("en-US", {
+        timeZone: "UTC", weekday: "short", month: "short", day: "numeric"
+      }).format(new Date(ms));
+      const todayMs = Date.parse(state.isoDay + "T12:00:00Z");
+
+      // The month, night by night — every disc from the same ephemeris.
+      const starts = cal ? (cal.months || []).map(m => m.date).sort() : [];
+      let idx = -1;
+      for (let i = 0; i < starts.length; i++) if (starts[i] <= state.isoDay) idx = i;
+      if (idx >= 0) {
+        const startMs = Date.parse(starts[idx] + "T12:00:00Z");
+        const len = starts[idx + 1]
+          ? Math.round((Date.parse(starts[idx + 1]) - Date.parse(starts[idx])) / DAY) : 30;
+        const lunarToday = Math.round((todayMs - startMs) / DAY) + 1;
+        const block = el("div", undefined, "moonpage-block");
+        block.append(el("h3", "This month, night by night", "moonpage-block-title"));
+        const detail = el("p", "", "mp-detail");
+        const grid = el("div", undefined, "mp-grid");
+        const kindOf = d => d === 1 ? "New Moon"
+          : [8, 15, 22, 29].includes(d) ? "Shabbat"
+          : [7, 14, 21, 28].includes(d) ? "Preparation" : "Ordinary day";
+        const describe = d => {
+          const ms = startMs + (d - 1) * DAY;
+          const iso = new Date(ms).toISOString().slice(0, 10);
+          const st = stateForDate(iso);
+          detail.textContent = "Day " + d + " · " + fmtD(ms) + " — " + kindOf(d) +
+            (st ? " · " + st.phase + " · " + Math.round(st.illum * 100) + "% lit" : "");
+        };
+        for (let d = 1; d <= len; d++) {
+          const ms = startMs + (d - 1) * DAY;
+          const iso = new Date(ms).toISOString().slice(0, 10);
+          const st = stateForDate(iso);
+          const cell = el("button", undefined, "mp-cell");
+          cell.type = "button";
+          if ([8, 15, 22, 29].includes(d)) cell.classList.add("is-shabbat");
+          if ([7, 14, 21, 28].includes(d)) cell.classList.add("is-prep");
+          if (d === lunarToday) cell.classList.add("is-today");
+          if (d < lunarToday) cell.classList.add("is-past");
+          const cv = el("canvas", undefined, "mp-disc");
+          cv.width = 96; cv.height = 96;
+          if (st) drawDisc(cv, st, texCanvas);
+          cell.append(cv);
+          cell.append(el("span", String(d), "mp-day"));
+          cell.append(el("span",
+            d === 1 ? "NEW MOON" : [8, 15, 22, 29].includes(d) ? "SHABBAT"
+            : [7, 14, 21, 28].includes(d) ? "PREP" : "", "mp-kind"));
+          cell.setAttribute("aria-label", "Lunar day " + d + ", " + kindOf(d));
+          cell.onclick = () => describe(d);
+          grid.append(cell);
+        }
+        block.append(grid);
+        block.append(el("p",
+          "Gold rings are Shabbaths — 8 · 15 · 22 · 29. The day before each one is preparation. Tap a night for its phase.",
+          "moonpage-caption"));
+        block.append(detail);
+        overlay.append(block);
+        describe(lunarToday);
+      }
+
+      // The road ahead — new moon, full moon, Shabbat, from the same math.
+      const road = el("div", undefined, "moonpage-block");
+      road.append(el("h3", "The road ahead", "moonpage-block-title"));
+      const roadRows = el("div", undefined, "moon-rows");
+      const toNew = Math.max(0, Math.round(SYNODIC - state.age));
+      const toFull = state.frac < 0.5
+        ? Math.round((0.5 - state.frac) * SYNODIC)
+        : Math.round((1.5 - state.frac) * SYNODIC);
+      const inDays = n => n === 0 ? "today" : n === 1 ? "tomorrow" : "in " + n + " days";
+      const roadData = [
+        ["Next new moon", fmtD(todayMs + toNew * DAY) + " · " + inDays(toNew)],
+        ["Next full moon", fmtD(todayMs + toFull * DAY) + " · " + inDays(toFull)]
+      ];
+      if (idx >= 0) {
+        const startMs = Date.parse(starts[idx] + "T12:00:00Z");
+        const lunarToday = Math.round((todayMs - startMs) / DAY) + 1;
+        let nextShab = null;
+        for (const sd of [8, 15, 22, 29]) if (sd >= lunarToday) { nextShab = startMs + (sd - 1) * DAY; break; }
+        if (!nextShab && starts[idx + 1]) nextShab = Date.parse(starts[idx + 1] + "T12:00:00Z") + 7 * DAY;
+        if (nextShab) {
+          const n = Math.round((nextShab - todayMs) / DAY);
+          roadData.push(["Next Shabbat", fmtD(nextShab) + " · " + inDays(n)]);
+        }
+      }
+      for (const [k, v] of roadData) {
+        const r = el("div", undefined, "moon-row");
+        r.append(el("span", k, "moon-key"), el("span", v, "moon-val"));
+        roadRows.append(r);
+      }
+      road.append(roadRows);
+      overlay.append(road);
+
+      // Tonight's full readout, same rows as the card.
+      const tonightBlock = el("div", undefined, "moonpage-block");
+      tonightBlock.append(el("h3", "Tonight, in full", "moonpage-block-title"));
+      tonightBlock.append(table.cloneNode(true));
+      tonightBlock.append(el("p", "Tonight · Central Time · " + state.dateLabel, "moon-stamp"));
+      overlay.append(tonightBlock);
+    }
 
     /* ---------- Earth view: a real yard in Three.js ---------- */
     let earth = null; // {overlay, destroy}
@@ -706,11 +875,12 @@
       destroy() {
         disposed = true;
         cancelAnimationFrame(raf);
+        closeMoonPage();
         closeEarth();
         if (renderer) { renderer.dispose(); renderer.domElement.remove(); }
       }
     };
   }
 
-  window.OustoryMoon = { mount, unmount, tonightState };
+  window.OustoryMoon = { mount, unmount, tonightState, stateForDate };
 })();

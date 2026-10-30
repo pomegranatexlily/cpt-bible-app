@@ -113,6 +113,120 @@
   border-bottom-color: #c9a227;
 }
 
+.moon-open-btn {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  appearance: none;
+  background: transparent;
+  border: 1px solid rgba(201, 162, 39, 0.65);
+  border-radius: 2px;
+  color: #c9a227;
+  font: inherit;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 11px 14px;
+  cursor: pointer;
+}
+
+/* The Moon page: full-screen surface behind the card. */
+body.moonpage-open { overflow: hidden; }
+.moonpage {
+  position: fixed;
+  inset: 0;
+  z-index: 1900;
+  overflow-y: auto;
+  background: #141210;
+  color: #f5f0e6;
+  padding: calc(env(safe-area-inset-top, 0px) + 18px) 21px 48px;
+}
+.moonpage-head { position: relative; }
+.moonpage-eyebrow {
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #c9a227;
+}
+.moonpage-title { margin: 6px 44px 0 0; font-size: 30px; font-weight: 600; }
+.moonpage-close {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  appearance: none;
+  background: transparent;
+  border: none;
+  color: #c9a227;
+  font-size: 30px;
+  line-height: 1;
+  padding: 8px;
+  cursor: pointer;
+}
+.moonpage-disc-wrap { display: flex; justify-content: center; margin: 18px 0 4px; }
+.moonpage-disc {
+  width: min(74vw, 300px);
+  height: auto;
+  aspect-ratio: 1 / 1;
+  filter: drop-shadow(0 0 26px rgba(238, 234, 220, 0.22));
+}
+.moonpage-caption {
+  margin: 8px 0 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(245, 240, 230, 0.72);
+  text-align: center;
+}
+.moonpage-block { margin-top: 30px; }
+.moonpage-block-title {
+  margin: 0 0 10px;
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #c9a227;
+  border-bottom: 1px solid rgba(201, 162, 39, 0.4);
+  padding-bottom: 7px;
+}
+.mp-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+.mp-cell {
+  appearance: none;
+  background: #1c1916;
+  border: 1px solid rgba(245, 240, 230, 0.14);
+  border-radius: 2px;
+  padding: 7px 2px 6px;
+  cursor: pointer;
+  font: inherit;
+  color: #f5f0e6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.mp-disc { width: 82%; height: auto; aspect-ratio: 1 / 1; display: block; }
+.mp-cell.is-past .mp-disc { opacity: 0.45; }
+.mp-cell.is-shabbat { border-color: #c9a227; }
+.mp-cell.is-today { outline: 2px solid #c9a227; outline-offset: 1px; }
+.mp-day { font-size: 14px; }
+.mp-cell.is-shabbat .mp-day { color: #c9a227; }
+.mp-kind {
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  color: rgba(245, 240, 230, 0.55);
+  min-height: 10px;
+}
+.mp-cell.is-shabbat .mp-kind { color: #c9a227; }
+.mp-detail {
+  margin: 12px 0 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: #c9a227;
+  min-height: 22px;
+}
+
 /* Earth view: everything disappears into the yard. */
 body.moon-earth-open { overflow: hidden; }
 .moon-earth {
