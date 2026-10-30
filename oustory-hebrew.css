@@ -1,0 +1,22 @@
+/* Oustory — Hebrew book-name lines. Concordance surface: solid, ruled,
+   typographic. Gold transliteration under the book title in the Books
+   list, and over the chapter heading in the reader. */
+.bk-main {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.bk-hebrew {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 12.5px;
+  letter-spacing: 0.05em;
+  color: var(--covenant-gold, #c9a227);
+}
+.hebrew-book-line {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  color: var(--covenant-gold, #c9a227);
+  margin: 0 0 6px;
+}
