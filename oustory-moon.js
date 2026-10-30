@@ -555,13 +555,18 @@
       mTex.encoding = THREE.sRGBEncoding;
       const moonMesh = new THREE.Mesh(
         new THREE.SphereGeometry(2.1, 64, 48),
-        new THREE.MeshStandardMaterial({ map: mTex, roughness: 1, fog: false })
+        new THREE.MeshStandardMaterial({
+          map: mTex, roughness: 1, fog: false,
+          // Lights ON the moon: a soft self-glow from its own texture, low
+          // enough that the computed phase terminator still reads.
+          emissive: 0xbfc8d8, emissiveMap: mTex, emissiveIntensity: 0.22
+        })
       );
       moonMesh.position.set(10.5, 13.5, -30);
       scene.add(moonMesh);
       const glow = new THREE.Sprite(new THREE.SpriteMaterial({
         map: new THREE.CanvasTexture(glowTexture("rgba(200,220,255,0.85)", "rgba(120,170,255,0.25)")),
-        blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0.5, fog: false
+        blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0.65, fog: false
       }));
       glow.scale.set(8, 8, 1);
       glow.position.copy(moonMesh.position);
@@ -574,7 +579,7 @@
         new THREE.ShaderMaterial({
           uniforms: { c: { value: new THREE.Color(0x7fd0ff) } },
           vertexShader: "varying vec3 vN; varying vec3 vV; void main(){ vec4 mv = modelViewMatrix * vec4(position, 1.0); vN = normalMatrix * normal; vV = -mv.xyz; gl_Position = projectionMatrix * mv; }",
-          fragmentShader: "uniform vec3 c; varying vec3 vN; varying vec3 vV; void main(){ float f = pow(1.0 - abs(dot(normalize(vN), normalize(vV))), 3.0); gl_FragColor = vec4(c, 1.0) * f * 1.7; }",
+          fragmentShader: "uniform vec3 c; varying vec3 vN; varying vec3 vV; void main(){ float f = pow(1.0 - abs(dot(normalize(vN), normalize(vV))), 3.0); gl_FragColor = vec4(c, 1.0) * f * 2.1; }",
           transparent: true, blending: THREE.AdditiveBlending, side: THREE.BackSide, depthWrite: false
         })
       );
@@ -670,7 +675,10 @@
       }
       scene.add(grass);
 
-      // House — sits ON the ground, gabled roof, lit windows.
+      // THE HOMESTEAD — a fenced complex, not a cottage: three stories on a
+      // huge first floor, a front porch, a barn beside it, lights ON inside.
+      // Everything stays in the translucent blue-outline treatment; only the
+      // moon is solid. (His spec, 2026-10-30.)
       const house = new THREE.Group();
       const wallMat = new THREE.MeshStandardMaterial({
         color: 0x16283f, roughness: 0.6, transparent: true, opacity: 0.32
@@ -678,50 +686,122 @@
       const roofMat = new THREE.MeshStandardMaterial({
         color: 0x0d1a2e, roughness: 0.6, transparent: true, opacity: 0.28
       });
-      const body = new THREE.Mesh(new THREE.BoxGeometry(4.4, 2.7, 3.6), wallMat);
-      body.position.y = 1.35; house.add(addEdges(body));
-      {
+      function gableRoof(width, height, depth) {
         const tri = new THREE.Shape();
-        tri.moveTo(-2.55, 0); tri.lineTo(2.55, 0); tri.lineTo(0, 1.7); tri.closePath();
-        const roofGeo = new THREE.ExtrudeGeometry(tri, { depth: 4.0, bevelEnabled: false });
-        const roof = new THREE.Mesh(roofGeo, roofMat);
-        roof.position.set(0, 2.7, -2.0); house.add(addEdges(roof));
+        tri.moveTo(-width / 2, 0); tri.lineTo(width / 2, 0); tri.lineTo(0, height); tri.closePath();
+        return new THREE.ExtrudeGeometry(tri, { depth, bevelEnabled: false });
       }
-      const chimney = new THREE.Mesh(new THREE.BoxGeometry(0.55, 1.5, 0.55), wallMat);
-      chimney.position.set(1.3, 3.9, -0.6); house.add(addEdges(chimney));
-      const winMat = new THREE.MeshBasicMaterial({ color: 0xd9ab2e });
-      const winDim = new THREE.MeshBasicMaterial({ color: 0x8a6d1f });
-      for (const [wx, mat] of [[-1.4, winMat], [-0.35, winMat], [1.55, winDim]]) {
-        const win = new THREE.Mesh(new THREE.PlaneGeometry(0.62, 0.85), mat);
-        win.position.set(wx, 1.45, 1.81); house.add(win);
-        const wg = new THREE.Sprite(new THREE.SpriteMaterial({
-          map: new THREE.CanvasTexture(glowTexture("rgba(217,171,46,0.55)", "rgba(217,171,46,0.12)")),
-          blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0.75
-        }));
-        wg.scale.set(1.7, 1.7, 1); wg.position.set(wx, 1.45, 1.95); house.add(wg);
+      // Three stories, stepping back as they rise.
+      const floor1 = new THREE.Mesh(new THREE.BoxGeometry(7.6, 2.5, 5.0), wallMat);
+      floor1.position.y = 1.25; house.add(addEdges(floor1));
+      const floor2 = new THREE.Mesh(new THREE.BoxGeometry(6.8, 2.3, 4.4), wallMat);
+      floor2.position.set(0, 3.65, -0.3); house.add(addEdges(floor2));
+      const floor3 = new THREE.Mesh(new THREE.BoxGeometry(5.6, 2.1, 3.8), wallMat);
+      floor3.position.set(0, 5.85, -0.5); house.add(addEdges(floor3));
+      const roof = new THREE.Mesh(gableRoof(6.4, 2.0, 4.6), roofMat);
+      roof.position.set(0, 6.9, -2.8); house.add(addEdges(roof));
+      for (const cx of [-1.7, 1.9]) {
+        const chim = new THREE.Mesh(new THREE.BoxGeometry(0.55, 1.6, 0.55), wallMat);
+        chim.position.set(cx, 7.9, -0.7); house.add(addEdges(chim));
       }
-      const door = new THREE.Mesh(new THREE.PlaneGeometry(0.8, 1.7),
+      // Front porch: floor slab, roof slab, four posts.
+      const porchFloor = new THREE.Mesh(new THREE.BoxGeometry(8.4, 0.18, 1.6), wallMat);
+      porchFloor.position.set(0, 0.09, 3.3); house.add(addEdges(porchFloor));
+      const porchRoof = new THREE.Mesh(new THREE.BoxGeometry(8.4, 0.12, 1.8), roofMat);
+      porchRoof.position.set(0, 2.55, 3.3); house.add(addEdges(porchRoof));
+      for (const px of [-3.9, -1.3, 1.3, 3.9]) {
+        const post = new THREE.Mesh(new THREE.BoxGeometry(0.09, 2.5, 0.09), wallMat);
+        post.position.set(px, 1.3, 3.95); house.add(addEdges(post));
+      }
+      // Windows — the lights are ON.
+      const winLitMat = new THREE.MeshBasicMaterial({ color: 0xffc873 });
+      const winDimMat = new THREE.MeshBasicMaterial({ color: 0x546a8a });
+      const winGlowTex = new THREE.CanvasTexture(glowTexture("rgba(255,200,115,0.55)", "rgba(255,180,94,0.12)"));
+      function addWindow(parent, x, y, z, lit, w, h) {
+        const win = new THREE.Mesh(
+          new THREE.PlaneGeometry(w || 0.55, h || 0.8), lit ? winLitMat : winDimMat);
+        win.position.set(x, y, z); parent.add(win);
+        if (lit) {
+          const wg = new THREE.Sprite(new THREE.SpriteMaterial({
+            map: winGlowTex, blending: THREE.AdditiveBlending,
+            depthWrite: false, transparent: true, opacity: 0.8
+          }));
+          wg.scale.set(1.6, 1.6, 1); wg.position.set(x, y, z + 0.15); parent.add(wg);
+        }
+        return win;
+      }
+      // Floor 1 (front z = 2.51): door at center, four lit windows.
+      const door = new THREE.Mesh(new THREE.PlaneGeometry(0.95, 1.9),
         new THREE.MeshStandardMaterial({ color: 0x05060a }));
-      door.position.set(0.75, 0.86, 1.81); house.add(addEdges(door));
-      house.position.set(-7.2, 0, -10.5);
-      house.rotation.y = 0.42;
+      door.position.set(0, 0.95, 2.51); house.add(addEdges(door));
+      for (const wx of [-3, -1.8, 1.8, 3]) addWindow(house, wx, 1.4, 2.51, true);
+      // Floor 2 (front z = 1.91): three lit, one dim.
+      addWindow(house, -2.6, 3.8, 1.91, true);
+      addWindow(house, -0.9, 3.8, 1.91, true);
+      addWindow(house, 0.9, 3.8, 1.91, true);
+      addWindow(house, 2.6, 3.8, 1.91, false);
+      // Floor 3 (front z = 1.41): two lit, one dim.
+      addWindow(house, -1.8, 6.0, 1.41, false);
+      addWindow(house, 0, 6.0, 1.41, true);
+      addWindow(house, 1.8, 6.0, 1.41, true);
+      // Round attic window in the gable, lit.
+      const attic = new THREE.Mesh(new THREE.CircleGeometry(0.34, 24), winLitMat);
+      attic.position.set(0, 7.55, 1.82); house.add(attic);
+      const atticGlow = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: winGlowTex, blending: THREE.AdditiveBlending,
+        depthWrite: false, transparent: true, opacity: 0.8
+      }));
+      atticGlow.scale.set(1.6, 1.6, 1); atticGlow.position.set(0, 7.55, 1.97); house.add(atticGlow);
+      // Real light spilling out: porch lamp + the first floor's glow.
+      const porchLight = new THREE.PointLight(0xffb45e, 1.1, 13);
+      porchLight.position.set(0, 2.3, 3.6); house.add(porchLight);
+      const hallLight = new THREE.PointLight(0xffc873, 0.7, 16);
+      hallLight.position.set(0, 1.6, 0.5); house.add(hallLight);
+      house.position.set(-9.8, 0, -13.5);
+      house.rotation.y = 0.38;
       scene.add(house);
 
-      // Fence line.
+      // The barn — second building of the complex.
+      const barn = new THREE.Group();
+      const barnBody = new THREE.Mesh(new THREE.BoxGeometry(3.6, 2.4, 3.0), wallMat);
+      barnBody.position.y = 1.2; barn.add(addEdges(barnBody));
+      const barnRoof = new THREE.Mesh(gableRoof(4.2, 1.4, 3.6), roofMat);
+      barnRoof.position.set(0, 2.4, -1.8); barn.add(addEdges(barnRoof));
+      const barnDoor = new THREE.Mesh(new THREE.PlaneGeometry(1.6, 1.9),
+        new THREE.MeshStandardMaterial({ color: 0x05060a }));
+      barnDoor.position.set(-0.6, 0.95, 1.51); barn.add(addEdges(barnDoor));
+      addWindow(barn, 0.9, 1.5, 1.51, true, 0.5, 0.6);
+      barn.position.set(7.8, 0, -12.5);
+      barn.rotation.y = -0.3;
+      scene.add(barn);
+
+      // PERIMETER fence — the homestead is fenced all around: front run
+      // across the yard, side runs going back on both ends.
       const fence = new THREE.Group();
       const fenceMat = new THREE.MeshStandardMaterial({
         color: 0x14263e, roughness: 0.6, transparent: true, opacity: 0.35
       });
-      for (let i = 0; i <= 11; i++) {
-        const post = new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.95, 0.13), fenceMat);
-        post.position.set(-2 + i * 1.05, 0.475, 0); fence.add(addEdges(post));
+      function fenceRun(x1, z1, x2, z2) {
+        const dx = x2 - x1, dz = z2 - z1;
+        const len = Math.hypot(dx, dz);
+        const ang = Math.atan2(-dz, dx);
+        const n = Math.max(2, Math.round(len / 1.05));
+        for (let i = 0; i <= n; i++) {
+          const t = i / n;
+          const post = new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.95, 0.13), fenceMat);
+          post.position.set(x1 + dx * t, 0.475, z1 + dz * t);
+          fence.add(addEdges(post));
+        }
+        for (const ry of [0.58, 0.85]) {
+          const rail = new THREE.Mesh(new THREE.BoxGeometry(len, 0.09, 0.05), fenceMat);
+          rail.position.set(x1 + dx / 2, ry, z1 + dz / 2);
+          rail.rotation.y = ang;
+          fence.add(addEdges(rail));
+        }
       }
-      for (const ry of [0.58, 0.85]) {
-        const rail = new THREE.Mesh(new THREE.BoxGeometry(11.6, 0.09, 0.05), fenceMat);
-        rail.position.set(3.25, ry, 0); fence.add(addEdges(rail));
-      }
-      fence.position.set(0.5, 0, -5.6);
-      fence.rotation.y = -0.06;
+      fenceRun(-9.5, -5.2, 9.5, -5.2);    // front
+      fenceRun(-9.5, -5.2, -9.5, -14.5);  // left, going back
+      fenceRun(9.5, -5.2, 9.5, -14.5);    // right, going back
       scene.add(fence);
 
       // Trees with slow sway. Canopy = clustered SMOOTH spheres in varied
