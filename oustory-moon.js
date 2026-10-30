@@ -184,13 +184,13 @@
     const s = 512;
     const c = document.createElement("canvas"); c.width = s; c.height = s;
     const x = c.getContext("2d");
-    x.fillStyle = "#0b1208"; x.fillRect(0, 0, s, s);
+    x.fillStyle = "#070d1a"; x.fillRect(0, 0, s, s);
     const rnd = mulberry32(97);
-    // Closer greens + finer strokes: the ground reads as lawn at night,
-    // not camouflage speckle.
+    // Blue strokes on deep blue: the lawn itself sits in the same blue
+    // night as everything else (his ruling: grass is blue blades).
     for (let i = 0; i < 15000; i++) {
       const gx = rnd() * s, gy = rnd() * s, len = 2 + rnd() * 4;
-      const greens = ["#141f0d", "#182612", "#1c2c14", "#111a0a", "#16220f"];
+      const greens = ["#0e2140", "#123058", "#163a6b", "#0b1a33", "#102747"];
       x.strokeStyle = greens[Math.floor(rnd() * greens.length)];
       x.globalAlpha = 0.6;
       x.beginPath(); x.moveTo(gx, gy); x.lineTo(gx + (rnd() - 0.5) * 1.4, gy - len); x.stroke();
@@ -519,8 +519,36 @@
           map: dotTex, depthWrite: false, blending: THREE.AdditiveBlending, fog: false
         }));
       }
-      scene.add(starLayer(900, 1.5, 0.85, 41));
-      scene.add(starLayer(160, 2.6, 0.5, 87));
+      const starsA = starLayer(900, 1.5, 0.85, 41);
+      const starsB = starLayer(160, 2.6, 0.5, 87);
+      scene.add(starsA, starsB);
+
+      // The whole sky is set in gas: huge soft nebula clouds in deep blues,
+      // violet and teal drift behind the stars, so the screen sits inside
+      // a living starfield instead of a black backdrop (his words: the
+      // stars are made of gas).
+      const nebulas = [];
+      {
+        const nebCols = [
+          ["rgba(70,110,255,0.55)", "rgba(30,60,180,0.12)"],
+          ["rgba(150,80,255,0.45)", "rgba(80,40,160,0.10)"],
+          ["rgba(40,200,230,0.40)", "rgba(20,90,160,0.10)"],
+          ["rgba(255,110,190,0.30)", "rgba(140,50,120,0.08)"]
+        ];
+        for (let i = 0; i < 8; i++) {
+          const [ca, cb] = nebCols[i % nebCols.length];
+          const sp = new THREE.Sprite(new THREE.SpriteMaterial({
+            map: new THREE.CanvasTexture(glowTexture(ca, cb)),
+            blending: THREE.AdditiveBlending, depthWrite: false, transparent: true,
+            opacity: 0.15 + (i % 3) * 0.05, fog: false
+          }));
+          const sc = 55 + (i % 4) * 22;
+          sp.scale.set(sc, sc * 0.62, 1);
+          sp.position.set(-70 + i * 19, 15 + (i % 3) * 13, -80 - (i % 2) * 14);
+          scene.add(sp);
+          nebulas.push(sp);
+        }
+      }
 
       // The Moon — hi-res texture, smooth sphere, hanging in this sky.
       const mTex = new THREE.CanvasTexture(moonTexture(2048, 1024));
@@ -593,15 +621,26 @@
         pa.needsUpdate = true;
         bladeGeo.computeVertexNormals();
       }
-      const bladeTexC = document.createElement("canvas"); bladeTexC.width = 16; bladeTexC.height = 64;
+      const bladeTexC = document.createElement("canvas"); bladeTexC.width = 32; bladeTexC.height = 128;
       {
+        // A blue blade drawn INTO the texture: deep-blue body, bright
+        // electric-blue lines down both edges and at the tip — the outline
+        // treatment, carried by every one of the 1,500 instanced blades.
         const bx = bladeTexC.getContext("2d");
-        const bg = bx.createLinearGradient(0, 64, 0, 0);
-        bg.addColorStop(0, "#0e1a07"); bg.addColorStop(1, "#2e6b4f");
-        bx.fillStyle = bg; bx.fillRect(0, 0, 16, 64);
+        bx.clearRect(0, 0, 32, 128);
+        const bg = bx.createLinearGradient(0, 128, 0, 0);
+        bg.addColorStop(0, "#0a1e3f"); bg.addColorStop(0.6, "#1450a0"); bg.addColorStop(1, "#57b6ff");
+        bx.fillStyle = bg;
+        bx.beginPath();
+        bx.moveTo(5, 128); bx.quadraticCurveTo(12, 64, 16, 2);
+        bx.quadraticCurveTo(20, 64, 27, 128); bx.closePath(); bx.fill();
+        bx.strokeStyle = "rgba(150,215,255,0.95)"; bx.lineWidth = 2.4;
+        bx.beginPath(); bx.moveTo(5, 128); bx.quadraticCurveTo(12, 64, 16, 2); bx.stroke();
+        bx.beginPath(); bx.moveTo(27, 128); bx.quadraticCurveTo(20, 64, 16, 2); bx.stroke();
       }
       const bladeMat = new THREE.MeshLambertMaterial({
-        map: new THREE.CanvasTexture(bladeTexC), side: THREE.DoubleSide
+        map: new THREE.CanvasTexture(bladeTexC), side: THREE.DoubleSide,
+        transparent: true, alphaTest: 0.3
       });
       const windUniform = { value: 0 };
       bladeMat.onBeforeCompile = sh => {
@@ -686,6 +725,12 @@
       // Trees with slow sway. Canopy = clustered SMOOTH spheres in varied
       // deep greens — the old flat-shaded icosahedrons were the faceted
       // "low-poly blob" look.
+      const canopyRimMat = new THREE.ShaderMaterial({
+        uniforms: { c: { value: new THREE.Color(0x6fc4ff) } },
+        vertexShader: "varying vec3 vN; varying vec3 vV; void main(){ vec4 mv = modelViewMatrix * vec4(position, 1.0); vN = normalMatrix * normal; vV = -mv.xyz; gl_Position = projectionMatrix * mv; }",
+        fragmentShader: "uniform vec3 c; varying vec3 vN; varying vec3 vV; void main(){ float f = pow(1.0 - abs(dot(normalize(vN), normalize(vV))), 3.2); gl_FragColor = vec4(c, 1.0) * f * 1.15; }",
+        transparent: true, blending: THREE.AdditiveBlending, side: THREE.BackSide, depthWrite: false
+      });
       const trees = [];
       function tree(x, z, s) {
         const g = new THREE.Group();
@@ -693,7 +738,7 @@
           new THREE.MeshStandardMaterial({ color: 0x0d0a07, roughness: 1 }));
         trunk.position.y = 1.05; g.add(addEdges(trunk, edgeMatSoft));
         const fol = new THREE.Group();
-        const greens = [0x16280f, 0x1a2d12, 0x12220c, 0x1d3315];
+        const greens = [0x14231c, 0x182a20, 0x101f18, 0x1b2f24];
         const rnd = mulberry32(x * 10 + z);
         for (let i = 0; i < 6; i++) {
           const r = 0.62 + rnd() * 0.5;
@@ -702,6 +747,10 @@
             new THREE.MeshStandardMaterial({ color: greens[Math.floor(rnd() * greens.length)], roughness: 1 }));
           blob.position.set((rnd() - 0.5) * 1.25, 2.35 + rnd() * 0.95, (rnd() - 0.5) * 1.25);
           blob.scale.y = 0.82;
+          // Blue outline shell: a fresnel rim hugs each canopy ball, so the
+          // trees carry the same glowing-blue outline as everything else.
+          const shell = new THREE.Mesh(new THREE.SphereGeometry(r * 1.05, 22, 16), canopyRimMat);
+          blob.add(shell);
           fol.add(blob);
         }
         g.add(fol);
@@ -789,6 +838,13 @@
           cl.position.x += 0.006;
           if (cl.position.x > 34) cl.position.x = -34;
         }
+        // Gas drifts, stars breathe.
+        for (let i = 0; i < nebulas.length; i++) {
+          nebulas[i].position.x += 0.004 + i * 0.0005;
+          if (nebulas[i].position.x > 95) nebulas[i].position.x = -95;
+        }
+        starsA.material.opacity = 0.78 + 0.14 * Math.sin(t * 0.7);
+        starsB.material.opacity = 0.44 + 0.14 * Math.sin(t * 1.1 + 2.0);
         renderer.render(scene, camera);
       })();
       return () => {

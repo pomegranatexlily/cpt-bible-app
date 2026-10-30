@@ -1,6 +1,6 @@
 /* Oustory Release 4: first-party offline reading. Audio is recorded MP3 files (audio-manifest.json); no device narration. No Scripture transformations. */
 "use strict";
-const SHELL="oustory-shell-r45-moonsmooth-20261030";
+const SHELL="oustory-shell-r46-gas-20261030";
 const BOOKS="oustory-books-r5-volume-iii-full-sync-20261020";
 const RUNTIME="oustory-runtime-r5-volume-iii-full-sync-20261020";
 const APP=new URL(self.registration.scope);
