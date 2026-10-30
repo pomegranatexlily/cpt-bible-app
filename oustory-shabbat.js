@@ -188,20 +188,23 @@
   async function mount(hostEl, jump) {
     host = hostEl;
     jumpFn = typeof jump === "function" ? jump : null;
-    host.append(el("p", "shab-status", "Reading the count from your calendar…"));
+    // The host is a features.js card whose heading is its first child —
+    // only ever remove this module's own status line, never the card.
+    const status = el("p", "shab-status", "Reading the count from your calendar…");
+    host.append(status);
     const data = await loadData();
     if (!host.isConnected) return;
-    host.replaceChildren();
     if (!data) {
-      host.append(el("p", "shab-status", "The calendar could not be read on this device."));
+      status.textContent = "The calendar could not be read on this device.";
       return;
     }
     const now = new Date();
     const info = monthInfo(data, now);
     if (!info) {
-      host.append(el("p", "shab-status", "Today is outside the published calendar."));
+      status.textContent = "Today is outside the published calendar.";
       return;
     }
+    status.remove();
     const state = stateFor(info.lunarDay);
     const shab = nextShabbat(data, now);
     const daysTo = shab ? dayDiff(new Date(now.getFullYear(), now.getMonth(), now.getDate()), shab) : null;
