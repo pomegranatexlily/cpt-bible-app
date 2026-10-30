@@ -125,8 +125,9 @@
     };
   }
 
-  function moonTexture() {
-    const w = 1024, h = 512;
+  function moonTexture(w, h) {
+    w = w || 1024; h = h || 512;
+    const S = w / 1024; // detail scale, so a 2048 texture is finer, not just bigger
     const c = document.createElement("canvas"); c.width = w; c.height = h;
     const x = c.getContext("2d");
     const grad = x.createLinearGradient(0, 0, 0, h);
@@ -135,7 +136,7 @@
     const rnd = mulberry32(20261029);
     for (let i = 0; i < 38; i++) { // maria: deep basalt, real contrast
       const cx = rnd() * w, cy = h * 0.16 + rnd() * h * 0.68;
-      const r = 26 + rnd() * 96;
+      const r = (26 + rnd() * 96) * S;
       const g = x.createRadialGradient(cx, cy, r * 0.1, cx, cy, r);
       g.addColorStop(0, "rgba(56,54,50,0.66)");
       g.addColorStop(0.7, "rgba(64,62,58,0.34)");
@@ -144,16 +145,29 @@
       x.beginPath(); x.ellipse(cx, cy, r * (0.7 + rnd() * 0.7), r * (0.5 + rnd() * 0.5), rnd() * 3.2, 0, 6.3); x.fill();
     }
     for (let i = 0; i < 2600; i++) { // grain
-      const cx = rnd() * w, cy = rnd() * h, r = 0.5 + rnd() * 2.2;
+      const cx = rnd() * w, cy = rnd() * h, r = (0.5 + rnd() * 2.2) * S;
       x.fillStyle = rnd() > 0.5 ? "rgba(52,50,47,0.22)" : "rgba(226,221,208,0.13)";
       x.beginPath(); x.arc(cx, cy, r, 0, 6.3); x.fill();
     }
     for (let i = 0; i < 8; i++) { // bright ray craters
       const cx = rnd() * w, cy = rnd() * h;
-      const g = x.createRadialGradient(cx, cy, 0, cx, cy, 9 + rnd() * 15);
+      const g = x.createRadialGradient(cx, cy, 0, cx, cy, (9 + rnd() * 15) * S);
       g.addColorStop(0, "rgba(238,234,222,0.55)"); g.addColorStop(1, "rgba(238,234,222,0)");
-      x.fillStyle = g; x.beginPath(); x.arc(cx, cy, 26, 0, 6.3); x.fill();
+      x.fillStyle = g; x.beginPath(); x.arc(cx, cy, 26 * S, 0, 6.3); x.fill();
     }
+    return c;
+  }
+
+  /* Soft round sprite for points (stars, fireflies): without it, WebGL
+     points render as hard squares — the blocky look in the yard sky. */
+  function dotTexture() {
+    const c = document.createElement("canvas"); c.width = 64; c.height = 64;
+    const x = c.getContext("2d");
+    const g = x.createRadialGradient(32, 32, 0, 32, 32, 32);
+    g.addColorStop(0, "rgba(255,255,255,1)");
+    g.addColorStop(0.35, "rgba(255,255,255,0.8)");
+    g.addColorStop(1, "rgba(255,255,255,0)");
+    x.fillStyle = g; x.fillRect(0, 0, 64, 64);
     return c;
   }
 
@@ -170,14 +184,18 @@
     const s = 512;
     const c = document.createElement("canvas"); c.width = s; c.height = s;
     const x = c.getContext("2d");
-    x.fillStyle = "#0b1307"; x.fillRect(0, 0, s, s);
+    x.fillStyle = "#0b1208"; x.fillRect(0, 0, s, s);
     const rnd = mulberry32(97);
-    for (let i = 0; i < 9000; i++) {
-      const gx = rnd() * s, gy = rnd() * s, len = 3 + rnd() * 6;
-      const greens = ["#16260d", "#1d3312", "#244016", "#101d09"];
+    // Closer greens + finer strokes: the ground reads as lawn at night,
+    // not camouflage speckle.
+    for (let i = 0; i < 15000; i++) {
+      const gx = rnd() * s, gy = rnd() * s, len = 2 + rnd() * 4;
+      const greens = ["#141f0d", "#182612", "#1c2c14", "#111a0a", "#16220f"];
       x.strokeStyle = greens[Math.floor(rnd() * greens.length)];
-      x.beginPath(); x.moveTo(gx, gy); x.lineTo(gx + (rnd() - 0.5) * 2, gy - len); x.stroke();
+      x.globalAlpha = 0.6;
+      x.beginPath(); x.moveTo(gx, gy); x.lineTo(gx + (rnd() - 0.5) * 1.4, gy - len); x.stroke();
     }
+    x.globalAlpha = 1;
     return c;
   }
 
@@ -219,7 +237,7 @@
   function mount(card) {
     unmount();
     const state = tonightState();
-    const texCanvas = moonTexture();
+    const texCanvas = moonTexture(2048, 1024);
     const el = (tag, text, cls) => {
       const n = document.createElement(tag);
       if (text !== undefined) n.textContent = text;
@@ -456,47 +474,84 @@
       renderer.setSize(innerWidth, innerHeight);
       overlay.prepend(renderer.domElement);
       const scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x04060f);
-      scene.fog = new THREE.FogExp2(0x060a14, 0.02);
+      scene.background = new THREE.Color(0x050914);
+      scene.fog = new THREE.FogExp2(0x071224, 0.02);
       const camera = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, 0.1, 200);
       camera.position.set(0, 1.7, 8);
 
-      scene.add(new THREE.AmbientLight(0x8fa5cc, 0.16));
-      const moonLight = new THREE.DirectionalLight(0xcfd8ee, 0.5);
+      // The hybrid night: the real yard, washed in blue moonlight, with
+      // glowing blue edge-lines on the built things (his ruling 2026-10-30:
+      // combine the existing view with the blue-glow look — "blueprint"
+      // was his description of the glow, not a literal wireframe scene).
+      scene.add(new THREE.HemisphereLight(0x8fb8ff, 0x0a1020, 0.5));
+      const moonLight = new THREE.DirectionalLight(0xaec8ff, 0.55);
       moonLight.position.set(14, 15, -10);
       scene.add(moonLight);
+      const rimLight = new THREE.DirectionalLight(0x5fb2ff, 0.7);
+      rimLight.position.set(-12, 8, -18);
+      scene.add(rimLight);
+      const edgeMat = new THREE.LineBasicMaterial({
+        color: 0x6fc4ff, transparent: true, opacity: 0.85,
+        blending: THREE.AdditiveBlending, depthWrite: false
+      });
+      const edgeMatSoft = new THREE.LineBasicMaterial({
+        color: 0x6fc4ff, transparent: true, opacity: 0.35,
+        blending: THREE.AdditiveBlending, depthWrite: false
+      });
+      function addEdges(mesh, mat) {
+        mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry, 18), mat || edgeMat));
+        return mesh;
+      }
 
-      // Stars, high shell.
-      const starGeo = new THREE.BufferGeometry();
-      {
-        const rnd = mulberry32(41), pos = [];
-        for (let i = 0; i < 900; i++) {
+      // Stars, high shell — soft round sprites, two depths.
+      const dotTex = new THREE.CanvasTexture(dotTexture());
+      function starLayer(count, size, opacity, seed) {
+        const g = new THREE.BufferGeometry();
+        const rnd = mulberry32(seed), pos = [];
+        for (let i = 0; i < count; i++) {
           const a = rnd() * Math.PI * 2, e = Math.acos(rnd() * 0.95);
           const R = 90;
           pos.push(R * Math.sin(e) * Math.cos(a), R * Math.cos(e) * 0.6 + 6, -Math.abs(R * Math.sin(e) * Math.sin(a)) - 8);
         }
-        starGeo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+        g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+        return new THREE.Points(g, new THREE.PointsMaterial({
+          color: 0xe9e5d8, size, sizeAttenuation: true, transparent: true, opacity,
+          map: dotTex, depthWrite: false, blending: THREE.AdditiveBlending, fog: false
+        }));
       }
-      scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({
-        color: 0xe9e5d8, size: 0.55, sizeAttenuation: true, transparent: true, opacity: 0.9, fog: false
-      })));
+      scene.add(starLayer(900, 1.5, 0.85, 41));
+      scene.add(starLayer(160, 2.6, 0.5, 87));
 
-      // The Moon — same texture, same sun, hanging in this sky.
-      const mTex = new THREE.CanvasTexture(texC);
+      // The Moon — hi-res texture, smooth sphere, hanging in this sky.
+      const mTex = new THREE.CanvasTexture(moonTexture(2048, 1024));
       mTex.encoding = THREE.sRGBEncoding;
       const moonMesh = new THREE.Mesh(
-        new THREE.SphereGeometry(2.1, 48, 48),
+        new THREE.SphereGeometry(2.1, 64, 48),
         new THREE.MeshStandardMaterial({ map: mTex, roughness: 1, fog: false })
       );
       moonMesh.position.set(10.5, 13.5, -30);
       scene.add(moonMesh);
       const glow = new THREE.Sprite(new THREE.SpriteMaterial({
-        map: new THREE.CanvasTexture(glowTexture("rgba(238,234,218,0.85)", "rgba(190,198,220,0.25)")),
-        blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0.38, fog: false
+        map: new THREE.CanvasTexture(glowTexture("rgba(200,220,255,0.85)", "rgba(120,170,255,0.25)")),
+        blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0.5, fog: false
       }));
       glow.scale.set(8, 8, 1);
       glow.position.copy(moonMesh.position);
       scene.add(glow);
+      // Blue fresnel rim around the moon's real face — the phase, maria and
+      // terminator stay exactly as computed; only a glowing blue edge is
+      // added around the disc.
+      const rimShell = new THREE.Mesh(
+        new THREE.SphereGeometry(2.1 * 1.07, 48, 32),
+        new THREE.ShaderMaterial({
+          uniforms: { c: { value: new THREE.Color(0x7fd0ff) } },
+          vertexShader: "varying vec3 vN; varying vec3 vV; void main(){ vec4 mv = modelViewMatrix * vec4(position, 1.0); vN = normalMatrix * normal; vV = -mv.xyz; gl_Position = projectionMatrix * mv; }",
+          fragmentShader: "uniform vec3 c; varying vec3 vN; varying vec3 vV; void main(){ float f = pow(1.0 - abs(dot(normalize(vN), normalize(vV))), 3.0); gl_FragColor = vec4(c, 1.0) * f * 1.7; }",
+          transparent: true, blending: THREE.AdditiveBlending, side: THREE.BackSide, depthWrite: false
+        })
+      );
+      rimShell.position.copy(moonMesh.position);
+      scene.add(rimShell);
       const sunL = new THREE.DirectionalLight(0xfff4e0, 1.5);
       const Lv = sunVector(st.frac);
       // Dedicated light target: NEVER scene.add() the moon mesh itself as a
@@ -524,14 +579,25 @@
       path.position.set(-3.4, 0.01, -3.4);
       scene.add(path);
 
-      // Grass blades in the wind (instanced, shader sway).
-      const bladeGeo = new THREE.PlaneGeometry(0.07, 0.55, 1, 3);
-      bladeGeo.translate(0, 0.275, 0);
+      // Grass blades in the wind (instanced, shader sway). The blade
+      // geometry tapers to a point — flat rectangular blades are what read
+      // as blocky cardboard in the foreground.
+      const bladeGeo = new THREE.PlaneGeometry(0.05, 0.5, 1, 4);
+      bladeGeo.translate(0, 0.25, 0);
+      {
+        const pa = bladeGeo.attributes.position;
+        for (let i = 0; i < pa.count; i++) {
+          const t = pa.getY(i) / 0.5;
+          pa.setX(i, pa.getX(i) * (1 - t * 0.88));
+        }
+        pa.needsUpdate = true;
+        bladeGeo.computeVertexNormals();
+      }
       const bladeTexC = document.createElement("canvas"); bladeTexC.width = 16; bladeTexC.height = 64;
       {
         const bx = bladeTexC.getContext("2d");
         const bg = bx.createLinearGradient(0, 64, 0, 0);
-        bg.addColorStop(0, "#12200a"); bg.addColorStop(1, "#3a5c1e");
+        bg.addColorStop(0, "#0e1a07"); bg.addColorStop(1, "#2e6b4f");
         bx.fillStyle = bg; bx.fillRect(0, 0, 16, 64);
       }
       const bladeMat = new THREE.MeshLambertMaterial({
@@ -544,14 +610,14 @@
           "#include <begin_vertex>",
           `#include <begin_vertex>
            vec4 ipos = instanceMatrix * vec4(0.0, 0.0, 0.0, 1.0);
-           float bendW = pow(max(position.y, 0.0) / 0.55, 2.0);
+           float bendW = pow(max(position.y, 0.0) / 0.5, 2.0);
            float sway = sin(uTime * 1.7 + ipos.x * 0.8 + ipos.z * 0.65) * 0.16
                       + sin(uTime * 3.1 + ipos.x * 2.2) * 0.05;
            transformed.x += sway * bendW;
            transformed.z += sway * 0.6 * bendW;`
         );
       };
-      const BLADES = 1100;
+      const BLADES = 1500;
       const grass = new THREE.InstancedMesh(bladeGeo, bladeMat, BLADES);
       {
         const rnd = mulberry32(7), m4 = new THREE.Matrix4(), q = new THREE.Quaternion(),
@@ -574,16 +640,16 @@
       const wallMat = new THREE.MeshStandardMaterial({ color: 0x11141d, roughness: 0.95 });
       const roofMat = new THREE.MeshStandardMaterial({ color: 0x080a10, roughness: 1 });
       const body = new THREE.Mesh(new THREE.BoxGeometry(4.4, 2.7, 3.6), wallMat);
-      body.position.y = 1.35; house.add(body);
+      body.position.y = 1.35; house.add(addEdges(body));
       {
         const tri = new THREE.Shape();
         tri.moveTo(-2.55, 0); tri.lineTo(2.55, 0); tri.lineTo(0, 1.7); tri.closePath();
         const roofGeo = new THREE.ExtrudeGeometry(tri, { depth: 4.0, bevelEnabled: false });
         const roof = new THREE.Mesh(roofGeo, roofMat);
-        roof.position.set(0, 2.7, -2.0); house.add(roof);
+        roof.position.set(0, 2.7, -2.0); house.add(addEdges(roof));
       }
       const chimney = new THREE.Mesh(new THREE.BoxGeometry(0.55, 1.5, 0.55), wallMat);
-      chimney.position.set(1.3, 3.9, -0.6); house.add(chimney);
+      chimney.position.set(1.3, 3.9, -0.6); house.add(addEdges(chimney));
       const winMat = new THREE.MeshBasicMaterial({ color: 0xd9ab2e });
       const winDim = new THREE.MeshBasicMaterial({ color: 0x8a6d1f });
       for (const [wx, mat] of [[-1.4, winMat], [-0.35, winMat], [1.55, winDim]]) {
@@ -597,7 +663,7 @@
       }
       const door = new THREE.Mesh(new THREE.PlaneGeometry(0.8, 1.7),
         new THREE.MeshStandardMaterial({ color: 0x05060a }));
-      door.position.set(0.75, 0.86, 1.81); house.add(door);
+      door.position.set(0.75, 0.86, 1.81); house.add(addEdges(door));
       house.position.set(-7.2, 0, -10.5);
       house.rotation.y = 0.42;
       scene.add(house);
@@ -607,29 +673,35 @@
       const fenceMat = new THREE.MeshStandardMaterial({ color: 0x0b0d12, roughness: 1 });
       for (let i = 0; i <= 11; i++) {
         const post = new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.95, 0.13), fenceMat);
-        post.position.set(-2 + i * 1.05, 0.475, 0); fence.add(post);
+        post.position.set(-2 + i * 1.05, 0.475, 0); fence.add(addEdges(post));
       }
       for (const ry of [0.58, 0.85]) {
         const rail = new THREE.Mesh(new THREE.BoxGeometry(11.6, 0.09, 0.05), fenceMat);
-        rail.position.set(3.25, ry, 0); fence.add(rail);
+        rail.position.set(3.25, ry, 0); fence.add(addEdges(rail));
       }
       fence.position.set(0.5, 0, -5.6);
       fence.rotation.y = -0.06;
       scene.add(fence);
 
-      // Trees with slow sway.
+      // Trees with slow sway. Canopy = clustered SMOOTH spheres in varied
+      // deep greens — the old flat-shaded icosahedrons were the faceted
+      // "low-poly blob" look.
       const trees = [];
       function tree(x, z, s) {
         const g = new THREE.Group();
-        const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.17, 1.9, 6),
-          new THREE.MeshStandardMaterial({ color: 0x0a0806, roughness: 1 }));
-        trunk.position.y = 0.95; g.add(trunk);
+        const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.17, 2.1, 10),
+          new THREE.MeshStandardMaterial({ color: 0x0d0a07, roughness: 1 }));
+        trunk.position.y = 1.05; g.add(addEdges(trunk, edgeMatSoft));
         const fol = new THREE.Group();
-        const fMat = new THREE.MeshStandardMaterial({ color: 0x0e1c0b, roughness: 1, flatShading: true });
+        const greens = [0x16280f, 0x1a2d12, 0x12220c, 0x1d3315];
         const rnd = mulberry32(x * 10 + z);
-        for (let i = 0; i < 4; i++) {
-          const blob = new THREE.Mesh(new THREE.IcosahedronGeometry(0.85 + rnd() * 0.55, 1), fMat);
-          blob.position.set((rnd() - 0.5) * 1.1, 2.2 + rnd() * 0.9, (rnd() - 0.5) * 1.1);
+        for (let i = 0; i < 6; i++) {
+          const r = 0.62 + rnd() * 0.5;
+          const blob = new THREE.Mesh(
+            new THREE.SphereGeometry(r, 22, 16),
+            new THREE.MeshStandardMaterial({ color: greens[Math.floor(rnd() * greens.length)], roughness: 1 }));
+          blob.position.set((rnd() - 0.5) * 1.25, 2.35 + rnd() * 0.95, (rnd() - 0.5) * 1.25);
+          blob.scale.y = 0.82;
           fol.add(blob);
         }
         g.add(fol);
@@ -653,8 +725,8 @@
         flyGeo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
       }
       const flies = new THREE.Points(flyGeo, new THREE.PointsMaterial({
-        color: 0xd9e69a, size: 0.16, transparent: true, opacity: 0.9,
-        blending: THREE.AdditiveBlending, depthWrite: false
+        color: 0xbfe0ff, size: 0.34, transparent: true, opacity: 0.9,
+        map: dotTex, blending: THREE.AdditiveBlending, depthWrite: false
       }));
       scene.add(flies);
 
@@ -662,8 +734,8 @@
       const clouds = [];
       for (let i = 0; i < 3; i++) {
         const cl = new THREE.Sprite(new THREE.SpriteMaterial({
-          map: new THREE.CanvasTexture(glowTexture("rgba(160,170,200,0.30)", "rgba(140,150,185,0.10)")),
-          depthWrite: false, transparent: true, opacity: 0.11
+          map: new THREE.CanvasTexture(glowTexture("rgba(140,180,255,0.30)", "rgba(120,160,255,0.10)")),
+          depthWrite: false, transparent: true, opacity: 0.13
         }));
         cl.scale.set(26 + i * 7, 8 + i * 2, 1);
         cl.position.set(-24 + i * 20, 20 + i * 2.5, -36);
@@ -794,7 +866,8 @@
           }
           g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
           const p = new THREE.Points(g, new THREE.PointsMaterial({
-            color: 0xe9e5d8, size, transparent: true, opacity, depthWrite: false, fog: false
+            color: 0xe9e5d8, size: size * 1.9, transparent: true, opacity, depthWrite: false, fog: false,
+            map: new THREE.CanvasTexture(dotTexture()), blending: THREE.AdditiveBlending
           }));
           scene.add(p);
           return p;
