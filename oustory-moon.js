@@ -1,13 +1,16 @@
 "use strict";
 /* Oustory Moon — the home-page moon for the Covenant Bible app.
    One computed "tonight" state (Central time, America/Chicago) drives every
-   number on the card and the light on the sphere, so no panel can disagree
-   with another. Ephemeris: mean-synodic age from the 2000-01-06 new-moon
-   epoch; apparent solar longitude; elongation is the true Moon–Sun
-   separation (<=180 deg), E while waxing, W while waning. Distances are
-   low-precision approximations and are labeled as such.
-   Views: Home (tonight, still), Spin, Cinematic (letterboxed dolly),
-   Earth (full-screen night yard; all app content disappears). */
+   number on the card, the light on the sphere, and the moon in the Earth
+   view, so no panel can disagree with another. Ephemeris: mean-synodic age
+   from the 2000-01-06 new-moon epoch; apparent solar longitude; elongation
+   is the true Moon-Sun separation (<=180 deg), E waxing / W waning.
+   Distances are low-precision approximations and are labeled as such.
+   Views: Home (tonight, still, framed with room to breathe), Spin,
+   Cinematic (letterboxed dolly), Earth (a full Three.js night yard —
+   grass in the wind, house, fence, trees, fireflies — the app disappears).
+   v2 (2026-10-30): camera pulled back, exposure fixed, deep-space depth,
+   Earth view rebuilt as a real 3D yard. */
 (() => {
   const SYNODIC = 29.530588853;
   const EPOCH = Date.UTC(2000, 0, 6, 18, 14);
@@ -24,7 +27,7 @@
     }).formatToParts(new Date());
     const got = {};
     for (const p of parts) got[p.type] = Number(p.value);
-    return got; // {year, month, day} in Central time
+    return got;
   }
 
   function tonightState() {
@@ -58,6 +61,7 @@
       sign: SIGNS[Math.floor(moonLon / 30)], signDeg: moonLon % 30, dateLabel,
       isoDay: t.year + "-" + String(t.month).padStart(2, "0") + "-" + String(t.day).padStart(2, "0") };
   }
+  const sunVector = f => [Math.sin(2 * Math.PI * f), 0, -Math.cos(2 * Math.PI * f)];
 
   /* Covenant reckoning from the app's own published calendar months table:
      lunar day counts from the month start; Shabbat falls on lunar days
@@ -76,9 +80,8 @@
       const start = starts[idx];
       const dayMs = 86400000;
       const lunarDay = Math.round((Date.parse(today) - Date.parse(start)) / dayMs) + 1;
-      const shabbatDays = [8, 15, 22, 29];
       let next = null;
-      for (const sd of shabbatDays) {
+      for (const sd of [8, 15, 22, 29]) {
         if (sd >= lunarDay) { next = new Date(Date.parse(start) + (sd - 1) * dayMs); break; }
       }
       if (!next && starts[idx + 1]) next = new Date(Date.parse(starts[idx + 1]) + 7 * dayMs);
@@ -90,7 +93,6 @@
     } catch { return null; }
   }
 
-  /* Seeded RNG so the Moon's face is the same on every device, every load. */
   function mulberry32(a) {
     return function () {
       a |= 0; a = a + 0x6D2B79F5 | 0;
@@ -105,45 +107,66 @@
     const c = document.createElement("canvas"); c.width = w; c.height = h;
     const x = c.getContext("2d");
     const grad = x.createLinearGradient(0, 0, 0, h);
-    grad.addColorStop(0, "#c7c2b8"); grad.addColorStop(0.5, "#bab5aa"); grad.addColorStop(1, "#c2bdb2");
+    grad.addColorStop(0, "#a8a296"); grad.addColorStop(0.5, "#9d978a"); grad.addColorStop(1, "#a39d90");
     x.fillStyle = grad; x.fillRect(0, 0, w, h);
     const rnd = mulberry32(20261029);
-    // Maria: soft dark basalt patches.
-    for (let i = 0; i < 34; i++) {
-      const cx = rnd() * w, cy = h * 0.18 + rnd() * h * 0.64;
-      const r = 26 + rnd() * 92;
+    for (let i = 0; i < 38; i++) { // maria: deep basalt, real contrast
+      const cx = rnd() * w, cy = h * 0.16 + rnd() * h * 0.68;
+      const r = 26 + rnd() * 96;
       const g = x.createRadialGradient(cx, cy, r * 0.1, cx, cy, r);
-      g.addColorStop(0, "rgba(88,86,82,0.55)");
-      g.addColorStop(0.7, "rgba(96,94,90,0.28)");
-      g.addColorStop(1, "rgba(96,94,90,0)");
+      g.addColorStop(0, "rgba(56,54,50,0.66)");
+      g.addColorStop(0.7, "rgba(64,62,58,0.34)");
+      g.addColorStop(1, "rgba(64,62,58,0)");
       x.fillStyle = g;
       x.beginPath(); x.ellipse(cx, cy, r * (0.7 + rnd() * 0.7), r * (0.5 + rnd() * 0.5), rnd() * 3.2, 0, 6.3); x.fill();
     }
-    // Crater speckle.
-    for (let i = 0; i < 1500; i++) {
-      const cx = rnd() * w, cy = rnd() * h, r = 0.6 + rnd() * 2.6;
-      x.fillStyle = rnd() > 0.5 ? "rgba(70,68,64,0.20)" : "rgba(232,228,218,0.16)";
+    for (let i = 0; i < 2600; i++) { // grain
+      const cx = rnd() * w, cy = rnd() * h, r = 0.5 + rnd() * 2.2;
+      x.fillStyle = rnd() > 0.5 ? "rgba(52,50,47,0.22)" : "rgba(226,221,208,0.13)";
       x.beginPath(); x.arc(cx, cy, r, 0, 6.3); x.fill();
     }
-    // A few bright ray craters.
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 8; i++) { // bright ray craters
       const cx = rnd() * w, cy = rnd() * h;
-      const g = x.createRadialGradient(cx, cy, 0, cx, cy, 9 + rnd() * 14);
-      g.addColorStop(0, "rgba(240,236,226,0.5)"); g.addColorStop(1, "rgba(240,236,226,0)");
-      x.fillStyle = g; x.beginPath(); x.arc(cx, cy, 24, 0, 6.3); x.fill();
+      const g = x.createRadialGradient(cx, cy, 0, cx, cy, 9 + rnd() * 15);
+      g.addColorStop(0, "rgba(238,234,222,0.55)"); g.addColorStop(1, "rgba(238,234,222,0)");
+      x.fillStyle = g; x.beginPath(); x.arc(cx, cy, 26, 0, 6.3); x.fill();
     }
     return c;
   }
 
-  /* 2D fallback / Earth-view disc: per-pixel sphere shading with the same
-     sun vector as the 3D scene, so the phase can never disagree. */
+  function glowTexture(inner, outer) {
+    const c = document.createElement("canvas"); c.width = 256; c.height = 256;
+    const x = c.getContext("2d");
+    const g = x.createRadialGradient(128, 128, 8, 128, 128, 128);
+    g.addColorStop(0, inner); g.addColorStop(0.4, outer); g.addColorStop(1, "rgba(0,0,0,0)");
+    x.fillStyle = g; x.fillRect(0, 0, 256, 256);
+    return c;
+  }
+
+  function grassTexture() {
+    const s = 512;
+    const c = document.createElement("canvas"); c.width = s; c.height = s;
+    const x = c.getContext("2d");
+    x.fillStyle = "#0b1307"; x.fillRect(0, 0, s, s);
+    const rnd = mulberry32(97);
+    for (let i = 0; i < 9000; i++) {
+      const gx = rnd() * s, gy = rnd() * s, len = 3 + rnd() * 6;
+      const greens = ["#16260d", "#1d3312", "#244016", "#101d09"];
+      x.strokeStyle = greens[Math.floor(rnd() * greens.length)];
+      x.beginPath(); x.moveTo(gx, gy); x.lineTo(gx + (rnd() - 0.5) * 2, gy - len); x.stroke();
+    }
+    return c;
+  }
+
+  /* 2D fallback disc (no WebGL): per-pixel sphere shading with the same sun
+     vector as the 3D scene, so the phase can never disagree. */
   function drawDisc(canvas, state, textureCanvas) {
     const s = canvas.width, r = s / 2;
     const x = canvas.getContext("2d");
     const img = x.createImageData(s, s);
     const tex = textureCanvas.getContext("2d").getImageData(0, 0, textureCanvas.width, textureCanvas.height).data;
     const tw = textureCanvas.width, th = textureCanvas.height;
-    const sun = [Math.sin(2 * Math.PI * state.frac), 0, -Math.cos(2 * Math.PI * state.frac)];
+    const sun = sunVector(state.frac);
     for (let py = 0; py < s; py++) {
       for (let px = 0; px < s; px++) {
         const dx = (px - r + 0.5) / r, dy = (r - py - 0.5) / r;
@@ -155,7 +178,7 @@
         const tx = Math.min(tw - 1, Math.floor(u * tw)), ty = Math.min(th - 1, Math.floor(v * th));
         const to = (ty * tw + tx) * 4;
         const lit = Math.max(0, dx * sun[0] + dz * sun[2]);
-        const shade = 0.10 + 0.95 * lit; // faint earthshine floor on the dark side
+        const shade = 0.10 + 0.95 * lit;
         img.data[o] = tex[to] * shade;
         img.data[o + 1] = tex[to + 1] * shade;
         img.data[o + 2] = tex[to + 2] * shade;
@@ -165,8 +188,7 @@
     x.putImageData(img, 0, 0);
   }
 
-  let active = null; // {destroy}
-
+  let active = null;
   function unmount() {
     if (active) { try { active.destroy(); } catch {} active = null; }
   }
@@ -181,27 +203,14 @@
       if (cls) n.className = cls;
       return n;
     };
+    const THREE = window.THREE;
 
     const stage = el("div", undefined, "moon-stage");
     stage.setAttribute("role", "img");
     stage.setAttribute("aria-label", "The Moon tonight: " + state.phase + ", " +
       Math.round(state.illum * 100) + "% lit");
-    const stars = el("canvas", undefined, "moon-stars");
-    stage.append(stars);
     card.append(stage);
 
-    // Starfield (2D, twinkles gently).
-    const sx = stars.getContext("2d");
-    let starPts = [];
-    function paintStars(w, h) {
-      stars.width = w; stars.height = h;
-      const rnd = mulberry32(815);
-      starPts = Array.from({ length: 130 }, () => ({
-        x: rnd() * w, y: rnd() * h, r: 0.4 + rnd() * 1.1, p: rnd() * 6.28
-      }));
-    }
-
-    // Tonight readout — one state, every row.
     const rows = [
       ["Phase", state.phase],
       ["Illumination", Math.round(state.illum * 100) + "% lit"],
@@ -224,7 +233,6 @@
     void covenantLine(state).then(line => { if (line) cov.textContent = line; else cov.remove(); });
     card.append(el("p", "Tonight · Central Time · " + state.dateLabel, "moon-stamp"));
 
-    // View switcher.
     const switcher = el("div", undefined, "moon-switch");
     switcher.setAttribute("role", "group");
     switcher.setAttribute("aria-label", "Moon views");
@@ -245,86 +253,410 @@
     }
     card.append(switcher);
 
-    /* Earth view: the whole app disappears into the yard. */
-    let earthEl = null;
+    /* ---------- Earth view: a real yard in Three.js ---------- */
+    let earth = null; // {overlay, destroy}
     function openEarth() {
-      closeEarth();
-      earthEl = el("div", undefined, "moon-earth");
+      if (earth) return;
+      const overlay = el("div", undefined, "moon-earth");
+      const back = el("button", "← Home", "moon-earth-back");
+      back.type = "button";
+      back.onclick = closeEarth;
+      overlay.append(back);
+      document.body.append(overlay);
+      document.body.classList.add("moon-earth-open");
+      earth = { overlay, destroy: () => {} };
+      if (THREE) {
+        try { earth.destroy = buildEarthScene(overlay, state, texCanvas); }
+        catch { fallbackEarthScene(overlay, state, texCanvas); }
+      } else {
+        fallbackEarthScene(overlay, state, texCanvas);
+      }
+    }
+    function closeEarth() {
+      if (!earth) return;
+      try { earth.destroy(); } catch {}
+      earth.overlay.remove();
+      earth = null;
+      document.body.classList.remove("moon-earth-open");
+    }
+
+    function buildEarthScene(overlay, st, texC) {
+      const renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.outputEncoding = THREE.sRGBEncoding;
+      renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+      renderer.setSize(innerWidth, innerHeight);
+      overlay.prepend(renderer.domElement);
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x04060f);
+      scene.fog = new THREE.FogExp2(0x060a14, 0.02);
+      const camera = new THREE.PerspectiveCamera(55, innerWidth / innerHeight, 0.1, 200);
+      camera.position.set(0, 1.7, 8);
+
+      scene.add(new THREE.AmbientLight(0x8fa5cc, 0.16));
+      const moonLight = new THREE.DirectionalLight(0xcfd8ee, 0.5);
+      moonLight.position.set(14, 15, -10);
+      scene.add(moonLight);
+
+      // Stars, high shell.
+      const starGeo = new THREE.BufferGeometry();
+      {
+        const rnd = mulberry32(41), pos = [];
+        for (let i = 0; i < 900; i++) {
+          const a = rnd() * Math.PI * 2, e = Math.acos(rnd() * 0.95);
+          const R = 90;
+          pos.push(R * Math.sin(e) * Math.cos(a), R * Math.cos(e) * 0.6 + 6, -Math.abs(R * Math.sin(e) * Math.sin(a)) - 8);
+        }
+        starGeo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+      }
+      scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({
+        color: 0xe9e5d8, size: 0.55, sizeAttenuation: true, transparent: true, opacity: 0.9, fog: false
+      })));
+
+      // The Moon — same texture, same sun, hanging in this sky.
+      const moonGroup = new THREE.Group();
+      const mTex = new THREE.CanvasTexture(texC);
+      mTex.encoding = THREE.sRGBEncoding;
+      const moonMesh = new THREE.Mesh(
+        new THREE.SphereGeometry(2.6, 48, 48),
+        new THREE.MeshStandardMaterial({ map: mTex, roughness: 1, fog: false })
+      );
+      moonGroup.add(moonMesh);
+      const glow = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: new THREE.CanvasTexture(glowTexture("rgba(238,234,218,0.85)", "rgba(190,198,220,0.25)")),
+        blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0.8, fog: false
+      }));
+      glow.scale.set(13, 13, 1);
+      moonGroup.add(glow);
+      moonGroup.position.set(13, 12.5, -26);
+      scene.add(moonGroup);
+      const sunL = new THREE.DirectionalLight(0xfff4e0, 1.5);
+      const Lv = sunVector(st.frac);
+      sunL.position.set(Lv[0] * 10, Lv[1] * 10 + 2, Lv[2] * 10);
+      sunL.target = moonMesh;
+      scene.add(sunL, sunL.target);
+
+      // Ground with grass texture.
+      const gTex = new THREE.CanvasTexture(grassTexture());
+      gTex.wrapS = gTex.wrapT = THREE.RepeatWrapping; gTex.repeat.set(7, 7);
+      const ground = new THREE.Mesh(
+        new THREE.CircleGeometry(46, 40),
+        new THREE.MeshStandardMaterial({ map: gTex, roughness: 1 })
+      );
+      ground.rotation.x = -Math.PI / 2;
+      scene.add(ground);
+      // Dirt path from the house toward the viewer.
+      const path = new THREE.Mesh(
+        new THREE.PlaneGeometry(1.5, 13),
+        new THREE.MeshStandardMaterial({ color: 0x171410, roughness: 1 })
+      );
+      path.rotation.x = -Math.PI / 2; path.rotation.z = 0.5;
+      path.position.set(-3.4, 0.01, -3.4);
+      scene.add(path);
+
+      // Grass blades in the wind (instanced, shader sway).
+      const bladeGeo = new THREE.PlaneGeometry(0.07, 0.55, 1, 3);
+      bladeGeo.translate(0, 0.275, 0);
+      const bladeTexC = document.createElement("canvas"); bladeTexC.width = 16; bladeTexC.height = 64;
+      {
+        const bx = bladeTexC.getContext("2d");
+        const bg = bx.createLinearGradient(0, 64, 0, 0);
+        bg.addColorStop(0, "#12200a"); bg.addColorStop(1, "#3a5c1e");
+        bx.fillStyle = bg; bx.fillRect(0, 0, 16, 64);
+      }
+      const bladeMat = new THREE.MeshLambertMaterial({
+        map: new THREE.CanvasTexture(bladeTexC), side: THREE.DoubleSide
+      });
+      const windUniform = { value: 0 };
+      bladeMat.onBeforeCompile = sh => {
+        sh.uniforms.uTime = windUniform;
+        sh.vertexShader = "uniform float uTime;\n" + sh.vertexShader.replace(
+          "#include <begin_vertex>",
+          `#include <begin_vertex>
+           vec4 ipos = instanceMatrix * vec4(0.0, 0.0, 0.0, 1.0);
+           float bendW = pow(max(position.y, 0.0) / 0.55, 2.0);
+           float sway = sin(uTime * 1.7 + ipos.x * 0.8 + ipos.z * 0.65) * 0.16
+                      + sin(uTime * 3.1 + ipos.x * 2.2) * 0.05;
+           transformed.x += sway * bendW;
+           transformed.z += sway * 0.6 * bendW;`
+        );
+      };
+      const BLADES = 1100;
+      const grass = new THREE.InstancedMesh(bladeGeo, bladeMat, BLADES);
+      {
+        const rnd = mulberry32(7), m4 = new THREE.Matrix4(), q = new THREE.Quaternion(),
+          e = new THREE.Euler(), v = new THREE.Vector3(), sc = new THREE.Vector3();
+        for (let i = 0; i < BLADES; i++) {
+          const a = rnd() * Math.PI * 2, rr = 1.2 + Math.pow(rnd(), 0.6) * 13;
+          v.set(Math.cos(a) * rr, 0, Math.sin(a) * rr - 2);
+          e.set((rnd() - 0.5) * 0.25, rnd() * Math.PI, (rnd() - 0.5) * 0.25);
+          q.setFromEuler(e);
+          const s = 0.7 + rnd() * 0.9;
+          sc.set(s, s * (0.8 + rnd() * 0.7), s);
+          m4.compose(v, q, sc);
+          grass.setMatrixAt(i, m4);
+        }
+      }
+      scene.add(grass);
+
+      // House — sits ON the ground, gabled roof, lit windows.
+      const house = new THREE.Group();
+      const wallMat = new THREE.MeshStandardMaterial({ color: 0x11141d, roughness: 0.95 });
+      const roofMat = new THREE.MeshStandardMaterial({ color: 0x080a10, roughness: 1 });
+      const body = new THREE.Mesh(new THREE.BoxGeometry(4.4, 2.7, 3.6), wallMat);
+      body.position.y = 1.35; house.add(body);
+      {
+        const tri = new THREE.Shape();
+        tri.moveTo(-2.55, 0); tri.lineTo(2.55, 0); tri.lineTo(0, 1.7); tri.closePath();
+        const roofGeo = new THREE.ExtrudeGeometry(tri, { depth: 4.0, bevelEnabled: false });
+        const roof = new THREE.Mesh(roofGeo, roofMat);
+        roof.position.set(0, 2.7, -2.0); house.add(roof);
+      }
+      const chimney = new THREE.Mesh(new THREE.BoxGeometry(0.55, 1.5, 0.55), wallMat);
+      chimney.position.set(1.3, 3.9, -0.6); house.add(chimney);
+      const winMat = new THREE.MeshBasicMaterial({ color: 0xd9ab2e });
+      const winDim = new THREE.MeshBasicMaterial({ color: 0x8a6d1f });
+      for (const [wx, mat] of [[-1.4, winMat], [-0.35, winMat], [1.55, winDim]]) {
+        const win = new THREE.Mesh(new THREE.PlaneGeometry(0.62, 0.85), mat);
+        win.position.set(wx, 1.45, 1.81); house.add(win);
+        const wg = new THREE.Sprite(new THREE.SpriteMaterial({
+          map: new THREE.CanvasTexture(glowTexture("rgba(217,171,46,0.55)", "rgba(217,171,46,0.12)")),
+          blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0.75
+        }));
+        wg.scale.set(1.7, 1.7, 1); wg.position.set(wx, 1.45, 1.95); house.add(wg);
+      }
+      const door = new THREE.Mesh(new THREE.PlaneGeometry(0.8, 1.7),
+        new THREE.MeshStandardMaterial({ color: 0x05060a }));
+      door.position.set(0.75, 0.86, 1.81); house.add(door);
+      house.position.set(-7.2, 0, -10.5);
+      house.rotation.y = 0.42;
+      scene.add(house);
+
+      // Fence line.
+      const fence = new THREE.Group();
+      const fenceMat = new THREE.MeshStandardMaterial({ color: 0x0b0d12, roughness: 1 });
+      for (let i = 0; i <= 11; i++) {
+        const post = new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.95, 0.13), fenceMat);
+        post.position.set(-2 + i * 1.05, 0.475, 0); fence.add(post);
+      }
+      for (const ry of [0.58, 0.85]) {
+        const rail = new THREE.Mesh(new THREE.BoxGeometry(11.6, 0.09, 0.05), fenceMat);
+        rail.position.set(3.25, ry, 0); fence.add(rail);
+      }
+      fence.position.set(0.5, 0, -5.6);
+      fence.rotation.y = -0.06;
+      scene.add(fence);
+
+      // Trees with slow sway.
+      const trees = [];
+      function tree(x, z, s) {
+        const g = new THREE.Group();
+        const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.17, 1.9, 6),
+          new THREE.MeshStandardMaterial({ color: 0x0a0806, roughness: 1 }));
+        trunk.position.y = 0.95; g.add(trunk);
+        const fol = new THREE.Group();
+        const fMat = new THREE.MeshStandardMaterial({ color: 0x0e1c0b, roughness: 1, flatShading: true });
+        const rnd = mulberry32(x * 10 + z);
+        for (let i = 0; i < 4; i++) {
+          const blob = new THREE.Mesh(new THREE.IcosahedronGeometry(0.85 + rnd() * 0.55, 1), fMat);
+          blob.position.set((rnd() - 0.5) * 1.1, 2.2 + rnd() * 0.9, (rnd() - 0.5) * 1.1);
+          fol.add(blob);
+        }
+        g.add(fol);
+        g.position.set(x, 0, z); g.scale.setScalar(s);
+        g.userData.fol = fol; g.userData.phase = rnd() * 6.28;
+        scene.add(g); trees.push(g);
+      }
+      tree(6.8, -8.5, 1.5); tree(9.6, -5.4, 1.15); tree(-11.5, -6.5, 1.3);
+
+      // Fireflies.
+      const FLIES = 34;
+      const flyGeo = new THREE.BufferGeometry();
+      const flyBase = [];
+      {
+        const rnd = mulberry32(23), pos = new Float32Array(FLIES * 3);
+        for (let i = 0; i < FLIES; i++) {
+          const bx = (rnd() - 0.5) * 17, by = 0.4 + rnd() * 1.8, bz = -1 - rnd() * 9;
+          flyBase.push([bx, by, bz, rnd() * 6.28]);
+          pos.set([bx, by, bz], i * 3);
+        }
+        flyGeo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+      }
+      const flies = new THREE.Points(flyGeo, new THREE.PointsMaterial({
+        color: 0xd9e69a, size: 0.16, transparent: true, opacity: 0.9,
+        blending: THREE.AdditiveBlending, depthWrite: false
+      }));
+      scene.add(flies);
+
+      // Drifting clouds.
+      const clouds = [];
+      for (let i = 0; i < 3; i++) {
+        const cl = new THREE.Sprite(new THREE.SpriteMaterial({
+          map: new THREE.CanvasTexture(glowTexture("rgba(160,170,200,0.30)", "rgba(140,150,185,0.10)")),
+          depthWrite: false, transparent: true, opacity: 0.16
+        }));
+        cl.scale.set(26 + i * 7, 8 + i * 2, 1);
+        cl.position.set(-24 + i * 20, 15 + i * 2.5, -34);
+        scene.add(cl); clouds.push(cl);
+      }
+
+      // Look-around drag.
+      let yaw = 0, pitch = 0, tYaw = 0, tPitch = 0, dragging = false, lx = 0, ly = 0;
+      const dom = renderer.domElement;
+      dom.style.touchAction = "none";
+      dom.addEventListener("pointerdown", e => { dragging = true; lx = e.clientX; ly = e.clientY; });
+      addEventListener("pointerup", () => { dragging = false; });
+      dom.addEventListener("pointermove", e => {
+        if (!dragging) return;
+        tYaw = Math.max(-0.6, Math.min(0.6, tYaw - (e.clientX - lx) * 0.0022));
+        tPitch = Math.max(-0.14, Math.min(0.3, tPitch + (e.clientY - ly) * 0.0016));
+        lx = e.clientX; ly = e.clientY;
+      });
+      const onResize = () => {
+        camera.aspect = innerWidth / innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(innerWidth, innerHeight);
+      };
+      addEventListener("resize", onResize);
+
+      let raf = 0, dead = false;
+      const clock = new THREE.Clock();
+      (function tick() {
+        if (dead) return;
+        raf = requestAnimationFrame(tick);
+        const t = clock.getElapsedTime();
+        windUniform.value = t;
+        yaw += (tYaw - yaw) * 0.05; pitch += (tPitch - pitch) * 0.05;
+        camera.lookAt(Math.sin(yaw) * -10, 2.6 + pitch * 10, -10 * Math.cos(yaw));
+        for (const tr of trees) {
+          tr.userData.fol.rotation.z = Math.sin(t * 0.8 + tr.userData.phase) * 0.025;
+          tr.userData.fol.position.x = Math.sin(t * 0.55 + tr.userData.phase) * 0.05;
+        }
+        const pos = flyGeo.attributes.position;
+        for (let i = 0; i < FLIES; i++) {
+          const [bx, by, bz, ph] = flyBase[i];
+          pos.setXYZ(i,
+            bx + Math.sin(t * 0.4 + ph) * 0.8,
+            by + Math.sin(t * 0.9 + ph * 2) * 0.3,
+            bz + Math.cos(t * 0.3 + ph) * 0.6);
+        }
+        pos.needsUpdate = true;
+        flies.material.opacity = 0.65 + 0.3 * Math.sin(t * 2.2);
+        for (const cl of clouds) {
+          cl.position.x += 0.006;
+          if (cl.position.x > 34) cl.position.x = -34;
+        }
+        renderer.render(scene, camera);
+      })();
+      return () => {
+        dead = true;
+        cancelAnimationFrame(raf);
+        removeEventListener("resize", onResize);
+        renderer.dispose();
+        dom.remove();
+      };
+    }
+
+    function fallbackEarthScene(overlay, st, texC) {
+      overlay.classList.add("moon-earth-fallback");
       const sky = el("canvas", undefined, "moon-earth-stars");
       const ex = sky.getContext("2d");
       sky.width = innerWidth; sky.height = innerHeight;
       const rnd = mulberry32(417);
       for (let i = 0; i < 260; i++) {
         ex.fillStyle = "rgba(240,238,230," + (0.25 + rnd() * 0.75).toFixed(2) + ")";
-        ex.beginPath(); ex.arc(rnd() * sky.width, rnd() * sky.height * 0.72, 0.4 + rnd() * 1.2, 0, 6.3); ex.fill();
+        ex.beginPath(); ex.arc(rnd() * sky.width, rnd() * sky.height * 0.7, 0.4 + rnd() * 1.2, 0, 6.3); ex.fill();
       }
       const disc = el("canvas", undefined, "moon-earth-disc");
       disc.width = 132; disc.height = 132;
-      drawDisc(disc, state, texCanvas);
+      drawDisc(disc, st, texC);
       const scene = el("div", undefined, "moon-earth-scene");
       scene.innerHTML =
-        '<svg viewBox="0 0 1000 420" preserveAspectRatio="xMidYMax slice" aria-hidden="true">' +
-        '<rect x="0" y="330" width="1000" height="90" fill="#070b06"/>' +
-        '<path d="M0 332 Q 250 318 520 330 T 1000 326 V420 H0 Z" fill="#0a0f08"/>' +
-        '<g fill="#05070d"><path d="M96 332 V238 L196 178 L292 238 V332 Z"/>' +
-        '<path d="M78 244 L196 168 L314 244 L296 244 L196 186 L96 244 Z"/>' +
-        '<rect x="176" y="272" width="40" height="60"/></g>' +
-        '<rect x="118" y="256" width="26" height="30" fill="#c9a227" opacity="0.92"/>' +
-        '<rect x="238" y="256" width="26" height="30" fill="#c9a227" opacity="0.75"/>' +
-        '<g stroke="#05070d" stroke-width="7"><path d="M420 336 V292 M470 336 V292 M520 336 V292 M570 336 V292 M620 336 V292"/>' +
-        '<path d="M404 306 H636 M404 322 H636" stroke-width="5"/></g>' +
-        '<g fill="#05070d"><path d="M742 332 q6-74-14-118 q30 8 40-22 q4 34 26 44 q-16 44-8 96 Z"/>' +
-        '<path d="M856 332 q-4-58 10-96 q22 10 34-12 q6 28 22 36 q-14 34-6 72 Z"/></g></svg>';
-      const back = el("button", "← Home", "moon-earth-back");
-      back.type = "button";
-      back.onclick = closeEarth;
-      earthEl.append(sky, disc, scene, back);
-      // Gentle look-around parallax.
-      const onMove = e => {
-        const cx = (e.clientX / innerWidth - 0.5), cy = (e.clientY / innerHeight - 0.5);
-        scene.style.transform = "translate(" + (-cx * 14) + "px," + (-cy * 6) + "px) scale(1.04)";
-        disc.style.transform = "translate(" + (-cx * 5) + "px," + (-cy * 3) + "px)";
-      };
-      earthEl.addEventListener("pointermove", onMove);
-      document.body.append(earthEl);
-      document.body.classList.add("moon-earth-open");
-    }
-    function closeEarth() {
-      if (earthEl) { earthEl.remove(); earthEl = null; }
-      document.body.classList.remove("moon-earth-open");
+        '<svg viewBox="0 0 1000 560" preserveAspectRatio="xMidYMax meet" aria-hidden="true">' +
+        '<rect x="0" y="470" width="1000" height="90" fill="#0a1208"/>' +
+        '<g fill="#05070d"><path d="M90 470 V330 L205 258 L320 330 V470 Z"/>' +
+        '<path d="M70 338 L205 246 L340 338 L318 338 L205 264 L92 338 Z"/>' +
+        '<rect x="186" y="378" width="38" height="92"/></g>' +
+        '<rect x="116" y="352" width="27" height="32" fill="#c9a227" opacity="0.92"/>' +
+        '<rect x="252" y="352" width="27" height="32" fill="#c9a227" opacity="0.7"/>' +
+        '<g stroke="#05070d" stroke-width="7"><path d="M470 470 V408 M525 470 V408 M580 470 V408 M635 470 V408 M690 470 V408"/>' +
+        '<path d="M452 424 H708 M452 446 H708" stroke-width="5"/></g>' +
+        '<g fill="#05070d"><path d="M800 470 q6-84-16-132 q34 10 46-24 q4 38 30 50 q-18 50-10 106 Z"/>' +
+        '<path d="M905 470 q-4-64 12-106 q24 12 38-14 q6 32 26 40 q-16 38-8 80 Z"/></g></svg>';
+      overlay.append(sky, disc, scene);
     }
 
-    /* 3D stage (Three.js, vendored locally). Falls back to the shaded disc. */
+    /* ---------- Hero stage ---------- */
     let renderer = null, raf = 0, disposed = false;
-    const THREE = window.THREE;
     if (THREE) {
       try {
         renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.outputEncoding = THREE.sRGBEncoding;
         renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
         stage.append(renderer.domElement);
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
-        camera.position.set(0, 0, 3.4);
+        const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 120);
+        const CAM_Z = 6.1; // moon (r=1.28) fills ~61% of the frame height
+        camera.position.set(0, 0, CAM_Z);
         const group = new THREE.Group(); scene.add(group);
         const tex = new THREE.CanvasTexture(texCanvas);
+        tex.encoding = THREE.sRGBEncoding;
         const moon = new THREE.Mesh(
           new THREE.SphereGeometry(1.28, 64, 64),
-          new THREE.MeshStandardMaterial({ map: tex, roughness: 1, metalness: 0 })
+          new THREE.MeshStandardMaterial({ map: tex, bumpMap: tex, bumpScale: 0.25, roughness: 1, metalness: 0 })
         );
         group.add(moon);
-        scene.add(new THREE.AmbientLight(0x8899bb, 0.32)); // earthshine floor
-        const sun = new THREE.DirectionalLight(0xfff4e0, 1.9);
-        const L = [Math.sin(2 * Math.PI * state.frac), 0, -Math.cos(2 * Math.PI * state.frac)];
-        sun.position.set(L[0] * 8, L[1] * 8, L[2] * 8);
+        const halo = new THREE.Sprite(new THREE.SpriteMaterial({
+          map: new THREE.CanvasTexture(glowTexture("rgba(240,236,220,0.75)", "rgba(180,190,220,0.18)")),
+          blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0.6
+        }));
+        halo.scale.set(5.4, 5.4, 1); halo.position.z = -0.6;
+        group.add(halo);
+        // Depth: two star shells at different distances + faint nebula smudges.
+        function starShell(count, rMin, rMax, size, opacity, seed) {
+          const g = new THREE.BufferGeometry();
+          const rnd = mulberry32(seed), pos = [];
+          for (let i = 0; i < count; i++) {
+            const a = rnd() * Math.PI * 2, b = Math.acos(2 * rnd() - 1);
+            const R = rMin + rnd() * (rMax - rMin);
+            pos.push(R * Math.sin(b) * Math.cos(a), R * Math.sin(b) * Math.sin(a), -Math.abs(R * Math.cos(b)) - 4);
+          }
+          g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+          const p = new THREE.Points(g, new THREE.PointsMaterial({
+            color: 0xe9e5d8, size, transparent: true, opacity, depthWrite: false, fog: false
+          }));
+          scene.add(p);
+          return p;
+        }
+        const starsFar = starShell(650, 26, 44, 0.14, 0.75, 815);
+        const starsNear = starShell(220, 14, 22, 0.2, 0.95, 417);
+        for (const [sx, sy, sz, s, o, col] of [
+          [-13, 6, -30, 26, 0.10, "rgba(112,116,190,0.5)"],
+          [14, -7, -34, 30, 0.08, "rgba(84,140,150,0.5)"],
+          [2, 11, -38, 34, 0.06, "rgba(201,162,39,0.5)"]
+        ]) {
+          const neb = new THREE.Sprite(new THREE.SpriteMaterial({
+            map: new THREE.CanvasTexture(glowTexture(col, "rgba(0,0,0,0)")),
+            blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: o
+          }));
+          neb.position.set(sx, sy, sz); neb.scale.set(s, s * 0.62, 1);
+          scene.add(neb);
+        }
+        scene.add(new THREE.AmbientLight(0x93a7cc, 0.2));
+        const sun = new THREE.DirectionalLight(0xfff2dd, 1.35);
+        const Lv = sunVector(state.frac);
+        sun.position.set(Lv[0] * 8, Lv[1] * 8, Lv[2] * 8);
         scene.add(sun);
-        // Drag to look around (Home + Spin).
+        const rim = new THREE.DirectionalLight(0x91a7d8, 0.12);
+        rim.position.set(-6, 3, -5);
+        scene.add(rim);
+
         let tx = 0, ty = 0, gx = 0, gy = 0, dragging = false, lx = 0, ly = 0;
         const dom = renderer.domElement;
         dom.style.touchAction = "pan-y";
         dom.addEventListener("pointerdown", e => { dragging = true; lx = e.clientX; ly = e.clientY; });
         addEventListener("pointerup", () => { dragging = false; });
         dom.addEventListener("pointermove", e => {
-          if (!dragging || mode === "cinema") return;
+          if (!dragging || mode === "cinema" || earth) return;
           tx += (e.clientX - lx) * 0.005; ty += (e.clientY - ly) * 0.003;
           ty = Math.max(-0.6, Math.min(0.6, ty));
           lx = e.clientX; ly = e.clientY;
@@ -334,7 +666,6 @@
           if (!w || !h) return;
           renderer.setSize(w, h, false);
           camera.aspect = w / h; camera.updateProjectionMatrix();
-          paintStars(w, h);
         }
         new ResizeObserver(size).observe(stage);
         size();
@@ -343,24 +674,20 @@
           if (disposed) return;
           raf = requestAnimationFrame(tick);
           if (!document.contains(stage)) { unmount(); return; }
+          if (earth) return; // the yard has the GPU while Earth view is open
           const t = clock.getElapsedTime();
-          if (mode === "spin") moon.rotation.y += 0.0035;
+          if (mode === "spin") moon.rotation.y += 0.004;
+          starsFar.rotation.z = t * 0.0022;
+          starsNear.rotation.z = t * 0.0038;
           if (mode === "cinema") {
-            camera.position.set(Math.sin(t * 0.13) * 1.5, Math.sin(t * 0.09) * 0.62, 2.9 + Math.sin(t * 0.06) * 0.45);
+            camera.position.set(Math.sin(t * 0.12) * 1.7, Math.sin(t * 0.085) * 0.75, 5.1 + Math.sin(t * 0.055) * 0.5);
             camera.lookAt(0, 0, 0);
           } else {
             gx += (tx - gx) * 0.06; gy += (ty - gy) * 0.06;
             group.rotation.y = gx; group.rotation.x = gy;
-            if (camera.position.z !== 3.4) { camera.position.set(0, 0, 3.4); camera.lookAt(0, 0, 0); }
+            group.position.y = Math.sin(t * 0.4) * 0.035;
+            if (camera.position.z !== CAM_Z) { camera.position.set(0, 0, CAM_Z); camera.lookAt(0, 0, 0); }
           }
-          // Twinkle.
-          sx.clearRect(0, 0, stars.width, stars.height);
-          for (const p of starPts) {
-            sx.globalAlpha = 0.45 + 0.4 * Math.sin(t * 1.3 + p.p);
-            sx.fillStyle = "#efece2";
-            sx.beginPath(); sx.arc(p.x, p.y, p.r, 0, 6.3); sx.fill();
-          }
-          sx.globalAlpha = 1;
           renderer.render(scene, camera);
         })();
       } catch { renderer = null; }
@@ -370,10 +697,6 @@
       disc.width = 520; disc.height = 520;
       drawDisc(disc, state, texCanvas);
       stage.append(disc);
-      paintStars(stage.clientWidth || 340, stage.clientHeight || 340);
-      sx.fillStyle = "#efece2";
-      for (const p of starPts) { sx.globalAlpha = 0.5; sx.beginPath(); sx.arc(p.x, p.y, p.r, 0, 6.3); sx.fill(); }
-      sx.globalAlpha = 1;
     }
 
     active = {

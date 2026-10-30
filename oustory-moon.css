@@ -1,17 +1,25 @@
 /* Oustory Moon — home-page moon for the Covenant Bible app.
    Concordance language: solid, ruled, typographic. No glass slabs.
-   Colors: ink #141210, parchment #f5f0e6, gold #c9a227. */
+   Colors: ink #141210, parchment #f5f0e6, gold #c9a227.
+   v2: the stage bleeds to the card edges and flows with the page;
+   deep-space background with depth; Earth view is a full 3D yard. */
 
 .moon-stage {
   position: relative;
-  aspect-ratio: 1 / 1;
-  max-height: 360px;
-  width: 100%;
-  margin: 10px 0 4px;
+  aspect-ratio: 4 / 3.3;
+  width: auto;
+  margin: 12px -21px 6px;
   overflow: hidden;
-  background: radial-gradient(120% 90% at 50% 38%, #101728 0%, #0a0f1c 52%, #05070d 100%);
+  border-radius: 14px;
+  background:
+    radial-gradient(90% 60% at 18% 0%, rgba(96, 102, 178, 0.20) 0%, rgba(96, 102, 178, 0) 55%),
+    radial-gradient(70% 55% at 88% 100%, rgba(201, 162, 39, 0.07) 0%, rgba(201, 162, 39, 0) 60%),
+    radial-gradient(130% 95% at 50% 40%, #121b31 0%, #0a1020 54%, #04060c 100%);
   border-top: 1px solid rgba(201, 162, 39, 0.45);
   border-bottom: 1px solid rgba(201, 162, 39, 0.45);
+}
+@media (max-width: 390px) {
+  .moon-stage { margin-inline: -17px; }
 }
 .moon-stage canvas {
   position: absolute;
@@ -20,12 +28,11 @@
   height: 100%;
   display: block;
 }
-.moon-stage .moon-stars { pointer-events: none; }
 .moon-disc-fallback {
   position: absolute;
   inset: 0;
   margin: auto;
-  width: min(78%, 300px);
+  width: min(62%, 280px);
   height: auto;
   aspect-ratio: 1 / 1;
 }
@@ -113,40 +120,42 @@ body.moon-earth-open { overflow: hidden; }
   inset: 0;
   z-index: 2000;
   overflow: hidden;
-  background: linear-gradient(180deg, #04060f 0%, #081020 52%, #0a1120 78%, #060a06 100%);
+  background: #04060f;
 }
-.moon-earth-stars {
+.moon-earth > canvas {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
+  display: block;
+}
+.moon-earth-fallback {
+  background: linear-gradient(180deg, #04060f 0%, #081020 52%, #0a1120 78%, #060a06 100%);
 }
 .moon-earth-disc {
   position: absolute;
-  top: 13%;
-  right: 14%;
+  top: 12%;
+  right: 13%;
   width: 118px;
   height: 118px;
   filter: drop-shadow(0 0 22px rgba(238, 234, 220, 0.35));
-  transition: transform 0.25s ease-out;
 }
 .moon-earth-scene {
   position: absolute;
-  left: -2%;
-  right: -2%;
+  left: 0;
+  right: 0;
   bottom: 0;
-  height: 48%;
-  transition: transform 0.25s ease-out;
 }
 .moon-earth-scene svg {
   width: 100%;
-  height: 100%;
+  height: auto;
   display: block;
 }
 .moon-earth-back {
   position: absolute;
   top: calc(env(safe-area-inset-top, 0px) + 14px);
   left: 14px;
+  z-index: 5;
   appearance: none;
   background: rgba(5, 7, 13, 0.6);
   border: 1px solid rgba(201, 162, 39, 0.65);
