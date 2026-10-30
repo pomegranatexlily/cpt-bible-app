@@ -225,3 +225,54 @@ html.spatial-on #scripture{border:0;border-radius:0;background:none;box-shadow:n
 #scripture{position:relative}
 #scripture[data-chapter]::before{content:attr(data-chapter);float:left;font-family:Georgia,"Times New Roman",serif;font-size:62px;line-height:.78;font-weight:600;color:var(--covenant-gold);padding:8px 14px 0 0}
 .sheet-header h2{font-size:14.5px;letter-spacing:.18em;text-transform:uppercase}
+
+/* Passage (multi-verse) selection — bar floats above the chapter arrows;
+   selected verses carry a deeper gold wash than a single highlight. */
+.verse-entry.is-range-selected {
+  background: rgba(201, 162, 39, 0.32);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+.passage-bar {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: calc(168px + env(safe-area-inset-bottom, 0px));
+  z-index: 40;
+  width: min(calc(100% - 32px), 540px);
+  margin: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 10px 10px 16px;
+  border: 1px solid rgba(201, 162, 39, 0.55);
+  border-radius: 16px;
+  background: #1e1a14;
+  color: #f5f0e6;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+}
+.passage-label {
+  flex: 1;
+  min-width: 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.passage-actions { display: flex; gap: 6px; flex: none; }
+.passage-close {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: rgba(245, 240, 230, 0.75);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+.passage-close:hover { background: rgba(245, 240, 230, 0.1); color: #f5f0e6; }

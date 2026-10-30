@@ -12,7 +12,8 @@
        !Number.isSafeInteger(record.chapter)||record.chapter<1||
        !Number.isSafeInteger(record.verse)||record.verse<1||
        typeof record.text!=="string"||!record.text.trim())fail("Verse data is unavailable.");
-    return record.book+" "+record.chapter+":"+record.verse;
+    return record.book+" "+record.chapter+":"+record.verse+
+      (Number.isSafeInteger(record.verseEnd)&&record.verseEnd>record.verse?"\u2013"+record.verseEnd:"");
   }
   function splitLines(ctx,text,maxWidth){
     const result=[];

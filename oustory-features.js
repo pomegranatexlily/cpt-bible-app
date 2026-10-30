@@ -275,8 +275,13 @@
   }
   // The copy/share payload comes from the verified reader record, not text
   // selected from the DOM (which can include verse numbers and note markers).
+  function refLabel(record){
+    return Number.isSafeInteger(record.verseEnd)&&record.verseEnd>record.verse
+      ? record.book+" "+record.chapter+":"+record.verse+"\u2013"+record.verseEnd
+      : refKey(record.book,record.chapter,record.verse);
+  }
   function versePayload(record){
-    return record.text+"\n— "+refKey(record.book,record.chapter,record.verse)+" (Oustory reading edition)";
+    return record.text+"\n— "+refLabel(record)+" (Oustory reading edition)";
   }
   // Share a direct, bookmarkable coordinate using the app's real book ID.
   // The receiving browser resolves this before restoring the last position.
@@ -327,7 +332,7 @@
   }
   async function shareVerse(record){
     if(!record)return;
-    const reference=refKey(record.book,record.chapter,record.verse);
+    const reference=refLabel(record);
     if(typeof navigator.share==="function"){
       try{
         await navigator.share({title:reference+" · Oustory",text:versePayload(record),url:verseLink(record)});
@@ -339,6 +344,82 @@
     }
     const copied=await writeClipboard(sharePayload(record));
     verseStatus(copied?"Share sheet unavailable. Verse and link copied—paste them into any app.":"Sharing is unavailable. Copy the verse text above, then reopen the app link.");
+  }
+  // Multi-verse passage selection (user order 2026-10-30): "Select verses"
+  // in the verse dialog starts a range at that verse; tapping another verse
+  // in the same chapter extends the range; the bar shares/copies/images the
+  // whole passage. Tapping a verse in a different chapter restarts there.
+  let passage=null,passageBar=null;
+  const chapterVerses=new Map();
+  let chapterVersesKey="";
+  function registerVerse(info){
+    const key=info.id+"/"+info.chapter;
+    if(key!==chapterVersesKey){chapterVersesKey=key;chapterVerses.clear();}
+    chapterVerses.set(info.verse,info);
+  }
+  function passageRecord(){
+    if(!passage)return null;
+    const texts=[];
+    for(let v=passage.start;v<=passage.end;v++){
+      const r=chapterVerses.get(v);
+      if(r)texts.push(r.text);
+    }
+    if(!texts.length)return null;
+    return {book:passage.book,id:passage.id,chapter:passage.chapter,verse:passage.start,verseEnd:passage.end,text:texts.join(" ")};
+  }
+  function paintPassage(){
+    document.querySelectorAll(".verse-entry.is-range-selected").forEach(x=>x.classList.remove("is-range-selected"));
+    if(!passage)return;
+    for(let v=passage.start;v<=passage.end;v++){
+      byId("verse-"+v)?.closest(".verse-entry")?.classList.add("is-range-selected");
+    }
+  }
+  function updatePassageBar(){
+    if(!passageBar||!passage)return;
+    const rec=passageRecord();if(!rec)return;
+    const n=passage.end-passage.start+1;
+    passageBar.querySelector(".passage-label").textContent=refLabel(rec)+(n>1?" \u00b7 "+n+" verses":"");
+  }
+  function exitPassage(){
+    passage=null;paintPassage();
+    if(passageBar){passageBar.remove();passageBar=null;}
+  }
+  async function copyPassage(record){
+    const ok=await writeClipboard(versePayload(record));
+    const label=passageBar?.querySelector(".passage-label");
+    if(label){label.textContent=ok?"Passage copied":"Copy unavailable";setTimeout(updatePassageBar,1600);}
+  }
+  function ensurePassageBar(){
+    if(passageBar)return passageBar;
+    const bar=el("div",undefined,"passage-bar");
+    bar.setAttribute("role","group");
+    bar.setAttribute("aria-label","Selected verses");
+    bar.append(el("span",undefined,"passage-label"));
+    const acts=el("div",undefined,"passage-actions");
+    addAction(acts,"Share",()=>{const r=passageRecord();if(r)void shareVerse(r);},true);
+    addAction(acts,"Copy",()=>{const r=passageRecord();if(r)void copyPassage(r);});
+    addAction(acts,"Image",()=>{const r=passageRecord();if(r)window.OustoryShareCard?.open(r);});
+    const done=el("button","\u00d7","passage-close");done.type="button";
+    done.setAttribute("aria-label","Done selecting verses");
+    done.onclick=exitPassage;
+    bar.append(acts,done);
+    document.body.append(bar);
+    passageBar=bar;
+    return bar;
+  }
+  function beginPassage(record){
+    passage={book:record.book,id:record.id,chapter:record.chapter,anchor:record.verse,start:record.verse,end:record.verse};
+    verseDialog.close();
+    ensurePassageBar();paintPassage();updatePassageBar();
+  }
+  function extendPassage(info){
+    if(!passage||info.id!==passage.id||info.chapter!==passage.chapter){
+      passage={book:info.book,id:info.id,chapter:info.chapter,anchor:info.verse,start:info.verse,end:info.verse};
+    }else{
+      passage.start=Math.min(passage.anchor,info.verse);
+      passage.end=Math.max(passage.anchor,info.verse);
+    }
+    ensurePassageBar();paintPassage();updatePassageBar();
   }
   function makeDialog(){
     verseDialog=el("dialog");verseDialog.id="verse-panel";
@@ -372,6 +453,7 @@
     verseDialog.append(quick);
     addAction(quick,"Copy verse",()=>void copyVerse(record),true);
     addAction(quick,"Share verse",()=>void shareVerse(record));
+    addAction(quick,"Select verses",()=>beginPassage(record));
     const feedback=el("p","","feature-status");
     feedback.id="verse-feedback";
     feedback.setAttribute("role","status");
@@ -407,7 +489,8 @@
     span.setAttribute("aria-label","Open "+key+" verse actions and editorial note");
     if(highlights.has(key))span.classList.add("is-highlighted");
     if(notesByRef.has(key))span.classList.add("has-editorial-note");
-    const open=()=>openVerse(info);
+    registerVerse(info);
+    const open=()=>{ if(passage){ extendPassage(info); return; } openVerse(info); };
     span.addEventListener("click",open);
     span.addEventListener("keydown",e=>{
       if(e.key==="Enter"||e.key===" "){e.preventDefault();open()}
