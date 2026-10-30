@@ -491,7 +491,7 @@
       rimLight.position.set(-12, 8, -18);
       scene.add(rimLight);
       const edgeMat = new THREE.LineBasicMaterial({
-        color: 0x6fc4ff, transparent: true, opacity: 0.85,
+        color: 0x6fc4ff, transparent: true, opacity: 0.95,
         blending: THREE.AdditiveBlending, depthWrite: false
       });
       const edgeMatSoft = new THREE.LineBasicMaterial({
@@ -519,8 +519,8 @@
           map: dotTex, depthWrite: false, blending: THREE.AdditiveBlending, fog: false
         }));
       }
-      const starsA = starLayer(900, 1.5, 0.85, 41);
-      const starsB = starLayer(160, 2.6, 0.5, 87);
+      const starsA = starLayer(1200, 1.5, 0.85, 41);
+      const starsB = starLayer(220, 2.6, 0.5, 87);
       scene.add(starsA, starsB);
 
       // The whole sky is set in gas: huge soft nebula clouds in deep blues,
@@ -535,16 +535,16 @@
           ["rgba(40,200,230,0.40)", "rgba(20,90,160,0.10)"],
           ["rgba(255,110,190,0.30)", "rgba(140,50,120,0.08)"]
         ];
-        for (let i = 0; i < 8; i++) {
+        for (let i = 0; i < 12; i++) {
           const [ca, cb] = nebCols[i % nebCols.length];
           const sp = new THREE.Sprite(new THREE.SpriteMaterial({
             map: new THREE.CanvasTexture(glowTexture(ca, cb)),
             blending: THREE.AdditiveBlending, depthWrite: false, transparent: true,
-            opacity: 0.15 + (i % 3) * 0.05, fog: false
+            opacity: 0.17 + (i % 3) * 0.05, fog: false
           }));
           const sc = 55 + (i % 4) * 22;
           sp.scale.set(sc, sc * 0.62, 1);
-          sp.position.set(-70 + i * 19, 15 + (i % 3) * 13, -80 - (i % 2) * 14);
+          sp.position.set(-80 + i * 15, 4 + (i % 4) * 11, -80 - (i % 2) * 14);
           scene.add(sp);
           nebulas.push(sp);
         }
@@ -589,23 +589,18 @@
       sunL.target.position.copy(moonMesh.position);
       scene.add(sunL, sunL.target);
 
-      // Ground with grass texture.
-      const gTex = new THREE.CanvasTexture(grassTexture());
-      gTex.wrapS = gTex.wrapT = THREE.RepeatWrapping; gTex.repeat.set(7, 7);
+      // Ground: NO grass texture, no dirt — a translucent blue floor the
+      // gas shows through (his ruling: no actual grass on the ground;
+      // everything translucent except the moon).
       const ground = new THREE.Mesh(
         new THREE.CircleGeometry(46, 40),
-        new THREE.MeshStandardMaterial({ map: gTex, roughness: 1 })
+        new THREE.MeshStandardMaterial({
+          color: 0x0a2050, roughness: 0.35, metalness: 0.1,
+          transparent: true, opacity: 0.5
+        })
       );
       ground.rotation.x = -Math.PI / 2;
       scene.add(ground);
-      // Dirt path from the house toward the viewer.
-      const path = new THREE.Mesh(
-        new THREE.PlaneGeometry(1.5, 13),
-        new THREE.MeshStandardMaterial({ color: 0x171410, roughness: 1 })
-      );
-      path.rotation.x = -Math.PI / 2; path.rotation.z = 0.5;
-      path.position.set(-3.4, 0.01, -3.4);
-      scene.add(path);
 
       // Grass blades in the wind (instanced, shader sway). The blade
       // geometry tapers to a point — flat rectangular blades are what read
@@ -640,7 +635,8 @@
       }
       const bladeMat = new THREE.MeshLambertMaterial({
         map: new THREE.CanvasTexture(bladeTexC), side: THREE.DoubleSide,
-        transparent: true, alphaTest: 0.3
+        transparent: true, alphaTest: 0.15, opacity: 0.8,
+        blending: THREE.AdditiveBlending, depthWrite: false
       });
       const windUniform = { value: 0 };
       bladeMat.onBeforeCompile = sh => {
@@ -676,8 +672,12 @@
 
       // House — sits ON the ground, gabled roof, lit windows.
       const house = new THREE.Group();
-      const wallMat = new THREE.MeshStandardMaterial({ color: 0x11141d, roughness: 0.95 });
-      const roofMat = new THREE.MeshStandardMaterial({ color: 0x080a10, roughness: 1 });
+      const wallMat = new THREE.MeshStandardMaterial({
+        color: 0x16283f, roughness: 0.6, transparent: true, opacity: 0.32
+      });
+      const roofMat = new THREE.MeshStandardMaterial({
+        color: 0x0d1a2e, roughness: 0.6, transparent: true, opacity: 0.28
+      });
       const body = new THREE.Mesh(new THREE.BoxGeometry(4.4, 2.7, 3.6), wallMat);
       body.position.y = 1.35; house.add(addEdges(body));
       {
@@ -709,7 +709,9 @@
 
       // Fence line.
       const fence = new THREE.Group();
-      const fenceMat = new THREE.MeshStandardMaterial({ color: 0x0b0d12, roughness: 1 });
+      const fenceMat = new THREE.MeshStandardMaterial({
+        color: 0x14263e, roughness: 0.6, transparent: true, opacity: 0.35
+      });
       for (let i = 0; i <= 11; i++) {
         const post = new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.95, 0.13), fenceMat);
         post.position.set(-2 + i * 1.05, 0.475, 0); fence.add(addEdges(post));
@@ -728,23 +730,28 @@
       const canopyRimMat = new THREE.ShaderMaterial({
         uniforms: { c: { value: new THREE.Color(0x6fc4ff) } },
         vertexShader: "varying vec3 vN; varying vec3 vV; void main(){ vec4 mv = modelViewMatrix * vec4(position, 1.0); vN = normalMatrix * normal; vV = -mv.xyz; gl_Position = projectionMatrix * mv; }",
-        fragmentShader: "uniform vec3 c; varying vec3 vN; varying vec3 vV; void main(){ float f = pow(1.0 - abs(dot(normalize(vN), normalize(vV))), 3.2); gl_FragColor = vec4(c, 1.0) * f * 1.15; }",
+        fragmentShader: "uniform vec3 c; varying vec3 vN; varying vec3 vV; void main(){ float f = pow(1.0 - abs(dot(normalize(vN), normalize(vV))), 3.2); gl_FragColor = vec4(c, 1.0) * f * 1.5; }",
         transparent: true, blending: THREE.AdditiveBlending, side: THREE.BackSide, depthWrite: false
       });
       const trees = [];
       function tree(x, z, s) {
         const g = new THREE.Group();
         const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.17, 2.1, 10),
-          new THREE.MeshStandardMaterial({ color: 0x0d0a07, roughness: 1 }));
+          new THREE.MeshStandardMaterial({
+            color: 0x14202e, roughness: 0.7, transparent: true, opacity: 0.45
+          }));
         trunk.position.y = 1.05; g.add(addEdges(trunk, edgeMatSoft));
         const fol = new THREE.Group();
-        const greens = [0x14231c, 0x182a20, 0x101f18, 0x1b2f24];
+        const greens = [0x16382e, 0x1a4034, 0x122e3a, 0x1d4538];
         const rnd = mulberry32(x * 10 + z);
         for (let i = 0; i < 6; i++) {
           const r = 0.62 + rnd() * 0.5;
           const blob = new THREE.Mesh(
             new THREE.SphereGeometry(r, 22, 16),
-            new THREE.MeshStandardMaterial({ color: greens[Math.floor(rnd() * greens.length)], roughness: 1 }));
+            new THREE.MeshStandardMaterial({
+              color: greens[Math.floor(rnd() * greens.length)], roughness: 0.7,
+              transparent: true, opacity: 0.38
+            }));
           blob.position.set((rnd() - 0.5) * 1.25, 2.35 + rnd() * 0.95, (rnd() - 0.5) * 1.25);
           blob.scale.y = 0.82;
           // Blue outline shell: a fresnel rim hugs each canopy ball, so the
