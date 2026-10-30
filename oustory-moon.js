@@ -313,26 +313,28 @@
       })));
 
       // The Moon — same texture, same sun, hanging in this sky.
-      const moonGroup = new THREE.Group();
       const mTex = new THREE.CanvasTexture(texC);
       mTex.encoding = THREE.sRGBEncoding;
       const moonMesh = new THREE.Mesh(
-        new THREE.SphereGeometry(2.6, 48, 48),
+        new THREE.SphereGeometry(2.1, 48, 48),
         new THREE.MeshStandardMaterial({ map: mTex, roughness: 1, fog: false })
       );
-      moonGroup.add(moonMesh);
+      moonMesh.position.set(10.5, 13.5, -30);
+      scene.add(moonMesh);
       const glow = new THREE.Sprite(new THREE.SpriteMaterial({
         map: new THREE.CanvasTexture(glowTexture("rgba(238,234,218,0.85)", "rgba(190,198,220,0.25)")),
-        blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0.8, fog: false
+        blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0.38, fog: false
       }));
-      glow.scale.set(13, 13, 1);
-      moonGroup.add(glow);
-      moonGroup.position.set(13, 12.5, -26);
-      scene.add(moonGroup);
+      glow.scale.set(8, 8, 1);
+      glow.position.copy(moonMesh.position);
+      scene.add(glow);
       const sunL = new THREE.DirectionalLight(0xfff4e0, 1.5);
       const Lv = sunVector(st.frac);
-      sunL.position.set(Lv[0] * 10, Lv[1] * 10 + 2, Lv[2] * 10);
-      sunL.target = moonMesh;
+      // Dedicated light target: NEVER scene.add() the moon mesh itself as a
+      // target — Object3D.add() reparents, which once tore the moon out of
+      // its sky position and dropped it at the scene origin (the yard dome).
+      sunL.position.set(moonMesh.position.x + Lv[0] * 10, moonMesh.position.y + Lv[1] * 10 + 2, moonMesh.position.z + Lv[2] * 10);
+      sunL.target.position.copy(moonMesh.position);
       scene.add(sunL, sunL.target);
 
       // Ground with grass texture.
@@ -466,7 +468,7 @@
         g.userData.fol = fol; g.userData.phase = rnd() * 6.28;
         scene.add(g); trees.push(g);
       }
-      tree(6.8, -8.5, 1.5); tree(9.6, -5.4, 1.15); tree(-11.5, -6.5, 1.3);
+      tree(6.8, -8.5, 1.5); tree(9.6, -5.4, 1.15); tree(-10.2, -6.5, 1.3);
 
       // Fireflies.
       const FLIES = 34;
@@ -492,10 +494,10 @@
       for (let i = 0; i < 3; i++) {
         const cl = new THREE.Sprite(new THREE.SpriteMaterial({
           map: new THREE.CanvasTexture(glowTexture("rgba(160,170,200,0.30)", "rgba(140,150,185,0.10)")),
-          depthWrite: false, transparent: true, opacity: 0.16
+          depthWrite: false, transparent: true, opacity: 0.11
         }));
         cl.scale.set(26 + i * 7, 8 + i * 2, 1);
-        cl.position.set(-24 + i * 20, 15 + i * 2.5, -34);
+        cl.position.set(-24 + i * 20, 20 + i * 2.5, -36);
         scene.add(cl); clouds.push(cl);
       }
 
@@ -518,6 +520,7 @@
       };
       addEventListener("resize", onResize);
 
+      window.OustoryMoon._earth = { scene, camera, moon: moonMesh };
       let raf = 0, dead = false;
       const clock = new THREE.Clock();
       (function tick() {
