@@ -12,9 +12,10 @@
    both ("Sabbath + Purim (continued)"). When the next holy day falls the
    day after, the bar notes it briefly ("then New Moon Tue").
    Date-based: the app does not calculate sunset, so the count runs to the
-   start of the holy day's date. The X dismisses the bar for that date only;
-   it returns for the next holy day. If the calendar can't be read, no bar
-   is shown. */
+   start of the holy day's date. The X dismisses the bar for this app
+   session only (user ruling 2026-10-30): close the app and reopen it and
+   the bar is back — it is "just always there". If the calendar can't be
+   read, no bar is shown. */
 (() => {
   const DISMISS_KEY = "oustory.sabbathCountdown.dismissedTarget";
   const SHABBAT_LUNAR_DAYS = [8, 15, 22, 29];
@@ -115,7 +116,7 @@
     let timer = null;
     function stop() { if (timer) { clearInterval(timer); timer = null; } }
     function dismiss() {
-      try { localStorage.setItem(DISMISS_KEY, isoOf(target.date)); } catch {}
+      try { sessionStorage.setItem(DISMISS_KEY, isoOf(target.date)); } catch {}
       stop();
       bar.remove();
     }
@@ -128,7 +129,7 @@
       if (!target || current.date.getTime() !== target.date.getTime()) {
         target = current;
         let dismissed = null;
-        try { dismissed = localStorage.getItem(DISMISS_KEY); } catch {}
+        try { dismissed = sessionStorage.getItem(DISMISS_KEY); } catch {}
         if (dismissed === isoOf(target.date)) { stop(); bar.remove(); return; }
         label.textContent = target.names.join(" + ");
         let whenText = fmtDate(target.date);
